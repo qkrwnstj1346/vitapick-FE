@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getNoticeList } from '../../../service/cscenter/csCenterApi';
 import './CsMain.css';
+// 프론트 깃 커밋 테스트 
 
 function CsMain() {
 
