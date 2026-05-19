@@ -1,0 +1,102 @@
+/* 로그인 전체 배경 영역 */
+.body_container {
+    width: 100%;
+    max-width: 420px;
+    margin: 80px auto;
+    padding: 50px 40px;
+    background-color: #FFFFFF;
+    border: 1px solid #E3EEE5;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* 로그인 제목 */
+.body_container h2 {
+    margin-bottom: 40px;
+    font-size: 34px;
+    font-weight: 700;
+    color: #7FAF8B;
+}
+
+/* input 공통 */
+.body_container input[type="text"],
+.body_container input[type="password"] {
+    width: 100%;
+    height: 56px;
+    margin-bottom: 18px;
+    padding: 0 18px;
+    border: 1px solid #D7E6DA;
+    border-radius: 14px;
+    background-color: #F7FBF7;
+    font-size: 15px;
+    color: #333333;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+/* input 포커스 */
+.body_container input[type="text"]:focus,
+.body_container input[type="password"]:focus {
+    border-color: #7FAF8B;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(127, 175, 139, 0.15);
+}
+
+/* 자동완성 스타일 제거 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: #333333 !important;
+
+    -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset !important;
+
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+/* 로그인 버튼 */
+.loginBtn {
+    width: 100%;
+    height: 56px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 14px;
+    background-color: #7FAF8B;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 로그인 버튼 hover */
+.loginBtn:hover {
+    background-color: #6C9C78;
+    transform: translateY(-1px);
+}
+
+/* 하단 안내 문구 */
+.body_container span {
+    font-size: 14px;
+    color: #666666;
+}
+
+/* 회원가입 텍스트 */
+.body_container strong {
+    color: #7FAF8B !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 회원가입 hover */
+.body_container strong:hover {
+    color: #5F8668 !important;
+}
+
+/* hr 제거 */
+.body_container hr {
+    display: none;
+}

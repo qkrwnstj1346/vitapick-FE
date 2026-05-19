@@ -1,0 +1,50 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import './Login.css';
+
+const Login = ({ onLogin }) => {
+    const [loginId, setLoginId] = useState("");
+    const [pwd, setPwd] = useState("");
+    const navigate = useNavigate;
+
+    return (
+        <div className='body_container'>
+            <hr />
+            <h2 style={{ color: '#7FAF8B' }}>로그인</h2>
+            <div>
+                <form
+                    autoComplete='off'
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        onLogin(loginId, pwd)
+                    }} >
+                    <input type="text" name="loginId" placeholder="아이디"
+                        autoComplete='off'
+                        size={20} value={loginId}
+                        onChange={(e) => setLoginId(e.target.value)}
+                        required
+                        pattern="^[a-z0-9_]{4,10}$"
+                    /><br />
+                    <input type="password" name="Pwd"
+                        autoComplete='new-password' placeholder="비밀번호"
+                        size={20} value={pwd}
+                        onChange={(e) => setPwd(e.target.value)}
+                        required
+                        minLength="4"
+                    /><br /><br />
+                    <input type="submit" className="loginBtn" value="로그인" style={{ width: 175 }} /><br /><br />
+                </form>
+
+                <span>
+                    <span>아직 회원이 아니신가요?</span>&nbsp;
+
+                    <strong style={{ color: '#7547a3' }}>회원가입</strong>
+
+                </span>
+            </div>
+        </div>
+    ); //return
+}; //Login
+
+export default Login;
