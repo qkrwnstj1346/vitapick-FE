@@ -91,6 +91,20 @@ function Home() {
                 </div>
             </section>
 
+            {/* 챗봇 플로팅 버튼 */}
+            <div className="chatbotFloatingBtn">
+
+
+                <img
+                    src="/images/VitaPick_ChatBot_Logo.png"
+                    alt="챗봇"
+                />
+                <p className="chatbotFloatingText">
+                    ChatBot
+                </p>
+
+            </div>
+
 
 
         </main>

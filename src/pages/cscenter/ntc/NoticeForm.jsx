@@ -13,7 +13,10 @@ function NoticeForm() {
     const navigate = useNavigate();
 
     const isEdit = ntcId !== undefined;
-    const isAdmin = true;
+
+    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+
+    const isAdmin = loginUser?.roleCd === 'ADMIN';
 
     const [formData, setFormData] = useState({
         ttl: '',
