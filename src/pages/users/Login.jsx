@@ -6,7 +6,7 @@ import './Login.css';
 const Login = ({ onLogin }) => {
     const [loginId, setLoginId] = useState("");
     const [pwd, setPwd] = useState("");
-    const navigate = useNavigate;
+    const navigate = useNavigate();
 
     return (
         <div className='body_container'>

@@ -9,9 +9,13 @@ import CsMain from '../../pages/cscenter/csmain/CsMain';
 import NoticeList from '../../pages/cscenter/ntc/NoticeList';
 import NoticeDetail from '../../pages/cscenter/ntc/NoticeDetail';
 import NoticeForm from '../../pages/cscenter/ntc/NoticeForm';
+
 import FaqList from '../../pages/cscenter/faq/FaqList';
 import FaqDetail from '../../pages/cscenter/faq/FaqDetail';
 import FaqForm from '../../pages/cscenter/faq/FaqForm';
+
+import InquiryList from '../../pages/cscenter/inq/InquiryList';
+
 
 function Main({ token, onLogin }) {
 
@@ -43,6 +47,10 @@ function Main({ token, onLogin }) {
                 <Route path="/cscenter/faqs/:faqId" element={<FaqDetail />} />
                 <Route path="/cscenter/faqs/new" element={<FaqForm />} />
                 <Route path="/cscenter/faqs/:faqId/edit" element={<FaqForm />} />
+
+                {/* 1:1 문의 */}
+                <Route path="/cscenter/inq" element={<InquiryList />} />
+
             </Routes>
         </main>
     );

@@ -37,7 +37,11 @@ function CsMain() {
                             공지사항
                         </Link>
                     </li>
-                    <li>1:1 문의</li>
+                    <li>
+                        <Link to="/cscenter/inquiries">
+                            1:1 문의
+                        </Link>
+                    </li>
                 </ul>
 
                 <div className="cs-info">
