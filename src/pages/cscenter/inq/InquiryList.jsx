@@ -43,7 +43,7 @@ function InquiryList() {
 
             alert('로그인 후 이용 가능합니다.');
 
-            navigate('/login');
+            navigate('/v1/auth/login');
 
             return;
         }
@@ -71,7 +71,7 @@ function InquiryList() {
 
             alert('로그인 후 이용 가능합니다.');
 
-            navigate('/login');
+            navigate('/v1/auth/login');
 
             return;
         }

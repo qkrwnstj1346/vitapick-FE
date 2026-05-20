@@ -212,8 +212,7 @@ export function createInq(data) {
     );
 }
 
-/* 문의 수정 */
-/* 작성자 본인만 가능 */
+/* 1:1 문의 수정 */
 export function updateInq(inqId, userNum, data) {
     return apiCall(
         `/inquiries/${inqId}/${userNum}`,
@@ -224,8 +223,7 @@ export function updateInq(inqId, userNum, data) {
     );
 }
 
-/* 문의 삭제 */
-/* 작성자 본인만 가능 */
+/* 1:1 문의 삭제 */
 export function deleteInq(inqId, userNum) {
     return apiCall(
         `/inquiries/${inqId}/${userNum}`,

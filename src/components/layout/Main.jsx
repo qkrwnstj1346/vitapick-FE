@@ -20,7 +20,6 @@ import InquiryForm from '../../pages/cscenter/inq/InquiryForm';
 
 import Chatbot from '../../pages/chatbot/Chatbot';
 
-
 function Main({ token, onLogin }) {
 
     return (
@@ -28,9 +27,15 @@ function Main({ token, onLogin }) {
             <Routes>
                 <Route path="/" element={<Home />} />
 
-                <Route path="/v1/auth/login"
-                    element={<Login onLogin={onLogin} />} />
-                <Route path="/v1/auth/join" element={<Join />} />
+                <Route
+                    path="/v1/auth/login"
+                    element={<Login onLogin={onLogin} />}
+                />
+
+                <Route
+                    path="/v1/auth/join"
+                    element={<Join />}
+                />
 
                 {/* <Route
                     path="/mypage"
