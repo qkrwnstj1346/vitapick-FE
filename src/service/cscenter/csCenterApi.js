@@ -1,5 +1,7 @@
 import { apiCall } from '../apiService';
 
+/* 공지사항 */
+
 /* 공지사항 목록 조회 */
 /* 일반 회원: use_yn = Y */
 export function getNoticeList() {
@@ -70,6 +72,11 @@ export function deleteNotice(ntcId) {
         false
     );
 }
+
+
+
+
+/* FAQ */
 
 /* FAQ 전체 목록 조회 */
 /* 관리자: 전체 FAQ */
@@ -145,6 +152,101 @@ export function deleteFaq(faqId) {
         `/faqs/${faqId}`,
         'DELETE',
         null,
+        null,
+        false
+    );
+}
+
+/* 1:1 문의 */
+
+/* 전체 문의 목록 조회 */
+export function getAllInq() {
+    return apiCall(
+        '/inquiries',
+        'GET',
+        null,
+        null,
+        false
+    );
+}
+
+/* 마이페이지 내 문의 목록 조회 */
+export function getMyInq(userNum) {
+    return apiCall(
+        `/mypage/inquiries/${userNum}`,
+        'GET',
+        null,
+        null,
+        false
+    );
+}
+
+/* 관리자 문의 상세 조회 */
+export function getInqDetail(inqId) {
+    return apiCall(
+        `/inquiries/${inqId}`,
+        'GET',
+        null,
+        null,
+        false
+    );
+}
+
+/* 회원 본인 문의 상세 조회 */
+export function getMyInqDetail(inqId, userNum) {
+    return apiCall(
+        `/inquiries/${inqId}/${userNum}`,
+        'GET',
+        null,
+        null,
+        false
+    );
+}
+
+/* 문의 등록 */
+/* USER만 가능 */
+export function createInq(data) {
+    return apiCall(
+        '/inquiries',
+        'POST',
+        data,
+        null,
+        false
+    );
+}
+
+/* 문의 수정 */
+/* 작성자 본인만 가능 */
+export function updateInq(inqId, userNum, data) {
+    return apiCall(
+        `/inquiries/${inqId}/${userNum}`,
+        'PATCH',
+        data,
+        null,
+        false
+    );
+}
+
+/* 문의 삭제 */
+/* 작성자 본인만 가능 */
+export function deleteInq(inqId, userNum) {
+    return apiCall(
+        `/inquiries/${inqId}/${userNum}`,
+        'DELETE',
+        null,
+        null,
+        false
+    );
+}
+
+/* 관리자 답변 등록 */
+export function answerInq(inqId, ansTxt) {
+    return apiCall(
+        `/inquiries/${inqId}/answer`,
+        'PATCH',
+        {
+            ansTxt: ansTxt
+        },
         null,
         false
     );
