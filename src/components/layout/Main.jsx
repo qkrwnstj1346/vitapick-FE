@@ -18,6 +18,8 @@ import InquiryList from '../../pages/cscenter/inq/InquiryList';
 import InquiryDetail from '../../pages/cscenter/inq/InquiryDetail';
 import InquiryForm from '../../pages/cscenter/inq/InquiryForm';
 
+import Chatbot from '../../pages/chatbot/Chatbot';
+
 
 function Main({ token, onLogin }) {
 
@@ -55,6 +57,9 @@ function Main({ token, onLogin }) {
                 <Route path="/cscenter/inquiries/:inqId" element={<InquiryDetail />} />
                 <Route path="/cscenter/inquiries/new" element={<InquiryForm />} />
                 <Route path="/cscenter/inquiries/:inqId/edit" element={<InquiryForm />} />
+
+                {/* 챗봇 */}
+                <Route path="/chatbot" element={<Chatbot />} />
 
             </Routes>
         </main>
