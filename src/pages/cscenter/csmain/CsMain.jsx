@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getNoticeList } from '../../../service/cscenter/csCenterApi';
 import './CsMain.css';
-// 프론트 깃 커밋 테스트 
 
 function CsMain() {
 
@@ -13,7 +12,7 @@ function CsMain() {
         getNoticeList()
             .then((data) => {
                 console.log('CS 메인 공지사항 = ', data);
-                setNoticeList(data.slice(0, 5));
+                setNoticeList(data.slice(0, 8));
             })
             .catch((error) => {
                 console.error(error);
@@ -28,7 +27,11 @@ function CsMain() {
                 <h2 className="cs-title">CS CENTER</h2>
 
                 <ul className="cs-menu">
-                    <li>FAQ</li>
+                    <li>
+                        <Link to="/cscenter/faqs">
+                            FAQ
+                        </Link>
+                    </li>
                     <li>
                         <Link to="/cscenter/notices">
                             공지사항
@@ -38,16 +41,12 @@ function CsMain() {
                 </ul>
 
                 <div className="cs-info">
-                    <h3>
-                        02-1111-1111
-                    </h3>
-
+                    <h3>02-1111-1111</h3>
                     <p>평일 10:00 ~ 19:00 (주말,공휴일 제외)</p>
                 </div>
             </div>
 
             <div className="cs-right">
-
                 <div className="cs-notice-top">
                     <h3>공지사항</h3>
 
@@ -65,7 +64,6 @@ function CsMain() {
                         noticeList.map((notice) => (
                             <li key={notice.ntcId}>
                                 <div className="cs-notice-left">
-
                                     <Link to={`/cscenter/notices/${notice.ntcId}`}>
                                         {notice.ttl}
                                     </Link>

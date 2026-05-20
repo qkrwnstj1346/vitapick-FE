@@ -70,3 +70,82 @@ export function deleteNotice(ntcId) {
         false
     );
 }
+
+/* FAQ 전체 목록 조회 */
+/* 관리자: 전체 FAQ */
+export function getFaqList() {
+    return apiCall(
+        '/faqs',
+        'GET',
+        null,
+        null,
+        false
+    );
+}
+
+/* FAQ 사용여부 Y 목록 조회 */
+/* 일반 회원 */
+export function getUseYnFaqList() {
+    return apiCall(
+        '/faqs/useyn/Y',
+        'GET',
+        null,
+        null,
+        false
+    );
+}
+
+/* FAQ 카테고리별 조회 */
+export function getFaqListByCategory(faqCtgCd) {
+    return apiCall(
+        `/faqs?faqCtgCd=${faqCtgCd}`,
+        'GET',
+        null,
+        null,
+        false
+    );
+}
+
+/* FAQ 상세 조회 */
+export function getFaqDetail(faqId) {
+    return apiCall(
+        `/faqs/${faqId}`,
+        'GET',
+        null,
+        null,
+        false
+    );
+}
+
+/* FAQ 등록 */
+export function createFaq(data) {
+    return apiCall(
+        '/faqs',
+        'POST',
+        data,
+        null,
+        false
+    );
+}
+
+/* FAQ 수정 */
+export function updateFaq(faqId, data) {
+    return apiCall(
+        `/faqs/${faqId}`,
+        'PATCH',
+        data,
+        null,
+        false
+    );
+}
+
+/* FAQ 삭제 */
+export function deleteFaq(faqId) {
+    return apiCall(
+        `/faqs/${faqId}`,
+        'DELETE',
+        null,
+        null,
+        false
+    );
+}
