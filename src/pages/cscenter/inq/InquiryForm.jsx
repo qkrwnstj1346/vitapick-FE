@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import {
+    getInqDetail,
     createInq,
-    updateInq,
-    getMyInqDetail
+    updateInq
 } from '../../../service/cscenter/csCenterApi';
 
 import './InquiryForm.css';
@@ -15,15 +15,14 @@ function InquiryForm() {
 
     const navigate = useNavigate();
 
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
-
     const isEdit = inqId !== undefined;
+
+    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
     const [formData, setFormData] = useState({
         inqTpCd: 'PRODUCT',
         ttl: '',
-        inqTxt: '',
-        userNum: loginUser?.userNum
+        inqTxt: ''
     });
 
     useEffect(() => {
@@ -39,7 +38,7 @@ function InquiryForm() {
 
         if (loginUser.roleCd === 'ADMIN') {
 
-            alert('관리자는 1:1 문의를 등록/수정할 수 없습니다.');
+            alert('관리자는 1:1 문의를 등록하거나 수정할 수 없습니다.');
 
             navigate('/cscenter/inquiries');
 
@@ -57,25 +56,30 @@ function InquiryForm() {
 
         try {
 
-            const result = await getMyInqDetail(
-                inqId,
-                loginUser.userNum
-            );
+            const result = await getInqDetail(inqId);
 
-            console.log('문의 수정 상세 = ', result);
+            console.log('문의 수정 데이터 = ', result);
+
+            if (Number(loginUser?.userNum) !== Number(result.userNum)) {
+
+                alert('본인이 작성한 문의글만 수정할 수 있습니다.');
+
+                navigate('/cscenter/inquiries');
+
+                return;
+            }
 
             setFormData({
-                inqTpCd: result.inqTpCd,
-                ttl: result.ttl,
-                inqTxt: result.inqTxt,
-                userNum: result.userNum
+                inqTpCd: result.inqTpCd || 'PRODUCT',
+                ttl: result.ttl || '',
+                inqTxt: result.inqTxt || ''
             });
 
         } catch (err) {
 
             console.log(err);
 
-            alert('문의 정보를 불러오지 못했습니다.');
+            alert('문의 정보 조회에 실패했습니다.');
 
             navigate('/cscenter/inquiries');
         }
@@ -95,6 +99,24 @@ function InquiryForm() {
 
         e.preventDefault();
 
+        if (!loginUser) {
+
+            alert('로그인 후 이용 가능합니다.');
+
+            navigate('/v1/auth/login');
+
+            return;
+        }
+
+        if (loginUser.roleCd === 'ADMIN') {
+
+            alert('관리자는 1:1 문의를 등록하거나 수정할 수 없습니다.');
+
+            navigate('/cscenter/inquiries');
+
+            return;
+        }
+
         if (!formData.ttl.trim()) {
 
             alert('제목을 입력해주세요.');
@@ -111,19 +133,24 @@ function InquiryForm() {
 
         try {
 
+            const requestData = {
+                ...formData,
+                userNum: loginUser.userNum
+            };
+
             if (isEdit) {
 
                 await updateInq(
                     inqId,
                     loginUser.userNum,
-                    formData
+                    requestData
                 );
 
                 alert('문의글이 수정되었습니다.');
 
             } else {
 
-                await createInq(formData);
+                await createInq(requestData);
 
                 alert('문의글이 등록되었습니다.');
             }
@@ -136,10 +163,15 @@ function InquiryForm() {
 
             alert(
                 isEdit
-                    ? '문의글 수정에 실패했습니다.'
-                    : '문의글 등록에 실패했습니다.'
+                    ? '문의 수정에 실패했습니다.'
+                    : '문의 등록에 실패했습니다.'
             );
         }
+    };
+
+    const handleCancel = () => {
+
+        navigate('/cscenter/inquiries');
     };
 
     return (
@@ -174,9 +206,9 @@ function InquiryForm() {
                         value={formData.inqTpCd}
                         onChange={handleChange}
                     >
-                        <option value="PRODUCT">상품</option>
                         <option value="ORDER">주문</option>
                         <option value="DELIVERY">배송</option>
+                        <option value="PRODUCT">상품</option>
                         <option value="MEMBER">회원</option>
                         <option value="ETC">기타</option>
                     </select>
@@ -221,7 +253,7 @@ function InquiryForm() {
                     <button
                         type="button"
                         className="inq-cancel-btn"
-                        onClick={() => navigate('/cscenter/inquiries')}
+                        onClick={handleCancel}
                     >
                         취소
                     </button>
