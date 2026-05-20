@@ -55,7 +55,7 @@ function App() {
         };
 
         apiCall(
-            "/users/login",
+            "/v1/auth/login",
             "POST",
             data,
             null,
@@ -100,7 +100,7 @@ function App() {
 
                 }
 
-                navigate("/login");
+                navigate("/v1/auth/login");
 
             });
 
