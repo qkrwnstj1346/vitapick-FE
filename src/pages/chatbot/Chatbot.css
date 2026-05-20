@@ -162,3 +162,45 @@
     cursor: not-allowed;
     transform: none;
 }
+
+/* 추천 상품 목록 */
+.chatpopup_prd_list {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+/* 추천 상품 카드 */
+.chatpopup_prd_card {
+    width: 100px;
+    background-color: #ffffff;
+    border: 1px solid #E3EEE5;
+    border-radius: 12px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* 상품 이미지 */
+.chatpopup_prd_card img {
+    width: 100%;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* 상품명 */
+.chatpopup_prd_card p {
+    margin: 6px 0 4px;
+    font-size: 11px;
+    color: #333333;
+    line-height: 1.4;
+}
+
+/* 상품 가격 */
+.chatpopup_prd_card strong {
+    font-size: 12px;
+    color: #7FAF8B;
+    font-weight: 800;
+}
