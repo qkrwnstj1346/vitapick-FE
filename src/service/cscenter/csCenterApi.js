@@ -73,9 +73,6 @@ export function deleteNotice(ntcId) {
     );
 }
 
-
-
-
 /* FAQ */
 
 /* FAQ 전체 목록 조회 */
@@ -210,7 +207,7 @@ export function createInq(data) {
         '/inquiries',
         'POST',
         data,
-        null,
+        localStorage.getItem('token'),
         false
     );
 }
@@ -222,7 +219,7 @@ export function updateInq(inqId, userNum, data) {
         `/inquiries/${inqId}/${userNum}`,
         'PATCH',
         data,
-        null,
+        localStorage.getItem('token'),
         false
     );
 }
@@ -234,7 +231,7 @@ export function deleteInq(inqId, userNum) {
         `/inquiries/${inqId}/${userNum}`,
         'DELETE',
         null,
-        null,
+        localStorage.getItem('token'),
         false
     );
 }
@@ -247,7 +244,7 @@ export function answerInq(inqId, ansTxt) {
         {
             ansTxt: ansTxt
         },
-        null,
+        localStorage.getItem('token'),
         false
     );
 }

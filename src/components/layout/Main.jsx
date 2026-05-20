@@ -15,6 +15,8 @@ import FaqDetail from '../../pages/cscenter/faq/FaqDetail';
 import FaqForm from '../../pages/cscenter/faq/FaqForm';
 
 import InquiryList from '../../pages/cscenter/inq/InquiryList';
+import InquiryDetail from '../../pages/cscenter/inq/InquiryDetail';
+import InquiryForm from '../../pages/cscenter/inq/InquiryForm';
 
 
 function Main({ token, onLogin }) {
@@ -49,7 +51,10 @@ function Main({ token, onLogin }) {
                 <Route path="/cscenter/faqs/:faqId/edit" element={<FaqForm />} />
 
                 {/* 1:1 문의 */}
-                <Route path="/cscenter/inq" element={<InquiryList />} />
+                <Route path="/cscenter/inquiries" element={<InquiryList />} />
+                <Route path="/cscenter/inquiries/:inqId" element={<InquiryDetail />} />
+                <Route path="/cscenter/inquiries/new" element={<InquiryForm />} />
+                <Route path="/cscenter/inquiries/:inqId/edit" element={<InquiryForm />} />
 
             </Routes>
         </main>

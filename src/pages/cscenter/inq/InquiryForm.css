@@ -1,0 +1,222 @@
+/* 전체 영역 */
+.inq-form-wrap {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 50px 20px;
+    box-sizing: border-box;
+}
+
+/* 상단 영역 */
+.inq-form-top {
+    margin-bottom: 30px;
+}
+
+/* 제목 */
+.inq-form-title {
+    margin: 0;
+    color: #333;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+/* 폼 */
+.inq-form {
+    width: 100%;
+}
+
+/* 행 */
+.inq-form-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    border-top: 1px solid #eeeeee;
+}
+
+/* 문의내용 행 */
+.inq-form-text-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    border-top: 1px solid #eeeeee;
+    border-bottom: 1px solid #eeeeee;
+    min-height: 320px;
+}
+
+/* 라벨 */
+.inq-form-label {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background-color: #F7FBF7;
+    color: #333;
+    font-size: 15px;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+/* 인풋 */
+.inq-form-input {
+    width: 100%;
+    height: 58px;
+    padding: 0 18px;
+    border: none;
+    color: #555;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+/* 셀렉트 */
+.inq-form-select {
+    width: 220px;
+    height: 44px;
+    margin: 7px 18px;
+    padding: 0 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #555;
+    font-size: 14px;
+    outline: none;
+}
+
+/* 텍스트영역 */
+.inq-form-textarea {
+    width: 100%;
+    min-height: 320px;
+    padding: 20px;
+    border: none;
+    resize: none;
+    color: #555;
+    font-size: 15px;
+    line-height: 1.7;
+    box-sizing: border-box;
+    outline: none;
+}
+
+/* 버튼 영역 */
+.inq-form-btn-wrap {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+/* 취소 버튼 */
+.inq-cancel-btn {
+    min-width: 100px;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    background-color: #AFCBB1;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 등록 버튼 */
+.inq-submit-btn {
+    min-width: 100px;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    background-color: #7FAF8B;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* hover */
+.inq-cancel-btn:hover {
+    background-color: #98b79a;
+}
+
+.inq-submit-btn:hover {
+    background-color: #6d9d79;
+}
+
+/* 태블릿 */
+@media screen and (max-width: 1024px) {
+    .inq-form-wrap {
+        padding: 40px 16px;
+    }
+
+    .inq-form-title {
+        font-size: 28px;
+    }
+
+    .inq-form-row,
+    .inq-form-text-row {
+        grid-template-columns: 140px 1fr;
+    }
+
+    .inq-form-label,
+    .inq-form-input,
+    .inq-form-textarea {
+        font-size: 14px;
+    }
+}
+
+/* 모바일 */
+@media screen and (max-width: 768px) {
+    .inq-form-wrap {
+        padding: 32px 12px;
+    }
+
+    .inq-form-title {
+        font-size: 24px;
+    }
+
+    .inq-form-row,
+    .inq-form-text-row {
+        grid-template-columns: 1fr;
+    }
+
+    .inq-form-label {
+        min-height: 46px;
+        padding: 0 14px;
+    }
+
+    .inq-form-input {
+        height: 52px;
+        padding: 0 14px;
+    }
+
+    .inq-form-select {
+        width: calc(100% - 28px);
+        margin: 10px 14px;
+    }
+
+    .inq-form-textarea {
+        min-height: 240px;
+        padding: 14px;
+    }
+
+    .inq-form-btn-wrap {
+        flex-direction: column;
+    }
+
+    .inq-cancel-btn,
+    .inq-submit-btn {
+        width: 100%;
+    }
+}
+
+/* 작은 모바일 */
+@media screen and (max-width: 480px) {
+    .inq-form-wrap {
+        padding: 28px 10px;
+    }
+
+    .inq-form-title {
+        font-size: 22px;
+    }
+
+    .inq-form-label,
+    .inq-form-input,
+    .inq-form-select,
+    .inq-form-textarea {
+        font-size: 13px;
+    }
+}
