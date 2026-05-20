@@ -62,7 +62,7 @@ export default function JoinForm() {
       return;
     }
     try{
-      const data = await apiCall(`/v1/auth/check-id/${value}`, "GET", null, null, false);
+      const data = await apiCall(`/v1/checkid/${value}`, "GET", null, null, false);
       if(data.idUse === "T"){
         setIdCheckMsg(data.message);
         setIdCheckOk(true);

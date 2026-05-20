@@ -340,6 +340,19 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                     </li>
 
+                    {/* join */}
+                    <li>
+
+                        <Link to="/v1/auth/join">
+
+                            <Sparkles size={17} />
+
+                            join
+
+                        </Link>
+
+                    </li>
+
                 </ul>
 
             </nav>
