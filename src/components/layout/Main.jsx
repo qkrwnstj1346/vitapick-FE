@@ -6,10 +6,12 @@ import Join from '../../pages/users/Join';
 // import MyPage from '../../pages/users/MyPage';
 
 import CsMain from '../../pages/cscenter/csmain/CsMain';
-
 import NoticeList from '../../pages/cscenter/ntc/NoticeList';
 import NoticeDetail from '../../pages/cscenter/ntc/NoticeDetail';
 import NoticeForm from '../../pages/cscenter/ntc/NoticeForm';
+import FaqList from '../../pages/cscenter/faq/FaqList';
+import FaqDetail from '../../pages/cscenter/faq/FaqDetail';
+import FaqForm from '../../pages/cscenter/faq/FaqForm';
 
 function Main({ token, onLogin }) {
 
@@ -35,6 +37,12 @@ function Main({ token, onLogin }) {
                 <Route path="/cscenter/notices/:ntcId" element={<NoticeDetail />} />
                 <Route path="/cscenter/notices/new" element={<NoticeForm />} />
                 <Route path="/cscenter/notices/:ntcId/edit" element={<NoticeForm />} />
+
+                {/* FAQ */}
+                <Route path="/cscenter/faqs" element={<FaqList />} />
+                <Route path="/cscenter/faqs/:faqId" element={<FaqDetail />} />
+                <Route path="/cscenter/faqs/new" element={<FaqForm />} />
+                <Route path="/cscenter/faqs/:faqId/edit" element={<FaqForm />} />
             </Routes>
         </main>
     );

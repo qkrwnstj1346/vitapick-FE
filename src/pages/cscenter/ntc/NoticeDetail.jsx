@@ -13,7 +13,9 @@ function NoticeDetail() {
 
     const [detail, setDetail] = useState(null);
 
-    const isAdmin = true;
+    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+
+    const isAdmin = loginUser?.roleCd === 'ADMIN';
 
     useEffect(() => {
 

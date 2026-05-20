@@ -1,0 +1,127 @@
+.join-wrap {
+    width: 100%;
+    min-height: calc(100vh - 160px);
+    padding: 60px 20px;
+    background-color: #F7FBF7;
+    box-sizing: border-box;
+}
+
+.join-card {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 42px 44px;
+    background-color: #fff;
+    border: 1px solid #dbeade;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(127, 175, 139, 0.16);
+}
+
+.join-card h2 {
+    margin: 0 0 32px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    color: #3f4a42;
+}
+
+.join-form>div {
+    margin-bottom: 20px;
+}
+
+.join-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #3f4a42;
+}
+
+.join-form input,
+.join-form select {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid #d6e5d9;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #333;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.join-form input:focus,
+.join-form select:focus {
+    border-color: #7FAF8B;
+    box-shadow: 0 0 0 3px rgba(127, 175, 139, 0.16);
+}
+
+.join-form input::placeholder {
+    color: #a8b5aa;
+}
+
+.join-form p {
+    margin: 7px 0 0;
+    font-size: 13px;
+}
+
+.join-form>div:first-child>div {
+    display: flex;
+    gap: 8px;
+}
+
+.join-form>div:first-child input {
+    flex: 1;
+}
+
+.join-form>div:first-child button {
+    width: 96px;
+    height: 46px;
+    border: none;
+    border-radius: 10px;
+    background-color: #AFCBB1;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.join-form>div:first-child button:hover {
+    background-color: #7FAF8B;
+}
+
+.join-form>button[type="submit"] {
+    width: 100%;
+    height: 50px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 12px;
+    background-color: #7FAF8B;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.join-form>button[type="submit"]:hover {
+    background-color: #6c9f78;
+}
+
+.join-form>button[type="submit"]:disabled {
+    background-color: #bfd4c1;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .join-card {
+        padding: 34px 24px;
+    }
+
+    .join-form>div:first-child>div {
+        flex-direction: column;
+    }
+
+    .join-form>div:first-child button {
+        width: 100%;
+    }
+}

@@ -11,8 +11,9 @@ function NoticeList() {
     const navigate = useNavigate();
     const [noticeList, setNoticeList] = useState([]);
 
-    const isAdmin = true;
+    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
+    const isAdmin = loginUser?.roleCd === 'ADMIN';
     useEffect(() => {
 
         const api = isAdmin ? getAdminNoticeList : getNoticeList;
@@ -27,7 +28,7 @@ function NoticeList() {
                 alert('공지사항 조회 실패');
             });
 
-    }, []);
+    }, [isAdmin]);
 
     return (
         <div className="cs-notice-wrap">

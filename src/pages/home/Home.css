@@ -5,7 +5,6 @@
     font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
 }
 
-
 /* 메인 배너 전체 영역 */
 .heroSection {
     max-width: 1200px;
@@ -22,13 +21,11 @@
     overflow: hidden;
 }
 
-
 /* 왼쪽 텍스트 영역 */
 .heroText {
     width: 52%;
     text-align: left;
 }
-
 
 /* 작은 라벨 */
 .heroBadge {
@@ -43,7 +40,6 @@
     font-weight: 700;
 }
 
-
 /* 메인 제목 */
 .heroText h1 {
     margin: 0 0 18px 0;
@@ -54,7 +50,6 @@
     letter-spacing: -1px;
 }
 
-
 /* 설명 글 */
 .heroDesc {
     width: 430px;
@@ -64,7 +59,6 @@
     font-weight: 500;
     line-height: 1.6;
 }
-
 
 /* 설문 시작 버튼 */
 .heroButton {
@@ -80,13 +74,11 @@
     transition: all 0.25s;
 }
 
-
 /* 버튼 hover */
 .heroButton:hover {
     background-color: #6FA57C;
     transform: translateY(-2px);
 }
-
 
 /* 오른쪽 이미지 영역 */
 .heroImage {
@@ -96,7 +88,6 @@
     justify-content: center;
     align-items: center;
 }
-
 
 /* 챗봇 이미지 */
 .heroImage img {
@@ -108,9 +99,9 @@
     animation: floatChatbot 3s ease-in-out infinite;
 }
 
-
 /* 챗봇 둥둥 애니메이션 */
 @keyframes floatChatbot {
+
     0% {
         transform: translateY(0);
     }
@@ -122,7 +113,6 @@
     100% {
         transform: translateY(0);
     }
-
 }
 
 /* 메인 배너 영역 */
@@ -245,6 +235,51 @@
     font-weight: 800;
 }
 
+/* 챗봇 플로팅 버튼 */
+.chatbotFloatingBtn {
+    position: fixed;
+    right: calc((100vw - 1200px) / 2 - 180px);
+    top: 400px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+    z-index: 999;
+
+    transition: all 0.25s ease;
+}
+
+/* 챗봇 hover */
+.chatbotFloatingBtn:hover {
+    transform: translateY(-6px);
+}
+
+/* 챗봇 이미지 */
+.chatbotFloatingBtn img {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 18px rgba(127, 175, 139, 0.28));
+}
+
+/* 챗봇 텍스트 */
+.chatbotFloatingText {
+    margin: 0;
+    padding: 8px 16px;
+
+    background-color: #7FAF8B;
+    border-radius: 999px;
+
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    line-height: 1;
+}
 
 /* 태블릿 화면 */
 @media (max-width: 1024px) {
@@ -281,8 +316,25 @@
     .productList {
         grid-template-columns: repeat(3, 1fr);
     }
-}
 
+    /* 플로팅 챗봇 */
+    .chatbotFloatingBtn {
+        right: 20px;
+        top: 300px;
+    }
+
+    /* 플로팅 챗봇 이미지 */
+    .chatbotFloatingBtn img {
+        width: 92px;
+        height: 92px;
+    }
+
+    /* 플로팅 챗봇 텍스트 */
+    .chatbotFloatingText {
+        font-size: 14px;
+        padding: 7px 14px;
+    }
+}
 
 /* 모바일 화면 */
 @media (max-width: 768px) {
@@ -404,8 +456,25 @@
     .productCard strong {
         font-size: 16px;
     }
-}
 
+    /* 플로팅 챗봇 */
+    .chatbotFloatingBtn {
+        right: 14px;
+        top: 180px;
+    }
+
+    /* 플로팅 챗봇 이미지 */
+    .chatbotFloatingBtn img {
+        width: 78px;
+        height: 78px;
+    }
+
+    /* 플로팅 챗봇 텍스트 */
+    .chatbotFloatingText {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+}
 
 /* 작은 모바일 화면 */
 @media (max-width: 480px) {
@@ -423,5 +492,23 @@
     /* 메인 배너 높이 */
     .mainBanner {
         height: 150px;
+    }
+
+    /* 플로팅 챗봇 */
+    .chatbotFloatingBtn {
+        right: 10px;
+        top: 160px;
+    }
+
+    /* 플로팅 챗봇 이미지 */
+    .chatbotFloatingBtn img {
+        width: 66px;
+        height: 66px;
+    }
+
+    /* 플로팅 챗봇 텍스트 */
+    .chatbotFloatingText {
+        font-size: 12px;
+        padding: 5px 10px;
     }
 }
