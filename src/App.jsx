@@ -3,7 +3,6 @@ import './App.css';
 import React, { useEffect, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-//testtesttest
 
 import {
     apiCall,
@@ -16,6 +15,8 @@ import Header from './components/layout/Header';
 import Main from './components/layout/Main';
 import Footer from './components/layout/Footer';
 
+import Chatbot from './pages/chatbot/Chatbot';
+
 function App() {
 
     const navigate = useNavigate();
@@ -25,6 +26,9 @@ function App() {
 
     // 회원 정보
     const [userInfo, setUserInfo] = useState(null);
+
+    // 챗봇 열림/닫힘
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     // 로그인 상태 확인
     useEffect(() => {
@@ -142,6 +146,27 @@ function App() {
             />
 
             <Footer />
+
+
+        {/* 모든 페이지에서 보이는 플로팅 버튼 */}
+        <div className="chatbotFloatingBtn" onClick={() => {
+            if (isLoggedIn) {
+                setIsChatOpen(prev => !prev);
+            } else {
+                navigate('/v1/auth/login');
+            }
+        }}>
+            <img src="/images/VitaPick_ChatBot_Logo.png" alt="챗봇" />
+            <p className="chatbotFloatingText">ChatBot</p>
+        </div>
+
+        {/* 챗봇 팝업 */}
+        {isChatOpen && (
+            <Chatbot
+                onClose={() => setIsChatOpen(false)}
+                userInfo={userInfo}
+            />
+        )}
 
         </div>
 

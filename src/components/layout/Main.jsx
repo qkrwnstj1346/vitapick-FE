@@ -16,6 +16,8 @@ import FaqForm from '../../pages/cscenter/faq/FaqForm';
 
 import InquiryList from '../../pages/cscenter/inq/InquiryList';
 
+import Chatbot from '../../pages/chatbot/Chatbot';
+
 
 function Main({ token, onLogin }) {
 
@@ -50,6 +52,9 @@ function Main({ token, onLogin }) {
 
                 {/* 1:1 문의 */}
                 <Route path="/cscenter/inq" element={<InquiryList />} />
+
+                {/* 챗봇 */}
+                <Route path="/chatbot" element={<Chatbot />} />
 
             </Routes>
         </main>
