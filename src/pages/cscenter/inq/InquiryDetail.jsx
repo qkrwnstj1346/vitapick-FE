@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import {
-    getInquiryDetail,
-    deleteInquiry,
-    answerInquiry
+    getInqDetail,
+    getMyInqDetail,
+    deleteInq,
+    updateInq,
+    answerInq
 } from '../../../service/cscenter/csCenterApi';
 
 import './InquiryDetail.css';
@@ -33,7 +35,9 @@ function InquiryDetail() {
 
         try {
 
-            const response = await getInquiryDetail(inqId);
+            const response = isAdmin
+                ? await getInqDetail(inqId)
+                : await getMyInqDetail(inqId, loginUser.userNum);
 
             setInquiry(response.data);
 
@@ -59,7 +63,7 @@ function InquiryDetail() {
 
         try {
 
-            await deleteInquiry(inqId, loginUser.userNum);
+            await deleteInq(inqId, loginUser.userNum);
 
             alert('문의가 삭제되었습니다.');
 
@@ -84,9 +88,7 @@ function InquiryDetail() {
 
         try {
 
-            await answerInquiry(inqId, {
-                ansTxt: answerText
-            });
+            await answerInq(inqId, answerText);
 
             alert('답변이 등록되었습니다.');
 
