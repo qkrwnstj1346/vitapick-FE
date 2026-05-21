@@ -19,6 +19,7 @@ import InquiryDetail from '../../pages/cscenter/inq/InquiryDetail';
 import InquiryForm from '../../pages/cscenter/inq/InquiryForm';
 
 import Chatbot from '../../pages/chatbot/Chatbot';
+import ProductList from '../../pages/products/ProductList';
 
 function Main({ token, onLogin }) {
 
@@ -62,7 +63,10 @@ function Main({ token, onLogin }) {
                 <Route path="/cscenter/inquiries/:inqId" element={<InquiryDetail />} />
                 <Route path="/cscenter/inquiries/new" element={<InquiryForm />} />
                 <Route path="/cscenter/inquiries/:inqId/edit" element={<InquiryForm />} />
-
+                
+                {/* 상품 목록 */}
+                <Route path="/products/:catCd" element={<ProductList />} />
+                
                 {/* 챗봇 */}
                 <Route path="/chatbot" element={<Chatbot />} />
 

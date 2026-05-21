@@ -76,30 +76,30 @@ const Chatbot = ({ onClose, userInfo }) => {
     };
 
     return (
-        <div className='chatpopup_container'>
+        <div className='chatPopup_container'>
 
             {/* 헤더 */}
-            <div className='chatpopup_header'>
-                <img src='/images/VitaPick_ChatBot_Logo.png' alt='챗봇' className='chatpopup_logo' />
+            <div className='chatPopup_header'>
+                <img src='/images/VitaPick_ChatBot_Logo.png' alt='챗봇' className='chatPopup_logo' />
                 <h3>VitaPick AI 챗봇</h3>
-                <button className='chatpopup_close' onClick={onClose}>✕</button>
+                <button className='chatPopup_close' onClick={onClose}>✕</button>
             </div>
 
             {/* 메시지 목록 */}
-            <div className='chatpopup_messages'>
+            <div className='chatPopup_messages'>
                 {messages.map((msg, idx) => (
-                    <div key={idx} className={msg.senderCd === 'USER' ? 'chatpopup_msg_user' : 'chatpopup_msg_ai'}>
+                    <div key={idx} className={msg.senderCd === 'USER' ? 'chatPopup_msg_user' : 'chatPopup_msg_ai'}>
 
                         {/* 텍스트 말풍선 */}
-                        <div className='chatpopup_bubble'>
+                        <div className='chatPopup_bubble'>
                             {msg.msgTxt}
                         </div>
 
                         {/* 추천 상품 이미지 카드 */}
                         {msg.products && msg.products.length > 0 && (
-                            <div className='chatpopup_prd_list'>
+                            <div className='chatPopup_prd_list'>
                                 {msg.products.map((prd, pIdx) => (
-                                    <div key={pIdx} className='chatpopup_prd_card'>
+                                    <div key={pIdx} className='chatPopup_prd_card'>
                                         <img src={prd.thumbImgUrl} alt={prd.prdNm} />
                                         <p>{prd.prdNm}</p>
                                         <strong>{prd.price.toLocaleString()}원</strong>
@@ -111,8 +111,8 @@ const Chatbot = ({ onClose, userInfo }) => {
                     </div>
                 ))}
                 {loading && (
-                    <div className='chatpopup_msg_ai'>
-                        <div className='chatpopup_bubble'>
+                    <div className='chatPopup_msg_ai'>
+                        <div className='chatPopup_bubble'>
                             답변을 생성 중입니다...
                         </div>
                     </div>
@@ -120,16 +120,16 @@ const Chatbot = ({ onClose, userInfo }) => {
             </div>
 
             {/* 입력창 */}
-            <div className='chatpopup_input'>
+            <div className='chatPopup_input'>
                 <textarea
-                    className='chatpopup_textarea'
+                    className='chatPopup_textarea'
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder='증상을 입력하세요 (예: 요즘 너무 피곤해요)'
                     rows={2}
                 />
-                <button className='chatpopup_btn' onClick={handleSend} disabled={loading}>
+                <button className='chatPopup_btn' onClick={handleSend} disabled={loading}>
                     전송
                 </button>
             </div>

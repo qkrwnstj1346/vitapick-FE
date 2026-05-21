@@ -272,17 +272,17 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
                         {/* 드롭다운 */}
                         <div className="categoryDropdown">
 
-                            <Link to="/">종합영양</Link>
-
-                            <Link to="/">유산균</Link>
-
-                            <Link to="/">비타민</Link>
-
-                            <Link to="/">오메가3</Link>
-
-                            <Link to="/">미네랄</Link>
-
-                            <Link to="/">뷰티/다이어트</Link>
+                            <Link to="/products/6">종합영양</Link>
+                            
+                            <Link to="/products/1">유산균</Link>
+                            
+                            <Link to="/products/2">비타민</Link>
+                            
+                            <Link to="/products/3">오메가3</Link>
+                            
+                            <Link to="/products/4">미네랄</Link>
+                            
+                            <Link to="/products/5">뷰티/다이어트</Link>
 
                         </div>
 
