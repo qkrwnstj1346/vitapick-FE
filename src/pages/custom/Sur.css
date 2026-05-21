@@ -1,0 +1,389 @@
+/* ─── sur.css ── 영양제 추천 설문 스타일 ─────────────────────────────────── */
+
+/* ── 전체 래퍼 ────────────────────────────────────────────────────────────── */
+.sur-wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px 16px 80px;
+  font-family: "Noto Sans KR", sans-serif;
+  color: #222;
+}
+
+/* ── 상단 헤더 ────────────────────────────────────────────────────────────── */
+.sur-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.sur-header__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d7a4f;
+  margin: 0 0 8px;
+}
+.sur-header__sub {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+}
+
+/* ── 진행 바 ──────────────────────────────────────────────────────────────── */
+.sur-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 32px;
+}
+
+.sur-progress__item {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+
+.sur-progress__circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e8f5ee;
+  border: 2px solid #b2d8c2;
+  color: #888;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+  z-index: 1;
+}
+
+.sur-progress__circle.current {
+  background: #2d7a4f;
+  border-color: #2d7a4f;
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(45, 122, 79, 0.18);
+}
+
+.sur-progress__circle.done {
+  background: #5cb88a;
+  border-color: #5cb88a;
+  color: #fff;
+}
+
+.sur-progress__label {
+  font-size: 0.78rem;
+  color: #888;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.sur-progress__item:has(.current) .sur-progress__label {
+  color: #2d7a4f;
+  font-weight: 700;
+}
+
+.sur-progress__line {
+  width: 56px;
+  height: 2px;
+  background: #d4eddf;
+  margin: 0 4px;
+  transition: background 0.3s;
+}
+
+.sur-progress__line.done {
+  background: #5cb88a;
+}
+
+/* ── 카드 ─────────────────────────────────────────────────────────────────── */
+.sur-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e0efe8;
+  box-shadow: 0 4px 20px rgba(45, 122, 79, 0.07);
+  padding: 36px 32px;
+}
+
+/* ── 섹션 제목 ────────────────────────────────────────────────────────────── */
+.sur-section__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2d7a4f;
+  border-left: 4px solid #2d7a4f;
+  padding-left: 12px;
+  margin: 0 0 28px;
+}
+
+/* ── 필드 ─────────────────────────────────────────────────────────────────── */
+.sur-field {
+  margin-bottom: 28px;
+}
+
+.sur-field--row {
+  display: flex;
+  gap: 16px;
+}
+
+.sur-field__half {
+  flex: 1;
+}
+
+.sur-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.sur-required {
+  color: #e05252;
+  margin-left: 2px;
+}
+
+.sur-hint {
+  font-size: 0.82rem;
+  color: #888;
+  margin: 0 0 10px;
+}
+
+/* ── 입력 ─────────────────────────────────────────────────────────────────── */
+.sur-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #cde3d6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  background: #fafffe;
+}
+
+.sur-input:focus {
+  border-color: #2d7a4f;
+}
+
+.sur-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #cde3d6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  background: #fafffe;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232d7a4f' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: border-color 0.2s;
+}
+
+.sur-select:focus {
+  border-color: #2d7a4f;
+}
+
+/* ── 라디오 그룹 ──────────────────────────────────────────────────────────── */
+.sur-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sur-radio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: 1.5px solid #cde3d6;
+  border-radius: 24px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #fafffe;
+  color: #444;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  user-select: none;
+}
+
+.sur-radio-btn input[type="radio"] {
+  display: none;
+}
+
+.sur-radio-btn.selected {
+  background: #2d7a4f;
+  border-color: #2d7a4f;
+  color: #fff;
+  font-weight: 600;
+}
+
+.sur-radio-btn:hover:not(.selected) {
+  border-color: #5cb88a;
+  background: #edf7f1;
+}
+
+/* ── 멀티 체크 그룹 ───────────────────────────────────────────────────────── */
+.sur-multi-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.sur-check-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: 1.5px solid #cde3d6;
+  border-radius: 24px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #fafffe;
+  color: #444;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  user-select: none;
+}
+
+.sur-check-btn input[type="checkbox"] {
+  display: none;
+}
+
+.sur-check-btn.selected {
+  background: #2d7a4f;
+  border-color: #2d7a4f;
+  color: #fff;
+  font-weight: 600;
+}
+
+.sur-check-btn:hover:not(.selected) {
+  border-color: #5cb88a;
+  background: #edf7f1;
+}
+
+.sur-etc-input {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 12px;
+  border: 1.5px solid #cde3d6;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  background: #fafffe;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  flex-basis: 100%;
+}
+
+.sur-etc-input:focus {
+  border-color: #2d7a4f;
+}
+
+/* ── BMI 뱃지 ─────────────────────────────────────────────────────────────── */
+.sur-bmi {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #edf7f1;
+  border: 1.5px solid #b2d8c2;
+  border-radius: 10px;
+  padding: 8px 18px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.sur-bmi__value {
+  font-weight: 700;
+  color: #2d7a4f;
+}
+
+.sur-bmi__label {
+  color: #555;
+  font-size: 0.85rem;
+}
+
+/* ── 에러 메시지 ──────────────────────────────────────────────────────────── */
+.sur-error {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: #e05252;
+}
+
+/* ── 버튼 ─────────────────────────────────────────────────────────────────── */
+.sur-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  gap: 12px;
+}
+
+.sur-btn {
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.sur-btn:active {
+  transform: scale(0.97);
+}
+
+.sur-btn--prev {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.sur-btn--prev:hover {
+  background: #e0e0e0;
+}
+
+.sur-btn--next {
+  margin-left: auto;
+  background: #2d7a4f;
+  color: #fff;
+}
+
+.sur-btn--next:hover {
+  background: #245f3e;
+}
+
+.sur-btn--submit {
+  margin-left: auto;
+  background: #2d7a4f;
+  color: #fff;
+  padding: 12px 40px;
+  font-size: 1.05rem;
+}
+
+.sur-btn--submit:hover:not(:disabled) {
+  background: #245f3e;
+}
+
+.sur-btn--submit:disabled {
+  background: #9ecdb4;
+  cursor: not-allowed;
+}
+
+/* ── 반응형 ───────────────────────────────────────────────────────────────── */
+@media (max-width: 500px) {
+  .sur-card {
+    padding: 24px 16px;
+  }
+
+  .sur-field--row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .sur-progress__label {
+    display: none;
+  }
+
+  .sur-progress__line {
+    width: 32px;
+  }
+}

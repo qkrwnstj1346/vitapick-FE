@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
-function Home() {
+function Home({isLoggedIn}) {
+    const navigate = useNavigate();
 
     return (
         <main className="home">
@@ -30,10 +32,17 @@ function Home() {
                         간단한 설문으로 내 건강 상태에 맞는 영양제를 추천받아보세요.
                     </p>
 
-                    <button className="heroButton">
+                    <button className="heroButton" onClick={()=>{
+                        if(!isLoggedIn){
+                            navigate('/v1/auth/login');
+                        }else{
+                            navigate('/v1/sur/save');
+                        }
+                    }}>
                         설문 시작하기
                     </button>
 
+                    
                 </div>
 
                 <div className="heroImage">
