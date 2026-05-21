@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Login from '../../pages/users/Login';
 import Home from '../../pages/home/Home';
 import Join from '../../pages/users/Join';
+import Sur from '../../pages/custom/Sur';
 // import MyPage from '../../pages/users/MyPage';
 
 import CsMain from '../../pages/cscenter/csmain/CsMain';
@@ -21,12 +22,12 @@ import InquiryForm from '../../pages/cscenter/inq/InquiryForm';
 import Chatbot from '../../pages/chatbot/Chatbot';
 import ProductList from '../../pages/products/ProductList';
 
-function Main({ token, onLogin }) {
+function Main({ token, onLogin, isLoggedIn  }) {
 
     return (
         <main>
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
 
                 <Route
                     path="/v1/auth/login"
@@ -69,7 +70,9 @@ function Main({ token, onLogin }) {
                 
                 {/* 챗봇 */}
                 <Route path="/chatbot" element={<Chatbot />} />
-
+                
+                {/*설문 작성*/}
+                <Route path="/v1/sur/save" element={<Sur />} />
             </Routes>
         </main>
     );

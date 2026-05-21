@@ -143,6 +143,7 @@ function App() {
             <Main
                 token={getToken()}
                 onLogin={onLogin}
+                isLoggedIn={isLoggedIn}
             />
 
             <Footer />
