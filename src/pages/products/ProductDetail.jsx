@@ -10,6 +10,8 @@ const ProductDetail = () => {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('desc');
     const [wished, setWished] = useState(false);
+    const [quantity, setQuantity] = useState(1);
+    const [descExpanded, setDescExpanded] = useState(false);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -48,17 +50,24 @@ const ProductDetail = () => {
 
                     <div className='detail_btns'>
 
+                        {/* 장바구니 버튼 */}
+                        <button className='detail_cart_btn'>
+                            장바구니 담기
+                        </button>
+
+                        {/* 구매하기 버튼 */}
+                            <button className='detail_buy_btn'>
+                                바로 구매하기
+                            </button>
+
+                        
+
                         {/* 찜하기 버튼 */}
                         <button
                             className={`detail_wish_btn ${wished ? 'wished' : ''}`}
                             onClick={() => setWished(prev => !prev)}
                         >
                             {wished ? '♥ 찜완료' : '♡ 찜하기'}
-                        </button>
-
-                        {/* 장바구니 버튼 */}
-                        <button className='detail_cart_btn'>
-                            장바구니 담기
                         </button>
 
                     </div>
@@ -87,10 +96,23 @@ const ProductDetail = () => {
 
                 {/* 상품설명 */}
                 {activeTab === 'desc' && (
-                    <div className='detail_desc'>
-                        <img src={`/images/prd_desc_${prdId}.jpg`} alt='상품설명' />
+                    <div className={`detail_desc ${descExpanded ? 'expanded' : ''}`}>
+                        <img src={prd.detailImgUrl} alt='상품설명' />
+                        {!descExpanded ? (
+                            <div className='detail_desc_more'>
+                                <button onClick={() => setDescExpanded(true)}>
+                                    상품설명 더보기 ∨
+                                </button>
+                            </div>
+                        ) : (
+                            <div className='detail_desc_close'>
+                                <button onClick={() => setDescExpanded(false)}>
+                                    상품설명 접기 ∧
+                                </button>
+                            </div>
+                        )}
                     </div>
-                )}
+            )}
 
                 {/* 상품평 */}
                 {activeTab === 'rvw' && (

@@ -78,26 +78,6 @@
     gap: 12px;
 }
 
-/* 찜하기 버튼 */
-.detail_wish_btn {
-    width: 140px;
-    height: 52px;
-    border: 2px solid #ddd;
-    border-radius: 14px;
-    background-color: #ffffff;
-    color: #666;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-/* 찜하기 활성화 */
-.detail_wish_btn.wished {
-    border-color: #ff4d4d;
-    color: #ff4d4d;
-    background-color: #fff5f5;
-}
 
 /* 장바구니 버튼 */
 .detail_cart_btn {
@@ -125,6 +105,25 @@
     margin-bottom: 40px;
 }
 
+/* 구매하기 버튼 */
+.detail_buy_btn {
+    flex: 1;
+    height: 52px;
+    border: none;
+    border-radius: 14px;
+    background-color: #17251c;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.detail_buy_btn:hover {
+    background-color: #2d3f35;
+    transform: translateY(-1px);
+}
+
 .detail_tabs button {
     padding: 16px 32px;
     border: none;
@@ -136,6 +135,27 @@
     transition: all 0.2s ease;
 }
 
+/* 찜하기 버튼 */
+.detail_wish_btn {
+    width: 140px;
+    height: 52px;
+    border: 2px solid #ddd;
+    border-radius: 14px;
+    background-color: #ffffff;
+    color: #666;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 찜하기 활성화 */
+.detail_wish_btn.wished {
+    border-color: #ff4d4d;
+    color: #ff4d4d;
+    background-color: #fff5f5;
+}
+
 /* 탭 활성화 */
 .detail_tabs .tab_active {
     color: #7FAF8B;
@@ -144,10 +164,63 @@
     font-weight: 800;
 }
 
+/* 상품설명 영역 */
+.detail_desc {
+    position: relative;
+    overflow: hidden;
+    max-height: 500px;
+}
+
 /* 상품설명 이미지 */
 .detail_desc img {
     width: 100%;
     display: block;
+}
+
+/* 더보기 버튼 영역 */
+.detail_desc_more {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 80px 0 20px;
+    background: linear-gradient(transparent, #ffffff);
+    text-align: center;
+}
+
+/* 더보기 버튼 */
+.detail_desc_more button {
+    padding: 12px 32px;
+    border: 1px solid #7FAF8B;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #7FAF8B;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* 더보기 눌렀을 때 전체 보이기 */
+.detail_desc.expanded {
+    max-height: none;
+}
+
+/* 접기 버튼 영역 */
+.detail_desc_close {
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* 접기 버튼 */
+.detail_desc_close button {
+    padding: 12px 32px;
+    border: 1px solid #7FAF8B;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #7FAF8B;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
 }
 
 /* 상품평 */

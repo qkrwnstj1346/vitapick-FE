@@ -188,6 +188,17 @@
     border-radius: 24px;
     box-shadow: 0 10px 24px rgba(127, 175, 139, 0.12);
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+/* 가격을 카드 맨 아래에 고정 */
+.productCard strong {
+    margin-top: auto;
+    color: #17251c;
+    font-size: 18px;
+    font-weight: 800;
 }
 
 /* 추천상품 이미지 임시 영역 */

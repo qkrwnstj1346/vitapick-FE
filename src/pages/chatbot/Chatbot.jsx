@@ -18,25 +18,24 @@ const Chatbot = ({ onClose, userInfo }) => {
     // GPT 응답에서 상품ID 뽑아서 상품 정보 가져오기
     const findPrdImages = async (msgTxt) => {
 
-        // 텍스트에서 상품ID만 꺼내기
-        const prdIds = [];
-        const regex = /상품ID:\s*(\d+)/g;
-        let match = regex.exec(msgTxt);
-        while (match !== null) {
-            prdIds.push(match[1]);
-            match = regex.exec(msgTxt);
+    // 텍스트를 줄 단위로 쪼개서 상품ID 찾기
+    const prdIds = [];
+    const lines = msgTxt.split('\n');
+    for (const line of lines) {
+        if (line.includes('상품ID:')) {
+            const id = line.split('상품ID:')[1].split('/')[0].trim();
+            if (id) prdIds.push(id);
         }
+    }
 
-        // 상품ID마다 상품 정보 가져오기
-        const token = getToken();
-        const results = [];
+    // 상품ID마다 상품 정보 가져오기
+    const token = getToken();
+    const results = [];
         for (const id of prdIds) {
             const data = await apiCall(`/api/v1/product/detail/${id}`, 'GET', null, token, false);
-            if (data !== null) {
-                results.push(data);
-            }
-        }
-        return results;
+            if (data !== null) results.push(data);
+    }
+    return results;
     };
 
     // 전송 버튼 눌렀을 때
@@ -99,7 +98,7 @@ const Chatbot = ({ onClose, userInfo }) => {
 
                         {/* 텍스트 말풍선 */}
                         <div className='chatPopup_bubble'>
-                            {msg.msgTxt.replace(/상품ID:\s*\d+\s*\/\s*/g, '')}
+                            {msg.msgTxt.split('\n').filter(line => !line.includes('상품ID:')).join('\n')}
                         </div>
 
                         {/* 추천 상품 이미지 카드 */}

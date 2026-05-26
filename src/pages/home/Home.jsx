@@ -1,8 +1,37 @@
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
+import { useState, useEffect } from 'react';
+import { apiCall, getToken } from '../../service/apiService';
 
 function Home({isLoggedIn}) {
     const navigate = useNavigate();
+
+    // 홈에 보여줄 상품 목록
+    const [prdList, setPrdList] = useState([]);
+
+    // 페이지 열릴 때 카테고리별 상품 1개씩 가져오기
+    useEffect(() => {
+        const token = getToken();
+
+        const categories = [
+            { catCd: 6, name: '종합영양' },
+            { catCd: 1, name: '유산균' },
+            { catCd: 2, name: '비타민' },
+            { catCd: 3, name: '오메가3' },
+            { catCd: 4, name: '미네랄' },
+        ];
+
+        const fetchPrds = async () => {
+            const result = [];
+            for (const cat of categories) {
+                const data = await apiCall(`/api/v1/product/list/category/${cat.catCd}`, 'GET', null, token, false);
+                result.push({ ...data[0], catName: cat.name });
+            }
+            setPrdList(result);
+        };
+
+        fetchPrds();
+    }, []);
 
     return (
         <main className="home">
@@ -61,43 +90,33 @@ function Home({isLoggedIn}) {
                     <h2>지금 가장 인기있는 영양제</h2>
                     <p>상품 데이터 연결 전까지 임시 상품 카드로 영역을 잡아둡니다.</p>
                 </div>
+
                 <div className="productList">
-                    <div className="productCard">
-                        <div className="productImage">상품 이미지</div>
-                        <p className="productCategory">비타민</p>
-                        <h3>멀티비타민</h3>
-                        <p className="productDesc">하루 건강 밸런스를 위한 기본 영양제</p>
-                        <strong>29,000원</strong>
-                    </div>
-                    <div className="productCard">
-                        <div className="productImage">상품 이미지</div>
-                        <p className="productCategory">오메가3</p>
-                        <h3>오메가3 플러스</h3>
-                        <p className="productDesc">혈행 건강을 위한 데일리 케어</p>
-                        <strong>34,000원</strong>
-                    </div>
-                    <div className="productCard">
-                        <div className="productImage">상품 이미지</div>
-                        <p className="productCategory">마그네슘</p>
-                        <h3>마그네슘 케어</h3>
-                        <p className="productDesc">피로 관리와 편안한 휴식을 위한 영양제</p>
-                        <strong>22,000원</strong>
-                    </div>
-                    <div className="productCard">
-                        <div className="productImage">상품 이미지</div>
-                        <p className="productCategory">비타민D</p>
-                        <h3>비타민D 데일리</h3>
-                        <p className="productDesc">햇빛이 부족한 날을 위한 데일리 보충</p>
-                        <strong>18,000원</strong>
-                    </div>
-                    <div className="productCard">
-                        <div className="productImage">상품 이미지</div>
-                        <p className="productCategory">유산균</p>
-                        <h3>프로바이오틱스</h3>
-                        <p className="productDesc">장 건강을 위한 가벼운 하루 루틴</p>
-                        <strong>31,000원</strong>
-                    </div>
+                    {/* 카테고리별 대표 상품 1개씩 보여주기 */}
+                    {prdList.map((prd) => (
+                        // 상품 카드 - 클릭하면 상품 상세 페이지로 이동
+                        <div
+                            key={prd.prdId}
+                            className="productCard"
+                            onClick={() => navigate(`/products/detail/${prd.prdId}`)}
+                        >
+                    {/* 상품 썸네일 이미지 */}
+                    <img src={prd.thumbImgUrl} alt={prd.prdNm} className="productImage" />
+
+                    {/* 카테고리 이름 */}
+                    <p className="productCategory">{prd.catName}</p>
+
+                    {/* 상품명 */}
+                    <h3>{prd.prdNm}</h3>
+
+                    {/* 상품 설명 */}
+                    <p className="productDesc">{prd.descTxt}</p>
+
+                    {/* 가격 */}
+                    <strong>{prd.price.toLocaleString()}원</strong>
                 </div>
+            ))}
+        </div>
             </section>
 
             

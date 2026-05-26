@@ -22,6 +22,8 @@ import InquiryForm from '../../pages/cscenter/inq/InquiryForm';
 import Chatbot from '../../pages/chatbot/Chatbot';
 import ProductList from '../../pages/products/ProductList';
 
+import ProductDetail from '../../pages/products/ProductDetail';
+
 function Main({ token, onLogin, isLoggedIn  }) {
 
     return (
@@ -67,6 +69,9 @@ function Main({ token, onLogin, isLoggedIn  }) {
                 
                 {/* 상품 목록 */}
                 <Route path="/products/:catCd" element={<ProductList />} />
+
+                {/* 상품 상세 */}
+                <Route path="/products/detail/:prdId" element={<ProductDetail />} />
                 
                 {/* 챗봇 */}
                 <Route path="/chatbot" element={<Chatbot />} />
