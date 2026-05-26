@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { apiCall, getToken } from '../../service/apiService';
 import './Chatbot.css';
 
@@ -15,20 +15,28 @@ const Chatbot = ({ onClose, userInfo }) => {
     // 로딩 상태
     const [loading, setLoading] = useState(false);
 
-    // 상품 목록 (이미지 찾기용)
-    const [prdList, setPrdList] = useState([]);
+    // GPT 응답에서 상품ID 뽑아서 상품 정보 가져오기
+    const findPrdImages = async (msgTxt) => {
 
-    // 페이지 열릴 때 상품 목록 가져오기
-    useEffect(() => {
+        // 텍스트에서 상품ID만 꺼내기
+        const prdIds = [];
+        const regex = /상품ID:\s*(\d+)/g;
+        let match = regex.exec(msgTxt);
+        while (match !== null) {
+            prdIds.push(match[1]);
+            match = regex.exec(msgTxt);
+        }
+
+        // 상품ID마다 상품 정보 가져오기
         const token = getToken();
-        apiCall('/api/v1/product/list/img', 'GET', null, token, false)
-            .then(data => setPrdList(data))
-            .catch(err => console.error('상품 목록 오류:', err));
-    }, []);
-
-    // GPT 응답에서 상품명 추출해서 이미지 찾기
-    const findPrdImages = (msgTxt) => {
-        return prdList.filter(prd => msgTxt.includes(prd.prdNm));
+        const results = [];
+        for (const id of prdIds) {
+            const data = await apiCall(`/api/v1/product/detail/${id}`, 'GET', null, token, false);
+            if (data !== null) {
+                results.push(data);
+            }
+        }
+        return results;
     };
 
     // 전송 버튼 눌렀을 때
@@ -50,8 +58,8 @@ const Chatbot = ({ onClose, userInfo }) => {
                 false
             );
 
-            // GPT 응답에서 상품 이미지 찾기
-            const matchedPrds = findPrdImages(result.msgTxt);
+            // GPT 응답에서 상품ID로 이미지 가져오기
+            const matchedPrds = await findPrdImages(result.msgTxt);
 
             setMessages(prev => [...prev, {
                 senderCd: 'AI',
@@ -64,7 +72,6 @@ const Chatbot = ({ onClose, userInfo }) => {
         } finally {
             setLoading(false);
         }
-
     };
 
     // 엔터 키 전송
@@ -92,7 +99,7 @@ const Chatbot = ({ onClose, userInfo }) => {
 
                         {/* 텍스트 말풍선 */}
                         <div className='chatPopup_bubble'>
-                            {msg.msgTxt}
+                            {msg.msgTxt.replace(/상품ID:\s*\d+\s*\/\s*/g, '')}
                         </div>
 
                         {/* 추천 상품 이미지 카드 */}
@@ -136,7 +143,6 @@ const Chatbot = ({ onClose, userInfo }) => {
 
         </div>
     );
-
 };
 
 export default Chatbot;
