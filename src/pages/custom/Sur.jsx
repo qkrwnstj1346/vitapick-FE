@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiCall, getLocalData, getToken } from "../../service/apiService";
 import "./sur.css";
@@ -7,7 +7,6 @@ import "./sur.css";
 
 const TOTAL_STEPS = 3;
 
-// STEP 1 선택지
 const GENDER_OPTIONS = [
   { label: "남성", value: "male" },
   { label: "여성", value: "female" },
@@ -30,7 +29,6 @@ const ACTIVITY_OPTIONS = [
   { label: "활발한 편", value: "active" },
 ];
 
-// STEP 2 선택지
 const HEALTH_STATUS_OPTIONS = [
   { label: "만성피로·무기력", value: "fatigue" },
   { label: "수면장애", value: "sleep_disorder" },
@@ -38,6 +36,7 @@ const HEALTH_STATUS_OPTIONS = [
   { label: "임신 준비중", value: "preparing_pregnancy" },
   { label: "소화불량·위장장애", value: "digestive" },
   { label: "관절통·근육통", value: "joint_muscle" },
+  { label: "없음", value: "none" },
 ];
 
 const DISEASE_OPTIONS = [
@@ -76,7 +75,6 @@ const ALLERGY_OPTIONS = [
   { label: "없음", value: "none" },
 ];
 
-// STEP 3 선택지
 const DESIRED_EFFECT_OPTIONS = [
   { label: "피로회복·에너지", value: "energy" },
   { label: "면역력 강화", value: "immunity" },
@@ -127,20 +125,18 @@ const initialAnswers = {
 
 // ─── 유틸 ────────────────────────────────────────────────────────────────────
 
-function calcBMI(height, weight) {
-  const h = parseFloat(height);
-  const w = parseFloat(weight);
-  if (!h || !w || h <= 0) return null;
-  return (w / ((h / 100) * (h / 100))).toFixed(1);
-}
-
 function toggleMulti(arr, value) {
-  return arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value];
+  if (value === "none") {
+    return arr.includes("none") ? [] : ["none"];
+  }
+  const withoutNone = arr.filter((v) => v !== "none");
+  return withoutNone.includes(value)
+    ? withoutNone.filter((v) => v !== value)
+    : [...withoutNone, value];
 }
 
 // ─── 서브 컴포넌트 ────────────────────────────────────────────────────────────
 
-/** 진행 바 */
 function ProgressBar({ step }) {
   return (
     <div className="sur-progress">
@@ -170,7 +166,6 @@ function ProgressBar({ step }) {
   );
 }
 
-/** 라디오 단일 선택 그룹 */
 function RadioGroup({ options, value, onChange }) {
   return (
     <div className="sur-radio-group">
@@ -193,7 +188,6 @@ function RadioGroup({ options, value, onChange }) {
   );
 }
 
-/** 멀티 체크 그룹 + 기타 입력 */
 function MultiCheck({ options, selected, etcValue, onChange, onEtcChange }) {
   return (
     <div className="sur-multi-group">
@@ -214,11 +208,11 @@ function MultiCheck({ options, selected, etcValue, onChange, onEtcChange }) {
         </label>
       ))}
       <label
-        className={`sur-check-btn ${etcValue !== undefined && etcValue !== "" ? "selected" : ""}`}
+        className={`sur-check-btn ${etcValue !== "" ? "selected" : ""}`}
       >
         <input
           type="checkbox"
-          checked={etcValue !== undefined && etcValue !== ""}
+          checked={etcValue !== ""}
           onChange={(e) => {
             if (!e.target.checked) onEtcChange("");
           }}
@@ -247,6 +241,15 @@ export default function Sur() {
   const [surTitle, setSurTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // ── 로그인 체크 (진입 시) ────────────────────────────────────────────────────
+  useEffect(() => {
+    const userInfo = getLocalData("userInfo");
+    if (!userInfo?.userNum) {
+      alert("로그인이 필요합니다.");
+      navigate("/v1/auth/login");
+    }
+  }, [navigate]);
 
   // ── 상태 업데이트 헬퍼 ──────────────────────────────────────────────────────
 
@@ -314,25 +317,23 @@ export default function Sur() {
     }
     if (currentStep === 2) {
       const h = answers.healthConditions;
-      if (h.currentStatus.length === 0 && !h.currentStatusEtc)
+      if (h.currentStatus.length === 0 && !h.currentStatusEtc.trim())
         newErrors.currentStatus = "현재 건강상태를 하나 이상 선택해 주세요.";
-      if (h.diseases.length === 0 && !h.diseasesEtc)
+      if (h.diseases.length === 0 && !h.diseasesEtc.trim())
         newErrors.diseases = "지병을 하나 이상 선택해 주세요.";
-      if (h.medications.length === 0 && !h.medicationsEtc)
+      if (h.medications.length === 0 && !h.medicationsEtc.trim())
         newErrors.medications = "복용 중인 약을 하나 이상 선택해 주세요.";
-      if (h.currentSupplements.length === 0 && !h.currentSupplementsEtc)
-        newErrors.currentSupplements =
-          "복용 중인 영양제를 하나 이상 선택해 주세요.";
-      if (h.allergies.length === 0 && !h.allergiesEtc)
+      if (h.currentSupplements.length === 0 && !h.currentSupplementsEtc.trim())
+        newErrors.currentSupplements = "복용 중인 영양제를 하나 이상 선택해 주세요.";
+      if (h.allergies.length === 0 && !h.allergiesEtc.trim())
         newErrors.allergies = "알러지를 하나 이상 선택해 주세요.";
     }
     if (currentStep === 3) {
       const r = answers.requirements;
-      if (r.desiredEffects.length === 0 && !r.desiredEffectsEtc)
+      if (r.desiredEffects.length === 0 && !r.desiredEffectsEtc.trim())
         newErrors.desiredEffects = "원하는 효과를 하나 이상 선택해 주세요.";
-      if (r.interestedSupplements.length === 0 && !r.interestedSupplementsEtc)
-        newErrors.interestedSupplements =
-          "관심 영양제를 하나 이상 선택해 주세요.";
+      if (r.interestedSupplements.length === 0 && !r.interestedSupplementsEtc.trim())
+        newErrors.interestedSupplements = "관심 영양제를 하나 이상 선택해 주세요.";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -356,24 +357,40 @@ export default function Sur() {
   async function handleSubmit() {
     if (!validateStep(3)) return;
 
-    const userInfo = getLocalData("userinfo");
+    const userInfo = getLocalData("userInfo");
     const userNum = userInfo?.userNum;
     if (!userNum) {
       alert("로그인이 필요합니다.");
-      navigate("/login");
+      navigate("/v1/auth/login");
       return;
     }
 
-    // ansJson 에 BMI 포함
-    const bmi = calcBMI(answers.basicInfo.height, answers.basicInfo.weight);
+    // depth 없이 플랫하게 펼쳐서 저장
     const answerPayload = {
-      ...answers,
-      basicInfo: { ...answers.basicInfo, bmi: bmi ? parseFloat(bmi) : null },
+      gender:                   answers.basicInfo.gender,
+      ageGroup:                 answers.basicInfo.ageGroup,
+      height:                   answers.basicInfo.height,
+      weight:                   answers.basicInfo.weight,
+      activityLevel:            answers.basicInfo.activityLevel,
+      currentStatus:            answers.healthConditions.currentStatus,
+      currentStatusEtc:         answers.healthConditions.currentStatusEtc,
+      diseases:                 answers.healthConditions.diseases,
+      diseasesEtc:              answers.healthConditions.diseasesEtc,
+      medications:              answers.healthConditions.medications,
+      medicationsEtc:           answers.healthConditions.medicationsEtc,
+      currentSupplements:       answers.healthConditions.currentSupplements,
+      currentSupplementsEtc:    answers.healthConditions.currentSupplementsEtc,
+      allergies:                answers.healthConditions.allergies,
+      allergiesEtc:             answers.healthConditions.allergiesEtc,
+      desiredEffects:           answers.requirements.desiredEffects,
+      desiredEffectsEtc:        answers.requirements.desiredEffectsEtc,
+      interestedSupplements:    answers.requirements.interestedSupplements,
+      interestedSupplementsEtc: answers.requirements.interestedSupplementsEtc,
     };
 
     const surDTO = {
       userNum,
-      surTitle: surTitle.trim() || null, // null이면 백엔드에서 날짜로 생성
+      surTitle: surTitle.trim() || null,
       ansJson: JSON.stringify(answerPayload),
     };
 
@@ -391,23 +408,10 @@ export default function Sur() {
     }
   }
 
-  // ── BMI 표시 ────────────────────────────────────────────────────────────────
-
-  const bmi = calcBMI(answers.basicInfo.height, answers.basicInfo.weight);
-  const bmiLabel = (() => {
-    if (!bmi) return null;
-    const b = parseFloat(bmi);
-    if (b < 18.5) return "저체중";
-    if (b < 23) return "정상";
-    if (b < 25) return "과체중";
-    return "비만";
-  })();
-
   // ── 렌더 ────────────────────────────────────────────────────────────────────
 
   return (
     <div className="sur-wrap">
-      {/* 상단 타이틀 */}
       <div className="sur-header">
         <h1 className="sur-header__title">🌿 맞춤 영양제 추천 설문</h1>
         <p className="sur-header__sub">
@@ -415,17 +419,15 @@ export default function Sur() {
         </p>
       </div>
 
-      {/* 진행 바 */}
       <ProgressBar step={step} />
 
-      {/* 설문 카드 */}
       <div className="sur-card">
+
         {/* ══ STEP 1 : 기본정보 ══════════════════════════════════════════════ */}
         {step === 1 && (
           <section className="sur-section">
             <h2 className="sur-section__title">STEP 1 · 기본정보</h2>
 
-            {/* 성별 */}
             <div className="sur-field">
               <label className="sur-label">
                 성별 <span className="sur-required">*</span>
@@ -435,12 +437,9 @@ export default function Sur() {
                 value={answers.basicInfo.gender}
                 onChange={(v) => setBasic("gender", v)}
               />
-              {errors.gender && (
-                <p className="sur-error">{errors.gender}</p>
-              )}
+              {errors.gender && <p className="sur-error">{errors.gender}</p>}
             </div>
 
-            {/* 나이대 */}
             <div className="sur-field">
               <label className="sur-label">
                 나이대 <span className="sur-required">*</span>
@@ -452,17 +451,12 @@ export default function Sur() {
               >
                 <option value="">선택해 주세요</option>
                 {AGE_GROUP_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
+                  <option key={o.value} value={o.value}>{o.label}</option>
                 ))}
               </select>
-              {errors.ageGroup && (
-                <p className="sur-error">{errors.ageGroup}</p>
-              )}
+              {errors.ageGroup && <p className="sur-error">{errors.ageGroup}</p>}
             </div>
 
-            {/* 키 / 몸무게 */}
             <div className="sur-field sur-field--row">
               <div className="sur-field__half">
                 <label className="sur-label">
@@ -475,9 +469,7 @@ export default function Sur() {
                   value={answers.basicInfo.height}
                   onChange={(e) => setBasic("height", e.target.value)}
                 />
-                {errors.height && (
-                  <p className="sur-error">{errors.height}</p>
-                )}
+                {errors.height && <p className="sur-error">{errors.height}</p>}
               </div>
               <div className="sur-field__half">
                 <label className="sur-label">
@@ -490,21 +482,10 @@ export default function Sur() {
                   value={answers.basicInfo.weight}
                   onChange={(e) => setBasic("weight", e.target.value)}
                 />
-                {errors.weight && (
-                  <p className="sur-error">{errors.weight}</p>
-                )}
+                {errors.weight && <p className="sur-error">{errors.weight}</p>}
               </div>
             </div>
 
-            {/* BMI 자동계산 */}
-            {bmi && (
-              <div className="sur-bmi">
-                <span className="sur-bmi__value">BMI {bmi}</span>
-                <span className="sur-bmi__label">{bmiLabel}</span>
-              </div>
-            )}
-
-            {/* 활동량 */}
             <div className="sur-field">
               <label className="sur-label">
                 활동량 <span className="sur-required">*</span>
@@ -514,9 +495,7 @@ export default function Sur() {
                 value={answers.basicInfo.activityLevel}
                 onChange={(v) => setBasic("activityLevel", v)}
               />
-              {errors.activityLevel && (
-                <p className="sur-error">{errors.activityLevel}</p>
-              )}
+              {errors.activityLevel && <p className="sur-error">{errors.activityLevel}</p>}
             </div>
           </section>
         )}
@@ -526,12 +505,11 @@ export default function Sur() {
           <section className="sur-section">
             <h2 className="sur-section__title">STEP 2 · 건강특이사항</h2>
 
-            {/* 현재 건강상태 */}
             <div className="sur-field">
               <label className="sur-label">
                 현재 건강상태 <span className="sur-required">*</span>
               </label>
-              <p className="sur-hint">해당하는 항목을 모두 선택해 주세요.</p>
+              <p className="sur-hint">해당하는 항목을 모두 선택해 주세요. (없으면 '없음' 선택)</p>
               <MultiCheck
                 options={HEALTH_STATUS_OPTIONS}
                 selected={answers.healthConditions.currentStatus}
@@ -539,17 +517,14 @@ export default function Sur() {
                 onChange={(v) => toggleHealth("currentStatus", v)}
                 onEtcChange={(v) => setHealth("currentStatusEtc", v)}
               />
-              {errors.currentStatus && (
-                <p className="sur-error">{errors.currentStatus}</p>
-              )}
+              {errors.currentStatus && <p className="sur-error">{errors.currentStatus}</p>}
             </div>
 
-            {/* 지병 */}
             <div className="sur-field">
               <label className="sur-label">
                 지병 <span className="sur-required">*</span>
               </label>
-              <p className="sur-hint">해당하는 항목을 모두 선택해 주세요.</p>
+              <p className="sur-hint">해당하는 항목을 모두 선택해 주세요. (없으면 '없음' 선택)</p>
               <MultiCheck
                 options={DISEASE_OPTIONS}
                 selected={answers.healthConditions.diseases}
@@ -557,20 +532,14 @@ export default function Sur() {
                 onChange={(v) => toggleHealth("diseases", v)}
                 onEtcChange={(v) => setHealth("diseasesEtc", v)}
               />
-              {errors.diseases && (
-                <p className="sur-error">{errors.diseases}</p>
-              )}
+              {errors.diseases && <p className="sur-error">{errors.diseases}</p>}
             </div>
 
-            {/* 복용 중인 약 */}
             <div className="sur-field">
               <label className="sur-label">
                 복용 중인 약 <span className="sur-required">*</span>
               </label>
-              <p className="sur-hint">
-                복용 중인 약이 있으면 선택해 주세요. AI 상호작용 판단에
-                활용됩니다.
-              </p>
+              <p className="sur-hint">AI 상호작용 판단에 활용됩니다. (없으면 '없음' 선택)</p>
               <MultiCheck
                 options={MEDICATION_OPTIONS}
                 selected={answers.healthConditions.medications}
@@ -578,17 +547,14 @@ export default function Sur() {
                 onChange={(v) => toggleHealth("medications", v)}
                 onEtcChange={(v) => setHealth("medicationsEtc", v)}
               />
-              {errors.medications && (
-                <p className="sur-error">{errors.medications}</p>
-              )}
+              {errors.medications && <p className="sur-error">{errors.medications}</p>}
             </div>
 
-            {/* 복용 중인 영양제 */}
             <div className="sur-field">
               <label className="sur-label">
                 현재 복용 중인 영양제 <span className="sur-required">*</span>
               </label>
-              <p className="sur-hint">중복 추천 방지에 활용됩니다.</p>
+              <p className="sur-hint">중복 추천 방지에 활용됩니다. (없으면 '없음' 선택)</p>
               <MultiCheck
                 options={SUPPLEMENT_OPTIONS}
                 selected={answers.healthConditions.currentSupplements}
@@ -596,16 +562,14 @@ export default function Sur() {
                 onChange={(v) => toggleHealth("currentSupplements", v)}
                 onEtcChange={(v) => setHealth("currentSupplementsEtc", v)}
               />
-              {errors.currentSupplements && (
-                <p className="sur-error">{errors.currentSupplements}</p>
-              )}
+              {errors.currentSupplements && <p className="sur-error">{errors.currentSupplements}</p>}
             </div>
 
-            {/* 알러지 */}
             <div className="sur-field">
               <label className="sur-label">
                 알러지 <span className="sur-required">*</span>
               </label>
+              <p className="sur-hint">해당하는 항목을 모두 선택해 주세요. (없으면 '없음' 선택)</p>
               <MultiCheck
                 options={ALLERGY_OPTIONS}
                 selected={answers.healthConditions.allergies}
@@ -613,9 +577,7 @@ export default function Sur() {
                 onChange={(v) => toggleHealth("allergies", v)}
                 onEtcChange={(v) => setHealth("allergiesEtc", v)}
               />
-              {errors.allergies && (
-                <p className="sur-error">{errors.allergies}</p>
-              )}
+              {errors.allergies && <p className="sur-error">{errors.allergies}</p>}
             </div>
           </section>
         )}
@@ -625,7 +587,6 @@ export default function Sur() {
           <section className="sur-section">
             <h2 className="sur-section__title">STEP 3 · 요구사항</h2>
 
-            {/* 원하는 효과 */}
             <div className="sur-field">
               <label className="sur-label">
                 원하는 효과 <span className="sur-required">*</span>
@@ -638,12 +599,9 @@ export default function Sur() {
                 onChange={(v) => toggleReq("desiredEffects", v)}
                 onEtcChange={(v) => setReq("desiredEffectsEtc", v)}
               />
-              {errors.desiredEffects && (
-                <p className="sur-error">{errors.desiredEffects}</p>
-              )}
+              {errors.desiredEffects && <p className="sur-error">{errors.desiredEffects}</p>}
             </div>
 
-            {/* 관심 영양제 군 */}
             <div className="sur-field">
               <label className="sur-label">
                 관심 영양제 군 <span className="sur-required">*</span>
@@ -656,17 +614,12 @@ export default function Sur() {
                 onChange={(v) => toggleReq("interestedSupplements", v)}
                 onEtcChange={(v) => setReq("interestedSupplementsEtc", v)}
               />
-              {errors.interestedSupplements && (
-                <p className="sur-error">{errors.interestedSupplements}</p>
-              )}
+              {errors.interestedSupplements && <p className="sur-error">{errors.interestedSupplements}</p>}
             </div>
 
-            {/* 설문 제목 (선택) */}
             <div className="sur-field">
               <label className="sur-label">설문 제목 (선택)</label>
-              <p className="sur-hint">
-                비워두면 저장 날짜가 제목이 됩니다.
-              </p>
+              <p className="sur-hint">비워두면 저장 날짜가 제목이 됩니다.</p>
               <input
                 className="sur-input"
                 type="text"
