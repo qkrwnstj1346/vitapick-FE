@@ -425,7 +425,7 @@ export default function Sur() {
   return (
     <div className="sur-wrap">
       <div className="sur-header">
-        <h1 className="sur-header__title">🌿 맞춤 영양제 추천 설문</h1>
+        <h1 className="sur-header__title"> 맞춤 영양제 추천 설문</h1>
         <p className="sur-header__sub">
           간단한 설문을 통해 나에게 딱 맞는 영양제를 추천해 드릴게요.
         </p>
