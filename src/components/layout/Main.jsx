@@ -69,17 +69,20 @@ function Main({ token, onLogin, isLoggedIn  }) {
                 <Route path="/cscenter/inquiries/:inqId" element={<InquiryDetail />} />
                 <Route path="/cscenter/inquiries/new" element={<InquiryForm />} />
                 <Route path="/cscenter/inquiries/:inqId/edit" element={<InquiryForm />} />
-                
-                {/* 상품 목록 */}
-                <Route path="/products/:catCd" element={<ProductList />} />
 
                 {/* 상품 상세 */}
                 <Route path="/products/detail/:prdId" element={<ProductDetail />} />
                 
+                {/* 상품 검색 결과 */}
+                <Route path="/products/search/:keyword" element={<ProductList />} />
+
+                {/* 상품 목록 */}
+                <Route path="/products/:catCd" element={<ProductList />} />
+                
                 {/* 챗봇 */}
                 <Route path="/chatbot" element={<Chatbot />} />
                 
-                {/*설문 작성*/}
+                {/* 설문 작성 */}
                 <Route path="/v1/sur/save" element={<Sur />} />
 
                 {/* AI 추천 결과 */}
