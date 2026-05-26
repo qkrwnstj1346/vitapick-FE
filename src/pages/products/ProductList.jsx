@@ -16,17 +16,19 @@ const ProductList = () => {
 
     // 카테고리 번호 바뀔 때마다 상품 목록 가져오기
     useEffect(() => {
-        setLoading(true);
-        const token = getToken();
-        apiCall(`/api/v1/product/list/category/${catCd}`, 'GET', null, token, false)
-            .then(data => {
+        const fetchList = async () => {
+            setLoading(true);
+            const token = getToken();
+            try {
+                const data = await apiCall(`/api/v1/product/list/category/${catCd}`, 'GET', null, token, false);
                 setPrdList(data);
-                setLoading(false);
-            })
-            .catch(err => {
+            } catch (err) {
                 console.error('상품 목록 오류:', err);
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+        fetchList();
     }, [catCd]);
 
     if (loading) return <div className='prd_loading'>로딩 중...</div>;
@@ -36,7 +38,7 @@ const ProductList = () => {
 
             <div className='prd_list'>
                 {prdList.map((prd) => (
-                    <div key={prd.prdId} className='prd_card'>
+                    <div key={prd.prdId} className='prd_card' onClick={() => window.location.href = `/products/detail/${prd.prdId}`}>
                         <img src={prd.thumbImgUrl} alt={prd.prdNm} />
                         <div className='prd_info'>
                             <p className='prd_brand'>{prd.brand}</p>

@@ -12,13 +12,18 @@ const ProductDetail = () => {
     const [wished, setWished] = useState(false);
 
     useEffect(() => {
-        const token = getToken();
-        apiCall(`/api/v1/product/detail/${prdId}`, 'GET', null, token, false)
-            .then(data => {
+        const fetchProduct = async () => {
+            const token = getToken();
+            try {
+                const data = await apiCall(`/api/v1/product/detail/${prdId}`, 'GET', null, token, false);
                 setPrd(data);
+            } catch (err) {
+                console.error('상품 상세 오류:', err);
+            } finally {
                 setLoading(false);
-            })
-            .catch(() => setLoading(false));
+            }
+        };
+        fetchProduct();
     }, [prdId]);
 
     if (loading) return <div className='detail_loading'>로딩 중...</div>;
