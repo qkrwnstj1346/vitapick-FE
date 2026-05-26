@@ -5,8 +5,8 @@ import './ProductList.css';
 
 const ProductList = () => {
 
-    // URL에서 카테고리 번호 가져오기
-    const { catCd } = useParams();
+    //
+    const { catCd, keyword } = useParams();
 
     // 상품 목록
     const [prdList, setPrdList] = useState([]);
@@ -14,13 +14,17 @@ const ProductList = () => {
     // 로딩 상태
     const [loading, setLoading] = useState(true);
 
-    // 카테고리 번호 바뀔 때마다 상품 목록 가져오기
+    // 카테고리 또는 검색어 바뀔 때마다 상품 목록 가져오기
     useEffect(() => {
         const fetchList = async () => {
             setLoading(true);
             const token = getToken();
             try {
-                const data = await apiCall(`/api/v1/product/list/category/${catCd}`, 'GET', null, token, false);
+                // 검색어 있으면 검색 API, 없으면 카테고리 API 호출
+                const url = keyword
+                    ? `/api/v1/product/search?keyword=${keyword}`
+                    : `/api/v1/product/list/category/${catCd}`;
+                const data = await apiCall(url, 'GET', null, token, false);
                 setPrdList(data);
             } catch (err) {
                 console.error('상품 목록 오류:', err);
@@ -28,8 +32,9 @@ const ProductList = () => {
                 setLoading(false);
             }
         };
+        // 상품 목록 가져오기
         fetchList();
-    }, [catCd]);
+    }, [catCd, keyword]);
 
     if (loading) return <div className='prd_loading'>로딩 중...</div>;
 

@@ -1,4 +1,6 @@
 import './Header.css';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
     UserRound,
@@ -16,6 +18,19 @@ import {
 import { Link } from 'react-router-dom';
 
 function Header({ userInfo, isLoggedIn, onLogout }) {
+
+    {/* 검색어 상태 */}
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const navigate = useNavigate();
+
+    const handleSearch = () => {
+        if (!searchKeyword.trim()) return;
+        if (searchKeyword.trim().length < 2) {
+            alert('두 글자 이상 입력해주세요.');
+            return;
+        }
+     navigate(`/products/search/${searchKeyword}`);
+    };
 
     return (
 
@@ -38,21 +53,24 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                 </div>
 
-                {/* 검색창 */}
-                <div className="headerSearch">
+            {/* 검색창 */}
+            <div className="headerSearch">
 
-                    <input
-                        type="text"
-                        placeholder="비타민, 유산균, 오메가3 검색"
-                    />
+                {/* 검색 입력창 - 입력할때마다 searchKeyword에 저장, 엔터 누르면 검색 */}
+                <input
+                    type="text"
+                    placeholder="비타민, 유산균, 오메가3 검색"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                />
 
-                    <button>
+                {/* 검색 버튼 - 클릭하면 검색 결과 페이지로 이동 */}
+                <button onClick={handleSearch}>
+                    <Search size={22} />
+                </button>
 
-                        <Search size={22} />
-
-                    </button>
-
-                </div>
+            </div>
 
                 {/* 우측 메뉴 */}
                 <div className="headerMenu">
