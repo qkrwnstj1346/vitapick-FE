@@ -397,12 +397,24 @@ export default function Sur() {
     try {
       setLoading(true);
       const token = getToken();
-      const result = await apiCall("/v1/sur/save", "POST", surDTO, token);
-      alert("설문이 저장되었습니다! AI 맞춤 추천을 확인해 보세요 🌿");
-      navigate(`/sur/result/${result.surId}`);
+
+      // 1단계: 설문 저장
+      const surResult = await apiCall("/v1/sur/save", "POST", surDTO, token);
+
+      // 2단계: AI 추천 실행
+      const cusResult = await apiCall(
+        `/v1/cus/recommend?surId=${surResult.surId}&userNum=${userNum}`,
+        "POST",
+        null,
+        token,
+        false
+      );
+
+      // 3단계: 추천 결과 페이지로 이동
+      navigate(`/v1/cus/result/${cusResult.cusId}`);
     } catch (err) {
-      console.error("설문 저장 실패", err);
-      alert("설문 저장에 실패했습니다. 다시 시도해 주세요.");
+      console.error("설문 저장/추천 실패", err);
+      alert("처리 중 오류가 발생했습니다. 다시 시도해 주세요.");
     } finally {
       setLoading(false);
     }
@@ -650,7 +662,7 @@ export default function Sur() {
               onClick={handleSubmit}
               disabled={loading}
             >
-              {loading ? "저장 중..." : "🌿 추천 받기"}
+              {loading ? "AI 분석 중..." : "🌿 추천 받기"}
             </button>
           )}
         </div>
