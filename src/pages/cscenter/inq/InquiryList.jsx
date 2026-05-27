@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { getAllInq } from '../../../service/cscenter/csCenterApi';
 
+import Pagination from '../../../components/layout/Pagination';
+
 import './InquiryList.css';
 
 function InquiryList() {
@@ -10,8 +12,20 @@ function InquiryList() {
     const navigate = useNavigate();
 
     const [inqList, setInqList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const itemPerPage = 10;
 
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+
+    const totalPage = Math.ceil(inqList.length / itemPerPage);
+
+    const startIndex = (currentPage - 1) * itemPerPage;
+
+    const currentInqList = inqList.slice(
+        startIndex,
+        startIndex + itemPerPage
+    );
 
     useEffect(() => {
 
@@ -28,6 +42,7 @@ function InquiryList() {
             console.log('문의 목록 = ', result);
 
             setInqList(result);
+            setCurrentPage(1);
 
         } catch (err) {
 
@@ -87,6 +102,7 @@ function InquiryList() {
     };
 
     return (
+
         <div className="inq-wrap">
 
             <div className="inq-top">
@@ -102,35 +118,46 @@ function InquiryList() {
                     문의 등록
                 </button>
 
-
             </div>
 
             <table className="inq-table">
 
                 <thead>
+
                     <tr>
+
                         <th>번호</th>
+
                         <th>문의유형</th>
+
                         <th>제목</th>
+
                         <th>상태</th>
+
                         <th>작성일</th>
+
                     </tr>
+
                 </thead>
 
                 <tbody>
 
                     {inqList.length > 0 ? (
 
-                        inqList.map((item) => (
+                        currentInqList.map((item) => (
 
                             <tr
                                 key={item.inqId}
                                 onClick={() => handleMoveDetail(item)}
                             >
 
-                                <td>{item.inqId}</td>
+                                <td>
+                                    {item.inqId}
+                                </td>
 
-                                <td>{item.inqTpCd}</td>
+                                <td>
+                                    {item.inqTpCd}
+                                </td>
 
                                 <td className="inq-ttl">
                                     {item.ttl}
@@ -153,9 +180,11 @@ function InquiryList() {
                     ) : (
 
                         <tr>
+
                             <td colSpan="5" className="inq-empty">
                                 등록된 문의가 없습니다.
                             </td>
+
                         </tr>
 
                     )}
@@ -164,7 +193,18 @@ function InquiryList() {
 
             </table>
 
+            {inqList.length > 0 && (
+
+                <Pagination
+                    currentPage={currentPage}
+                    totalPage={totalPage}
+                    onPageChange={setCurrentPage}
+                />
+
+            )}
+
         </div>
+
     );
 }
 

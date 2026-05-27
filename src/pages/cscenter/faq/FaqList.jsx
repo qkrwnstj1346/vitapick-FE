@@ -6,6 +6,8 @@ import {
     getUseYnFaqList
 } from '../../../service/cscenter/csCenterApi';
 
+import Pagination from '../../../components/layout/Pagination';
+
 import './FaqList.css';
 
 function FaqList() {
@@ -13,10 +15,22 @@ function FaqList() {
     const navigate = useNavigate();
 
     const [faqList, setFaqList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const itemPerPage = 10;
 
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
     const isAdmin = loginUser?.roleCd === 'ADMIN';
+
+    const totalPage = Math.ceil(faqList.length / itemPerPage);
+
+    const startIndex = (currentPage - 1) * itemPerPage;
+
+    const currentFaqList = faqList.slice(
+        startIndex,
+        startIndex + itemPerPage
+    );
 
     useEffect(() => {
 
@@ -30,6 +44,7 @@ function FaqList() {
                 console.log('FAQ 목록 데이터:', data);
 
                 setFaqList(data);
+                setCurrentPage(1);
 
             })
             .catch((err) => {
@@ -74,89 +89,99 @@ function FaqList() {
 
             ) : (
 
-                <table className="cs-faq-table">
+                <>
 
-                    <thead>
+                    <table className="cs-faq-table">
 
-                        <tr>
+                        <thead>
 
-                            <th width="10%">
-                                번호
-                            </th>
-
-                            <th width="15%">
-                                카테고리
-                            </th>
-
-                            <th width="45%">
-                                제목
-                            </th>
-
-                            {isAdmin && (
+                            <tr>
 
                                 <th width="10%">
-                                    사용여부
+                                    번호
                                 </th>
 
-                            )}
+                                <th width="15%">
+                                    카테고리
+                                </th>
 
-                            <th width="10%">
-                                조회수
-                            </th>
-
-                            <th width="10%">
-                                작성일
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {faqList.map((faq) => (
-
-                            <tr key={faq.faqId}>
-
-                                <td>
-                                    {faq.faqId}
-                                </td>
-
-                                <td>
-                                    {faq.faqCtgCd}
-                                </td>
-
-                                <td className="cs-faq-title-cell">
-
-                                    <Link to={`/cscenter/faqs/${faq.faqId}`}>
-                                        {faq.ttl}
-                                    </Link>
-
-                                </td>
+                                <th width="45%">
+                                    제목
+                                </th>
 
                                 {isAdmin && (
 
-                                    <td>
-                                        {faq.useYn}
-                                    </td>
+                                    <th width="10%">
+                                        사용여부
+                                    </th>
 
                                 )}
 
-                                <td>
-                                    {faq.viewCnt}
-                                </td>
+                                <th width="10%">
+                                    조회수
+                                </th>
 
-                                <td>
-                                    {faq.crtAt?.substring(0, 10)}
-                                </td>
+                                <th width="10%">
+                                    작성일
+                                </th>
 
                             </tr>
 
-                        ))}
+                        </thead>
 
-                    </tbody>
+                        <tbody>
 
-                </table>
+                            {currentFaqList.map((faq) => (
+
+                                <tr key={faq.faqId}>
+
+                                    <td>
+                                        {faq.faqId}
+                                    </td>
+
+                                    <td>
+                                        {faq.faqCtgCd}
+                                    </td>
+
+                                    <td className="cs-faq-title-cell">
+
+                                        <Link to={`/cscenter/faqs/${faq.faqId}`}>
+                                            {faq.ttl}
+                                        </Link>
+
+                                    </td>
+
+                                    {isAdmin && (
+
+                                        <td>
+                                            {faq.useYn}
+                                        </td>
+
+                                    )}
+
+                                    <td>
+                                        {faq.viewCnt}
+                                    </td>
+
+                                    <td>
+                                        {faq.crtAt?.substring(0, 10)}
+                                    </td>
+
+                                </tr>
+
+                            ))}
+
+                        </tbody>
+
+                    </table>
+
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPage={totalPage}
+                        onPageChange={setCurrentPage}
+                    />
+
+                </>
 
             )}
 

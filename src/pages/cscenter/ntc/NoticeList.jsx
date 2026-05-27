@@ -3,17 +3,34 @@ import {
     getNoticeList,
     getAdminNoticeList
 } from '../../../service/cscenter/csCenterApi';
-import './NoticeList.css';
 import { Link, useNavigate } from 'react-router-dom';
+
+import Pagination from '../../../components/layout/Pagination';
+
+import './NoticeList.css';
 
 function NoticeList() {
 
     const navigate = useNavigate();
+
     const [noticeList, setNoticeList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const itemPerPage = 10;
 
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
     const isAdmin = loginUser?.roleCd === 'ADMIN';
+
+    const totalPage = Math.ceil(noticeList.length / itemPerPage);
+
+    const startIndex = (currentPage - 1) * itemPerPage;
+
+    const currentNoticeList = noticeList.slice(
+        startIndex,
+        startIndex + itemPerPage
+    );
+
     useEffect(() => {
 
         const api = isAdmin ? getAdminNoticeList : getNoticeList;
@@ -22,6 +39,7 @@ function NoticeList() {
             .then((data) => {
                 console.log('공지사항 데이터:', data);
                 setNoticeList(data);
+                setCurrentPage(1);
             })
             .catch((err) => {
                 console.error(err);
@@ -58,49 +76,59 @@ function NoticeList() {
 
             ) : (
 
-                <table className="cs-notice-table">
+                <>
 
-                    <thead>
-                        <tr>
-                            <th width="10%">번호</th>
-                            <th width="50%">제목</th>
-                            {isAdmin && <th width="10%">사용여부</th>}
-                            <th width="10%">조회수</th>
-                            <th width="20%">작성일</th>
-                        </tr>
-                    </thead>
+                    <table className="cs-notice-table">
 
-                    <tbody>
-
-                        {noticeList.map((notice) => (
-
-                            <tr key={notice.ntcId}>
-
-                                <td>{notice.ntcId}</td>
-
-                                <td className="cs-notice-title-cell">
-                                    <Link to={`/cscenter/notices/${notice.ntcId}`}>
-                                        {notice.ttl}
-                                    </Link>
-                                </td>
-
-                                {isAdmin && (
-                                    <td>{notice.useYn}</td>
-                                )}
-
-                                <td>{notice.viewCnt}</td>
-
-                                <td>
-                                    {notice.crtAt?.substring(0, 10)}
-                                </td>
-
+                        <thead>
+                            <tr>
+                                <th width="10%">번호</th>
+                                <th width="50%">제목</th>
+                                {isAdmin && <th width="10%">사용여부</th>}
+                                <th width="10%">조회수</th>
+                                <th width="20%">작성일</th>
                             </tr>
+                        </thead>
 
-                        ))}
+                        <tbody>
 
-                    </tbody>
+                            {currentNoticeList.map((notice) => (
 
-                </table>
+                                <tr key={notice.ntcId}>
+
+                                    <td>{notice.ntcId}</td>
+
+                                    <td className="cs-notice-title-cell">
+                                        <Link to={`/cscenter/notices/${notice.ntcId}`}>
+                                            {notice.ttl}
+                                        </Link>
+                                    </td>
+
+                                    {isAdmin && (
+                                        <td>{notice.useYn}</td>
+                                    )}
+
+                                    <td>{notice.viewCnt}</td>
+
+                                    <td>
+                                        {notice.crtAt?.substring(0, 10)}
+                                    </td>
+
+                                </tr>
+
+                            ))}
+
+                        </tbody>
+
+                    </table>
+
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPage={totalPage}
+                        onPageChange={setCurrentPage}
+                    />
+
+                </>
 
             )}
 

@@ -33,6 +33,18 @@ export function updateCartQty(cartId, data) {
     );
 }
 
+/* 장바구니 선택 상태 변경 */
+/* 체크박스 선택/해제 */
+export function updateCartSelectedYn(cartId, data) {
+    return apiCall(
+        `/cart/${cartId}/selected`,
+        'PATCH',
+        data,
+        null,
+        false
+    );
+}
+
 /* 장바구니 개별 삭제 */
 export function deleteCart(cartId) {
     return apiCall(

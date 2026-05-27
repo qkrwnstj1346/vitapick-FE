@@ -79,7 +79,7 @@
 .cartItem {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 12px;
     padding: 20px;
     border: 1px solid #e8e8e8;
     border-radius: 20px;
@@ -96,9 +96,38 @@
 }
 
 .cartCheckBox input {
-    width: 18px;
-    height: 18px;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 21px;
+    height: 21px;
+    border: 2px solid #AFCBB1;
+    border-radius: 7px;
+    background: #fff;
     cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+}
+
+.cartCheckBox input:hover {
+    border-color: #7FAF8B;
+    background: #F1F7F2;
+}
+
+.cartCheckBox input:checked {
+    background: #7FAF8B;
+    border-color: #7FAF8B;
+}
+
+.cartCheckBox input:checked::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 
 /* 이미지 */
@@ -209,7 +238,7 @@
 }
 
 /* 태블릿 */
-@media screen and (max-width:1024px) {
+@media screen and (max-width: 1024px) {
 
     .cartItem {
         gap: 14px;
@@ -226,7 +255,7 @@
 }
 
 /* 모바일 */
-@media screen and (max-width:768px) {
+@media screen and (max-width: 768px) {
 
     .cartTop {
         flex-direction: column;
@@ -263,7 +292,7 @@
 }
 
 /* 작은 모바일 */
-@media screen and (max-width:480px) {
+@media screen and (max-width: 480px) {
 
     .cartPage {
         padding: 30px 14px 80px;

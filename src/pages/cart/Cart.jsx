@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
     getCartList,
     updateCartQty,
+    updateCartSelectedYn,
     deleteCart,
     deleteAllCart
 } from '../../service/cart/cartApi';
@@ -90,6 +91,23 @@ function Cart() {
         }
     };
 
+    const toggleSelectedYn = async (item) => {
+
+        try {
+
+            await updateCartSelectedYn(item.cartId, {
+                selectedYn: item.selectedYn === 'Y' ? 'N' : 'Y'
+            });
+
+            fetchCartList();
+
+        } catch (err) {
+
+            alert(err.response?.data || '상품 선택 상태 변경에 실패했습니다.');
+        }
+    };
+
+
     const customCartGroups = useMemo(() => {
         const groupObj = {};
 
@@ -163,7 +181,8 @@ function Cart() {
                                                 <input
                                                     type="checkbox"
                                                     checked={item.selectedYn === 'Y'}
-                                                    readOnly
+                                                    onChange={() => toggleSelectedYn(item)}
+
                                                 />
                                             </div>
 
@@ -244,7 +263,8 @@ function Cart() {
                                     <input
                                         type="checkbox"
                                         checked={item.selectedYn === 'Y'}
-                                        readOnly
+                                        onChange={() => toggleSelectedYn(item)}
+
                                     />
                                 </div>
 
