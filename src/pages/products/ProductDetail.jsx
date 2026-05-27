@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { apiCall, getToken } from '../../service/apiService';
 import './ProductDetail.css';
+
 
 const ProductDetail = () => {
 
     const { prdId } = useParams(); // URL에서 상품ID 가져오기
+    const navigate = useNavigate(); // 페이지 이동 함수
     const [prd, setPrd] = useState(null);// 상품 정보
     const [loading, setLoading] = useState(true); // 상품 정보 로딩 상태
     const [activeTab, setActiveTab] = useState('desc'); //  desc: 상품설명, rvw: 상품평
@@ -17,6 +19,7 @@ const ProductDetail = () => {
     const [rating, setRating] = useState(5);          // 별점
     const [showRvwForm, setShowRvwForm] = useState(false); // 작성폼 열림/닫힘
 
+   
     useEffect(() => {
         const fetchProduct = async () => {
             const token = getToken();
@@ -79,7 +82,9 @@ const ProductDetail = () => {
                                 itQty: quantity,
                                 selectedYn: 'Y'
                             }, token, false);
-                            alert('장바구니에 담았습니다!');
+                            // 장바구니 담기 후 이동 여부 확인
+                            const go = window.confirm('장바구니에 담았습니다!\n장바구니로 이동하시겠습니까?');
+                            if (go) navigate('/cart');
                         }}>
                             장바구니 담기
                         </button>

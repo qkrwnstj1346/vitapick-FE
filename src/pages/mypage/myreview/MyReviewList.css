@@ -1,0 +1,120 @@
+/* 전체 영역 */
+.rvw-wrap {
+    max-width: 800px;
+    width: calc(100% - 48px);
+    margin: 40px auto 80px;
+}
+
+/* 로딩/에러 */
+.rvw-loading,
+.rvw-error {
+    text-align: center;
+    padding: 100px;
+    font-size: 16px;
+    color: #7FAF8B;
+}
+
+/* 헤더 */
+.rvw-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #17251c;
+}
+
+/* 제목 */
+.rvw-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #17251c;
+}
+
+/* 총 개수 */
+.rvw-count {
+    margin: 0;
+    font-size: 14px;
+    color: #999;
+}
+
+/* 리뷰 없을때 */
+.rvw-empty {
+    text-align: center;
+    padding: 80px;
+    color: #999;
+    font-size: 15px;
+    background-color: #F7FBF7;
+    border-radius: 16px;
+}
+
+/* 리뷰 목록 */
+.rvw-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 리뷰 아이템 */
+.rvw-item {
+    padding: 24px;
+    background-color: #ffffff;
+    border: 1px solid #E3EEE5;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* 리뷰 아이템 hover */
+.rvw-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(127, 175, 139, 0.15);
+}
+
+/* 상단 별점/날짜 */
+.rvw-item__top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/* 별점 */
+.rvw-item__star {
+    color: #FFD700;
+    font-size: 18px;
+}
+
+/* 날짜 */
+.rvw-item__date {
+    color: #999;
+    font-size: 13px;
+}
+
+/* 리뷰 내용 */
+.rvw-item__cmt {
+    margin: 0 0 16px;
+    font-size: 15px;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 상품 보기 버튼 */
+.rvw-item__prd-btn {
+    padding: 8px 16px;
+    border: 1px solid #7FAF8B;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #7FAF8B;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rvw-item__prd-btn:hover {
+    background-color: #7FAF8B;
+    color: #ffffff;
+}

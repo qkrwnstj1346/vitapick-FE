@@ -1,0 +1,92 @@
+/* 전체 영역 */
+.rvw-detail-wrap {
+    max-width: 800px;
+    width: calc(100% - 48px);
+    margin: 40px auto 80px;
+}
+
+/* 로딩/에러 */
+.rvw-detail-loading,
+.rvw-detail-error {
+    text-align: center;
+    padding: 100px;
+    font-size: 16px;
+    color: #7FAF8B;
+}
+
+/* 헤더 */
+.rvw-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #17251c;
+}
+
+/* 뒤로가기 버튼 */
+.rvw-detail-back {
+    border: none;
+    background: none;
+    color: #7FAF8B;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* 제목 */
+.rvw-detail-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #17251c;
+}
+
+/* 리뷰 카드 */
+.rvw-detail-card {
+    padding: 32px;
+    background-color: #ffffff;
+    border: 1px solid #E3EEE5;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* 별점 */
+.rvw-detail-star {
+    font-size: 28px;
+    color: #FFD700;
+    margin-bottom: 12px;
+}
+
+/* 날짜 */
+.rvw-detail-date {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: #999;
+}
+
+/* 리뷰 내용 */
+.rvw-detail-cmt {
+    margin: 0 0 24px;
+    font-size: 16px;
+    color: #333;
+    line-height: 1.7;
+}
+
+/* 상품 보기 버튼 */
+.rvw-detail-prd-btn {
+    padding: 12px 24px;
+    border: 1px solid #7FAF8B;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #7FAF8B;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rvw-detail-prd-btn:hover {
+    background-color: #7FAF8B;
+    color: #ffffff;
+}
