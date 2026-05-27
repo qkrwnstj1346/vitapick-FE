@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
     getCartList,
@@ -12,16 +13,21 @@ import './Cart.css';
 
 function Cart() {
 
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+    const navigate = useNavigate();
 
+    /* 로그인 회원 */
+    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
     const userNum = loginUser?.userNum;
 
+    /* 장바구니 목록 */
     const [cartList, setCartList] = useState([]);
 
+    /* 장바구니 조회 */
     useEffect(() => {
         fetchCartList();
     }, []);
 
+    /* 장바구니 목록 조회 */
     const fetchCartList = async () => {
         try {
             const res = await getCartList(userNum);
@@ -33,17 +39,21 @@ function Cart() {
         }
     };
 
+    /* 수량 증가 */
     const plusQty = async (cartId, currentQty) => {
         try {
             await updateCartQty(cartId, {
                 itQty: currentQty + 1
             });
+
             fetchCartList();
+
         } catch (err) {
             alert(err.response?.data || '수량 변경 실패');
         }
     };
 
+    /* 수량 감소 */
     const minusQty = async (cartId, currentQty) => {
         if (currentQty <= 1) {
             return;
@@ -53,12 +63,15 @@ function Cart() {
             await updateCartQty(cartId, {
                 itQty: currentQty - 1
             });
+
             fetchCartList();
+
         } catch (err) {
             alert(err.response?.data || '수량 변경 실패');
         }
     };
 
+    /* 상품 삭제 */
     const handleDelete = async (cartId) => {
         const confirmDelete = window.confirm('상품을 삭제하시겠습니까?');
 
@@ -75,6 +88,7 @@ function Cart() {
         }
     };
 
+    /* 전체 삭제 */
     const handleDeleteAll = async () => {
         const confirmDelete = window.confirm('장바구니를 전체 삭제하시겠습니까?');
 
@@ -91,10 +105,9 @@ function Cart() {
         }
     };
 
+    /* 개별 선택 */
     const toggleSelectedYn = async (item) => {
-
         try {
-
             await updateCartSelectedYn(item.cartId, {
                 selectedYn: item.selectedYn === 'Y' ? 'N' : 'Y'
             });
@@ -102,12 +115,59 @@ function Cart() {
             fetchCartList();
 
         } catch (err) {
-
             alert(err.response?.data || '상품 선택 상태 변경에 실패했습니다.');
         }
     };
 
+    /* 선택 상품 */
+    const selectedCartList = useMemo(() => {
+        return cartList.filter(item => item.selectedYn === 'Y');
+    }, [cartList]);
 
+    /* 전체 선택 여부 */
+    const isAllSelected = useMemo(() => {
+        return cartList.length > 0 && cartList.every(item => item.selectedYn === 'Y');
+    }, [cartList]);
+
+    /* 전체 선택 */
+    const toggleAllSelectedYn = async () => {
+        if (cartList.length === 0) {
+            return;
+        }
+
+        const nextSelectedYn = isAllSelected ? 'N' : 'Y';
+
+        try {
+            await Promise.all(
+                cartList.map(item =>
+                    updateCartSelectedYn(item.cartId, {
+                        selectedYn: nextSelectedYn
+                    })
+                )
+            );
+
+            fetchCartList();
+
+        } catch (err) {
+            alert(err.response?.data || '전체 선택 상태 변경에 실패했습니다.');
+        }
+    };
+
+    /* 총 상품 금액 */
+    const totalPrice = useMemo(() => {
+        return selectedCartList.reduce(
+            (sum, item) => sum + (item.price * item.itQty),
+            0
+        );
+    }, [selectedCartList]);
+
+    /* 배송비 */
+    const deliveryFee = totalPrice >= 30000 || totalPrice === 0 ? 0 : 3000;
+
+    /* 최종 결제 금액 */
+    const finalPrice = totalPrice + deliveryFee;
+
+    /* 커스텀 비타민 그룹 */
     const customCartGroups = useMemo(() => {
         const groupObj = {};
 
@@ -127,19 +187,39 @@ function Cart() {
         }));
     }, [cartList]);
 
+    /* 일반 상품 목록 */
     const normalCartList = useMemo(() => {
         return (cartList || []).filter(item => item.cusId === null);
     }, [cartList]);
 
+    /* 주문하기 */
+    const handleOrder = () => {
+        if (selectedCartList.length === 0) {
+            alert('주문할 상품을 선택해주세요.');
+            return;
+        }
+
+        navigate('/order', {
+            state: {
+                orderItems: selectedCartList,
+                totalPrice,
+                deliveryFee,
+                finalPrice
+            }
+        });
+    };
+
     return (
         <div className="cartPage">
 
+            {/* 상단 */}
             <div className="cartTop">
                 <h2 className="cartTitle">
                     장바구니
                 </h2>
 
                 <button
+                    type="button"
                     className="deleteAllBtn"
                     onClick={handleDeleteAll}
                 >
@@ -147,45 +227,160 @@ function Cart() {
                 </button>
             </div>
 
-            <section className="cartSection">
-                <h3 className="sectionTitle">
-                    커스텀 비타민
-                </h3>
+            {/* 선택 영역 */}
+            <div className="cartSelectBox">
+                <label className="allCheckLabel">
+                    <input
+                        type="checkbox"
+                        checked={isAllSelected}
+                        onChange={toggleAllSelectedYn}
+                    />
+                    전체 선택
+                </label>
 
-                {
-                    customCartGroups.length === 0 ? (
-                        <p className="emptyText">
-                            커스텀 비타민 상품이 없습니다.
-                        </p>
-                    ) : (
-                        customCartGroups.map((group, index) => (
-                            <div
-                                className="customGroup"
-                                key={group.cusId}
-                            >
-                                <div className="customGroupTitleBox">
-                                    <h4 className="customGroupTitle">
-                                        커스텀 비타민 묶음 {index + 1}
-                                    </h4>
+                <p className="selectedCount">
+                    선택 상품 {selectedCartList.length}개
+                </p>
+            </div>
 
-                                    <p className="customGroupSub">
-                                        커스텀 ID : {group.cusId}
+            {/* 장바구니 본문 */}
+            <div className="cartLayout">
+
+                {/* 상품 영역 */}
+                <div className="cartListArea">
+
+                    {/* 커스텀 비타민 */}
+                    <section className="cartSection">
+                        <h3 className="sectionTitle">
+                            커스텀 비타민
+                        </h3>
+
+                        {
+                            customCartGroups.length === 0 ? (
+                                <p className="emptyText">
+                                    커스텀 비타민 상품이 없습니다.
+                                </p>
+                            ) : (
+                                customCartGroups.map((group, index) => (
+                                    <div
+                                        className="customGroup"
+                                        key={group.cusId}
+                                    >
+                                        {/* 커스텀 묶음 제목 */}
+                                        <div className="customGroupTitleBox">
+                                            <h4 className="customGroupTitle">
+                                                커스텀 비타민 묶음 {index + 1}
+                                            </h4>
+
+                                            <p className="customGroupSub">
+                                                커스텀 ID : {group.cusId}
+                                            </p>
+                                        </div>
+
+                                        {/* 커스텀 상품 목록 */}
+                                        {
+                                            group.items.map(item => (
+                                                <div className="cartItem" key={item.cartId}>
+
+                                                    {/* 체크박스 */}
+                                                    <div className="cartCheckBox">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={item.selectedYn === 'Y'}
+                                                            onChange={() => toggleSelectedYn(item)}
+                                                        />
+                                                    </div>
+
+                                                    {/* 상품 이미지 */}
+                                                    <div className="cartImgBox">
+                                                        <img
+                                                            src={item.thumbImgUrl}
+                                                            alt={item.prdNm}
+                                                            className="cartImg"
+                                                        />
+                                                    </div>
+
+                                                    {/* 상품 정보 */}
+                                                    <div className="cartInfo">
+                                                        <p className="cartBrand">
+                                                            {item.brand}
+                                                        </p>
+
+                                                        <p className="cartPrdNm">
+                                                            {item.prdNm}
+                                                        </p>
+
+                                                        <p className="cartPrice">
+                                                            {item.price?.toLocaleString()}원
+                                                        </p>
+                                                    </div>
+
+                                                    {/* 수량 버튼 */}
+                                                    <div className="cartBtnBox">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => minusQty(item.cartId, item.itQty)}
+                                                        >
+                                                            -
+                                                        </button>
+
+                                                        <p className="qtyText">
+                                                            {item.itQty}
+                                                        </p>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => plusQty(item.cartId, item.itQty)}
+                                                        >
+                                                            +
+                                                        </button>
+
+                                                        <button
+                                                            type="button"
+                                                            className="deleteBtn"
+                                                            onClick={() => handleDelete(item.cartId)}
+                                                        >
+                                                            삭제
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                ))
+                            )
+                        }
+                    </section>
+
+                    {/* 일반 상품 */}
+                    <section className="cartSection">
+                        <h3 className="sectionTitle">
+                            일반 상품
+                        </h3>
+
+                        {/* 일반 상품 영역 */}
+                        <div className="normalGroup">
+
+                            {
+                                normalCartList.length === 0 ? (
+                                    <p className="emptyText">
+                                        일반 상품이 없습니다.
                                     </p>
-                                </div>
-
-                                {
-                                    group.items.map(item => (
+                                ) : (
+                                    normalCartList.map(item => (
                                         <div className="cartItem" key={item.cartId}>
 
+                                            {/* 체크박스 */}
                                             <div className="cartCheckBox">
                                                 <input
                                                     type="checkbox"
                                                     checked={item.selectedYn === 'Y'}
                                                     onChange={() => toggleSelectedYn(item)}
-
                                                 />
                                             </div>
 
+                                            {/* 상품 이미지 */}
                                             <div className="cartImgBox">
                                                 <img
                                                     src={item.thumbImgUrl}
@@ -194,6 +389,7 @@ function Cart() {
                                                 />
                                             </div>
 
+                                            {/* 상품 정보 */}
                                             <div className="cartInfo">
                                                 <p className="cartBrand">
                                                     {item.brand}
@@ -208,6 +404,7 @@ function Cart() {
                                                 </p>
                                             </div>
 
+                                            {/* 수량 버튼 */}
                                             <div className="cartBtnBox">
                                                 <button
                                                     type="button"
@@ -238,99 +435,48 @@ function Cart() {
 
                                         </div>
                                     ))
-                                }
-                            </div>
-                        ))
-                    )
-                }
-            </section>
+                                )
+                            }
 
-            <section className="cartSection">
-                <h3 className="sectionTitle">
-                    일반 상품
-                </h3>
+                        </div>
+                    </section>
 
-                {
-                    normalCartList.length === 0 ? (
-                        <p className="emptyText">
-                            일반 상품이 없습니다.
-                        </p>
-                    ) : (
-                        normalCartList.map(item => (
-                            <div className="cartItem" key={item.cartId}>
+                </div>
 
-                                <div className="cartCheckBox">
-                                    <input
-                                        type="checkbox"
-                                        checked={item.selectedYn === 'Y'}
-                                        onChange={() => toggleSelectedYn(item)}
+                {/* 결제 영역 */}
+                <aside className="cartPayArea">
 
-                                    />
-                                </div>
+                    {/* 결제 금액 */}
+                    <div className="cartSummaryBox">
+                        <div className="summaryRow">
+                            <span>총 상품금액</span>
+                            <strong>{totalPrice.toLocaleString()}원</strong>
+                        </div>
 
-                                <div className="cartImgBox">
-                                    <img
-                                        src={item.thumbImgUrl}
-                                        alt={item.prdNm}
-                                        className="cartImg"
-                                    />
-                                </div>
+                        <div className="summaryRow">
+                            <span>배송비</span>
+                            <strong>{deliveryFee.toLocaleString()}원</strong>
+                        </div>
 
-                                <div className="cartInfo">
-                                    <p className="cartBrand">
-                                        {item.brand}
-                                    </p>
+                        <div className="summaryRow final">
+                            <span>최종 결제금액</span>
+                            <strong>{finalPrice.toLocaleString()}원</strong>
+                        </div>
+                    </div>
 
-                                    <p className="cartPrdNm">
-                                        {item.prdNm}
-                                    </p>
+                    {/* 하단 버튼 */}
+                    <div className="cartBottom">
+                        <button
+                            type="button"
+                            className="orderBtn"
+                            onClick={handleOrder}
+                        >
+                            주문하기
+                        </button>
+                    </div>
 
-                                    <p className="cartPrice">
-                                        {item.price?.toLocaleString()}원
-                                    </p>
-                                </div>
+                </aside>
 
-                                <div className="cartBtnBox">
-                                    <button
-                                        type="button"
-                                        onClick={() => minusQty(item.cartId, item.itQty)}
-                                    >
-                                        -
-                                    </button>
-
-                                    <p className="qtyText">
-                                        {item.itQty}
-                                    </p>
-
-                                    <button
-                                        type="button"
-                                        onClick={() => plusQty(item.cartId, item.itQty)}
-                                    >
-                                        +
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        className="deleteBtn"
-                                        onClick={() => handleDelete(item.cartId)}
-                                    >
-                                        삭제
-                                    </button>
-                                </div>
-
-                            </div>
-                        ))
-                    )
-                }
-            </section>
-
-            <div className="cartBottom">
-                <button
-                    type="button"
-                    className="orderBtn"
-                >
-                    주문하기
-                </button>
             </div>
 
         </div>

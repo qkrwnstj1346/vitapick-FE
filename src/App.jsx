@@ -2,7 +2,10 @@ import './App.css';
 
 import React, { useEffect, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import {
+    useNavigate,
+    useLocation
+} from 'react-router-dom';
 
 import {
     apiCall,
@@ -21,6 +24,9 @@ function App() {
 
     const navigate = useNavigate();
 
+    /* 현재 페이지 주소 */
+    const location = useLocation();
+
     // 로그인 상태
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -29,6 +35,17 @@ function App() {
 
     // 챗봇 열림/닫힘
     const [isChatOpen, setIsChatOpen] = useState(false);
+
+    /* 챗봇 숨길 페이지 */
+    const hideChatbotPaths = [
+        '/cart',
+        '/order'
+    ];
+
+    /* 현재 페이지가 챗봇 숨김 페이지인지 체크 */
+    const isHideChatbot = hideChatbotPaths.some(path =>
+        location.pathname.startsWith(path)
+    );
 
     // 로그인 상태 확인
     useEffect(() => {
@@ -148,26 +165,44 @@ function App() {
 
             <Footer />
 
+            {/* 장바구니/주문서 제외 플로팅 버튼 */}
+            {!isHideChatbot && (
+                <div
+                    className="chatbotFloatingBtn"
+                    onClick={() => {
 
-        {/* 모든 페이지에서 보이는 플로팅 버튼 */}
-        <div className="chatbotFloatingBtn" onClick={() => {
-            if (isLoggedIn) {
-                setIsChatOpen(prev => !prev);
-            } else {
-                navigate('/v1/auth/login');
-            }
-        }}>
-            <img src="/images/VitaPick_ChatBot_Logo.png" alt="챗봇" />
-            <p className="chatbotFloatingText">ChatBot</p>
-        </div>
+                        if (isLoggedIn) {
 
-        {/* 챗봇 팝업 */}
-        {isChatOpen && (
-            <Chatbot
-                onClose={() => setIsChatOpen(false)}
-                userInfo={userInfo}
-            />
-        )}
+                            setIsChatOpen(prev => !prev);
+
+                        } else {
+
+                            navigate('/v1/auth/login');
+
+                        }
+
+                    }}
+                >
+
+                    <img
+                        src="/images/VitaPick_ChatBot_Logo.png"
+                        alt="챗봇"
+                    />
+
+                    <p className="chatbotFloatingText">
+                        ChatBot
+                    </p>
+
+                </div>
+            )}
+
+            {/* 장바구니/주문서 제외 챗봇 팝업 */}
+            {!isHideChatbot && isChatOpen && (
+                <Chatbot
+                    onClose={() => setIsChatOpen(false)}
+                    userInfo={userInfo}
+                />
+            )}
 
         </div>
 
