@@ -5,6 +5,9 @@ import './Chatbot.css';
 
 const Chatbot = ({ onClose, userInfo }) => {
 
+    // 페이지 이동 함수
+    const navigate = useNavigate();
+
     // 메시지 목록
     const [messages, setMessages] = useState([
         { senderCd: 'AI', msgTxt: '안녕하세요! 💊 VitaPick AI입니다.\n증상이나 건강 고민을 말씀해 주시면 맞춤 영양제를 추천해 드릴게요!' }
@@ -74,6 +77,11 @@ const Chatbot = ({ onClose, userInfo }) => {
         }
     };
 
+    // 상품 상세페이지로 이동
+    const goProductDetail = (prdId) => {
+        navigate(`/products/detail/${prdId}`);
+    };
+
     // 엔터 키 전송
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -102,11 +110,15 @@ const Chatbot = ({ onClose, userInfo }) => {
                             {msg.msgTxt.split('\n').filter(line => !line.includes('상품ID:')).join('\n')}
                         </div>
 
-                        {/* 추천 상품 이미지 카드 */}
+                        {/* 추천 상품 이미지 카드, 클릭 시 상세페이지로 이동 */}
                         {msg.products && msg.products.length > 0 && (
                             <div className='chatPopup_prd_list'>
                                 {msg.products.map((prd, pIdx) => (
-                                    <div key={pIdx} className='chatPopup_prd_card'>
+                                    <div
+                                        key={pIdx} 
+                                        className='chatPopup_prd_card' 
+                                        onClick={() => goProductDetail(prd.prdId)}
+                                    >
                                         <img src={prd.thumbImgUrl} alt={prd.prdNm} />
                                         <p>{prd.prdNm}</p>
                                         <strong>{prd.price.toLocaleString()}원</strong>

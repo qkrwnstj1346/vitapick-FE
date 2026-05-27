@@ -204,3 +204,13 @@
     color: #7FAF8B;
     font-weight: 800;
 }
+
+/* 상품 카드 클릭 시 포인터로 변경 */
+.chatPopup_prd_card {
+    cursor: pointer;
+}
+
+/* 상품 카드 hover 효과 */
+.chatPopup_prd_card:hover {
+    transform: translateY(-2px);
+}
