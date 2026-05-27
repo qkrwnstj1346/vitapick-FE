@@ -5,13 +5,17 @@ import './ProductDetail.css';
 
 const ProductDetail = () => {
 
-    const { prdId } = useParams();
-    const [prd, setPrd] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('desc');
-    const [wished, setWished] = useState(false);
-    const [quantity, setQuantity] = useState(1);
-    const [descExpanded, setDescExpanded] = useState(false);
+    const { prdId } = useParams(); // URL에서 상품ID 가져오기
+    const [prd, setPrd] = useState(null);// 상품 정보
+    const [loading, setLoading] = useState(true); // 상품 정보 로딩 상태
+    const [activeTab, setActiveTab] = useState('desc'); //  desc: 상품설명, rvw: 상품평
+    const [wished, setWished] = useState(false); // 찜 여부
+    const [quantity, setQuantity] = useState(1); // 구매 수량
+    const [descExpanded, setDescExpanded] = useState(false); // 상품설명 확장 여부
+    const [rvwList, setRvwList] = useState([]);      // 리뷰 목록
+    const [rvwTxt, setRvwTxt] = useState('');         // 리뷰 입력 내용
+    const [rating, setRating] = useState(5);          // 별점
+    const [showRvwForm, setShowRvwForm] = useState(false); // 작성폼 열림/닫힘
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -27,6 +31,22 @@ const ProductDetail = () => {
         };
         fetchProduct();
     }, [prdId]);
+
+    // 리뷰 목록 가져오기
+    useEffect(() => {
+        const fetchRvw = async () => {
+            const token = getToken();
+            try {
+                const data = await apiCall(`/api/v1/rvw/prd/${prdId}`, 'GET', null, token, false);
+                setRvwList(data);
+            } catch (err) {
+                console.error('리뷰 조회 오류:', err);
+            }
+        };
+        fetchRvw();
+    }, [prdId]);
+
+
 
     if (loading) return <div className='detail_loading'>로딩 중...</div>;
     if (!prd) return <div className='detail_loading'>상품을 찾을 수 없습니다.</div>;
@@ -117,9 +137,32 @@ const ProductDetail = () => {
                 {/* 상품평 */}
                 {activeTab === 'rvw' && (
                     <div className='detail_rvw'>
-                        <p>상품평 준비 중입니다.</p>
+
+                    {/* 평균 평점 */}
+                    <div className='rvw_summary'>
+                    <strong>⭐ {rvwList.length > 0 ? (rvwList.reduce((sum, r) => sum + r.rating, 0) / rvwList.length).toFixed(1) : 0} / 5.0</strong>
+                    <p>총 {rvwList.length}개의 리뷰</p>
+                </div>
+
+                    {/* 리뷰 작성 버튼 */}
+                    <button className='rvw_write_btn' onClick={() => setShowRvwForm(prev => !prev)}>
+                        리뷰 작성하기
+                    </button>
+
+                    {/* 리뷰 없을때 */}
+                    {rvwList.length === 0 && <p className='rvw_empty'>아직 작성된 리뷰가 없습니다.</p>}
+
+                    {/* 리뷰 목록 */}
+                    {rvwList.map((rvw, idx) => (
+                        <div key={idx} className='rvw_item'>
+                            <span className='rvw_star'>{'★'.repeat(rvw.rating)}{'☆'.repeat(5 - rvw.rating)}</span>
+                            <span className='rvw_date'>{rvw.crtAt?.slice(0, 10)}</span>
+                        <p className='rvw_cmt'>{rvw.cmt}</p>
                     </div>
-                )}
+                ))}
+
+            </div>
+            )}
 
             </div>
 
