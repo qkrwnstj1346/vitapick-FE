@@ -223,12 +223,127 @@
     cursor: pointer;
 }
 
-/* 상품평 */
+/* 상품평 영역 */
 .detail_rvw {
+    padding: 40px 0;
+}
+
+/* 평균 평점 */
+.rvw_summary {
     text-align: center;
-    padding: 60px;
+    padding: 30px;
+    border: 1px solid #E3EEE5;
+    border-radius: 16px;
+    margin-bottom: 24px;
+}
+
+.rvw_summary strong {
+    font-size: 28px;
+    color: #17251c;
+}
+
+.rvw_summary p {
+    margin: 8px 0 0;
     color: #999;
+    font-size: 14px;
+}
+
+/* 리뷰 작성 버튼 */
+.rvw_write_btn {
+    width: 100%;
+    height: 48px;
+    border: 1px solid #7FAF8B;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #7FAF8B;
     font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 24px;
+}
+
+/* 리뷰 작성 폼 */
+.rvw_form {
+    padding: 24px;
+    border: 1px solid #E3EEE5;
+    border-radius: 16px;
+    margin-bottom: 24px;
+}
+
+/* 별점 선택 */
+.rvw_rating_select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.rvw_rating_select p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+/* 리뷰 입력창 */
+.rvw_textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #D7E6DA;
+    border-radius: 12px;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+
+/* 작성 완료 버튼 */
+.rvw_submit_btn {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    background: #7FAF8B;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+}
+
+/* 리뷰 없을때 */
+.rvw_empty {
+    text-align: center;
+    color: #999;
+    padding: 40px;
+    font-size: 14px;
+}
+
+/* 리뷰 아이템 */
+.rvw_item {
+    padding: 20px 0;
+    border-bottom: 1px solid #E3EEE5;
+}
+
+/* 별점 */
+.rvw_star {
+    color: #FFD700;
+    font-size: 16px;
+    margin-right: 12px;
+}
+
+/* 날짜 */
+.rvw_date {
+    color: #999;
+    font-size: 13px;
+}
+
+/* 리뷰 내용 */
+.rvw_cmt {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
 }
 
 /* 태블릿 */

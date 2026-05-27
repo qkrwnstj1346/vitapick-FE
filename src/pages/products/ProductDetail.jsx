@@ -145,33 +145,75 @@ const ProductDetail = () => {
                         </div>
 
                         {/* 리뷰 작성 버튼 */}
-        <button className='rvw_write_btn' onClick={() => setShowRvwForm(prev => !prev)}>
-            리뷰 작성하기
-        </button>
+                        <button className='rvw_write_btn' onClick={() => setShowRvwForm(prev => !prev)}>
+                            리뷰 작성하기
+                        </button>
 
-        {/* 리뷰 없을때 */}
-        {rvwList.length === 0 && <p className='rvw_empty'>아직 작성된 리뷰가 없습니다.</p>}
+                        {/* 리뷰 작성 폼 */}
+                {showRvwForm && (
+                    <div className='rvw_form'>
 
-        {/* 리뷰 목록 */}
-        {rvwList.map((rvw, idx) => (
-            <div key={idx} className='rvw_item'>
-                <span className='rvw_star'>{'★'.repeat(rvw.rating)}{'☆'.repeat(5 - rvw.rating)}</span>
-                <span className='rvw_date'>{rvw.crtAt?.slice(0, 10)}</span>
-                <p className='rvw_cmt'>{rvw.cmt}</p>
-            </div>
-        ))}
+                        {/* 별점 선택 */}
+                        <div className='rvw_rating_select'>
+                            <p>별점 선택:</p>
+                            {[1, 2, 3, 4, 5].map(star => (
+                                <span
+                                    key={star}
+                                    onClick={() => setRating(star)}
+                                    style={{ cursor: 'pointer', color: star <= rating ? '#FFD700' : '#ddd', fontSize: '24px' }}
+                                >
+                                    ★
+                                </span>
+                            ))}
+                        </div>
 
-    </div>
-)}
+                        {/* 리뷰 내용 입력 */}
+                        <textarea
+                            className='rvw_textarea'
+                            value={rvwTxt}
+                            onChange={(e) => setRvwTxt(e.target.value)}
+                            placeholder='리뷰를 작성해주세요'
+                            rows={4}
+                        />
 
-            </div>
-            )}
+                        {/* 작성 완료 버튼 */}
+                        <button className='rvw_submit_btn' onClick={async () => {
+                            const token = getToken();
+                            await apiCall('/api/v1/rvw', 'POST', {
+                                userNum: 1,
+                                ordItId: 1,
+                                prdId: Number(prdId),
+                                rating: rating,
+                                cmt: rvwTxt
+                            }, token, false);
+                            setRvwTxt('');
+                            setShowRvwForm(false);
+                            const data = await apiCall(`/api/v1/rvw/prd/${prdId}`, 'GET', null, token, false);
+                            setRvwList(data);
+                        }}>
+                            작성 완료
+                        </button>
+
+                    </div>
+                )}
+
+                        {/* 리뷰 없을때 */}
+                        {rvwList.length === 0 && <p className='rvw_empty'>아직 작성된 리뷰가 없습니다.</p>}
+
+                        {/* 리뷰 목록 */}
+                        {rvwList.map((rvw, idx) => (
+                            <div key={idx} className='rvw_item'>
+                                <span className='rvw_star'>{'★'.repeat(rvw.rating)}{'☆'.repeat(5 - rvw.rating)}</span>
+                                <span className='rvw_date'>{rvw.crtAt?.slice(0, 10)}</span>
+                                <p className='rvw_cmt'>{rvw.cmt}</p>
+                            </div>
+                        ))}
+
+                    </div>
+                )}
 
             </div>
 
         </div>
-    );
-
-};
-
+    )};
 export default ProductDetail;
