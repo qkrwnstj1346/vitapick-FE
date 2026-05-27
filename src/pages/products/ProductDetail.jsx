@@ -140,7 +140,8 @@ const ProductDetail = () => {
 
                         {/* 평균 평점 */}
                         <div className='rvw_summary'>
-                            <strong>⭐ {rvwList.length > 0 ? (rvwList.reduce((sum, r) => sum + r.rating, 0) / rvwList.length).toFixed(1) : 0} / 5.0</strong>
+                            <strong>⭐ {rvwList.length > 0 ? 
+                            (rvwList.reduce((sum, r) => sum + r.rating, 0) / rvwList.length).toFixed(1) : 0} / 5.0</strong>
                             <p>총 {rvwList.length}개의 리뷰</p>
                         </div>
 
@@ -150,8 +151,8 @@ const ProductDetail = () => {
                         </button>
 
                         {/* 리뷰 작성 폼 */}
-                {showRvwForm && (
-                    <div className='rvw_form'>
+                        {showRvwForm && (
+                        <div className='rvw_form'>
 
                         {/* 별점 선택 */}
                         <div className='rvw_rating_select'>

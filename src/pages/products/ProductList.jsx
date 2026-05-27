@@ -5,7 +5,7 @@ import './ProductList.css';
 
 const ProductList = () => {
 
-    //
+    //  URL에서 카테고리 코드 또는 검색어 가져오기
     const { catCd, keyword } = useParams();
 
     // 상품 목록
