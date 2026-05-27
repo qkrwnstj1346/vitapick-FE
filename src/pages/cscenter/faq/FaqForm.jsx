@@ -11,14 +11,22 @@ import './FaqForm.css';
 
 function FaqForm() {
 
+    /* FAQ 번호 */
     const { faqId } = useParams();
+
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* 수정 여부 */
     const isEdit = faqId !== undefined;
 
+    /* 로그인 사용자 */
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+
+    /* 관리자 여부 */
     const isAdmin = loginUser?.roleCd === 'ADMIN';
 
+    /* 폼 데이터 */
     const [formData, setFormData] = useState({
         faqCtgCd: 'ORDER',
         ttl: '',
@@ -26,14 +34,20 @@ function FaqForm() {
         useYn: 'Y'
     });
 
+    /* FAQ 상세 조회 */
     useEffect(() => {
 
+        /* 관리자 체크 */
         if (!isAdmin) {
+
             alert('관리자만 접근할 수 있습니다.');
+
             navigate('/cscenter/faqs');
+
             return;
         }
 
+        /* 수정 모드 */
         if (isEdit) {
 
             getFaqDetail(faqId)
@@ -61,6 +75,7 @@ function FaqForm() {
 
     }, [faqId, isEdit, isAdmin, navigate]);
 
+    /* 입력값 변경 */
     const handleChange = (e) => {
 
         const { name, value } = e.target;
@@ -72,20 +87,28 @@ function FaqForm() {
 
     };
 
+    /* 등록 / 수정 */
     const handleSubmit = (e) => {
 
         e.preventDefault();
 
+        /* 제목 체크 */
         if (!formData.ttl.trim()) {
+
             alert('제목을 입력해주세요.');
+
             return;
         }
 
+        /* 내용 체크 */
         if (!formData.faqTxt.trim()) {
+
             alert('내용을 입력해주세요.');
+
             return;
         }
 
+        /* 등록 / 수정 API */
         const api = isEdit
             ? updateFaq(faqId, formData)
             : createFaq(formData);
@@ -93,7 +116,11 @@ function FaqForm() {
         api
             .then(() => {
 
-                alert(isEdit ? 'FAQ가 수정되었습니다.' : 'FAQ가 등록되었습니다.');
+                alert(
+                    isEdit
+                        ? 'FAQ가 수정되었습니다.'
+                        : 'FAQ가 등록되었습니다.'
+                );
 
                 navigate('/cscenter/faqs');
 
@@ -102,25 +129,41 @@ function FaqForm() {
 
                 console.log(err);
 
-                alert(isEdit ? 'FAQ 수정에 실패했습니다.' : 'FAQ 등록에 실패했습니다.');
+                alert(
+                    isEdit
+                        ? 'FAQ 수정에 실패했습니다.'
+                        : 'FAQ 등록에 실패했습니다.'
+                );
 
             });
 
     };
 
+    /* 목록 이동 */
     const moveList = () => {
+
         navigate('/cscenter/faqs');
+
     };
 
     return (
+
         <div className="cs-faq-form-container">
 
+            {/* 제목 */}
             <h1 className="cs-faq-form-title">
+
                 {isEdit ? 'FAQ 수정' : 'FAQ 등록'}
+
             </h1>
 
-            <form onSubmit={handleSubmit} className="cs-faq-form">
+            {/* 폼 */}
+            <form
+                onSubmit={handleSubmit}
+                className="cs-faq-form"
+            >
 
+                {/* 카테고리 */}
                 <div className="cs-faq-form-group">
 
                     <label>
@@ -133,6 +176,7 @@ function FaqForm() {
                         onChange={handleChange}
                         className="cs-faq-form-select"
                     >
+
                         <option value="ORDER">ORDER</option>
                         <option value="DELIVERY">DELIVERY</option>
                         <option value="PRODUCT">PRODUCT</option>
@@ -141,10 +185,12 @@ function FaqForm() {
                         <option value="CUSTOM">CUSTOM</option>
                         <option value="INGREDIENT">INGREDIENT</option>
                         <option value="ETC">ETC</option>
+
                     </select>
 
                 </div>
 
+                {/* 제목 입력 */}
                 <div className="cs-faq-form-group">
 
                     <label>
@@ -162,6 +208,7 @@ function FaqForm() {
 
                 </div>
 
+                {/* 내용 입력 */}
                 <div className="cs-faq-form-group">
 
                     <label>
@@ -178,6 +225,7 @@ function FaqForm() {
 
                 </div>
 
+                {/* 사용 여부 */}
                 <div className="cs-faq-form-group">
 
                     <label>
@@ -190,21 +238,28 @@ function FaqForm() {
                         onChange={handleChange}
                         className="cs-faq-form-select"
                     >
+
                         <option value="Y">Y</option>
                         <option value="N">N</option>
+
                     </select>
 
                 </div>
 
+                {/* 버튼 영역 */}
                 <div className="cs-faq-form-btn-wrap">
 
+                    {/* 등록 / 수정 버튼 */}
                     <button
                         type="submit"
                         className="cs-faq-submit-btn"
                     >
+
                         {isEdit ? '수정' : '등록'}
+
                     </button>
 
+                    {/* 취소 버튼 */}
                     <button
                         type="button"
                         className="cs-faq-cancel-btn"
@@ -218,6 +273,7 @@ function FaqForm() {
             </form>
 
         </div>
+
     );
 }
 

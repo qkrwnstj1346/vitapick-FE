@@ -12,26 +12,37 @@ import './FaqList.css';
 
 function FaqList() {
 
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* FAQ 목록 */
     const [faqList, setFaqList] = useState([]);
+
+    /* 현재 페이지 */
     const [currentPage, setCurrentPage] = useState(1);
 
+    /* 페이지당 개수 */
     const itemPerPage = 10;
 
+    /* 로그인 사용자 */
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
+    /* 관리자 여부 */
     const isAdmin = loginUser?.roleCd === 'ADMIN';
 
+    /* 전체 페이지 */
     const totalPage = Math.ceil(faqList.length / itemPerPage);
 
+    /* 시작 인덱스 */
     const startIndex = (currentPage - 1) * itemPerPage;
 
+    /* 현재 페이지 FAQ 목록 */
     const currentFaqList = faqList.slice(
         startIndex,
         startIndex + itemPerPage
     );
 
+    /* FAQ 목록 조회 */
     useEffect(() => {
 
         const api = isAdmin
@@ -61,12 +72,14 @@ function FaqList() {
 
         <div className="cs-faq-wrap">
 
+            {/* 상단 영역 */}
             <div className="cs-faq-header">
 
                 <h2 className="cs-faq-title">
                     FAQ
                 </h2>
 
+                {/* 관리자 등록 버튼 */}
                 {isAdmin && (
 
                     <button
@@ -81,6 +94,7 @@ function FaqList() {
 
             </div>
 
+            {/* FAQ 없음 */}
             {faqList.length === 0 ? (
 
                 <div className="cs-faq-empty">
@@ -91,6 +105,7 @@ function FaqList() {
 
                 <>
 
+                    {/* FAQ 테이블 */}
                     <table className="cs-faq-table">
 
                         <thead>
@@ -109,6 +124,7 @@ function FaqList() {
                                     제목
                                 </th>
 
+                                {/* 관리자 전용 */}
                                 {isAdmin && (
 
                                     <th width="10%">
@@ -131,6 +147,7 @@ function FaqList() {
 
                         <tbody>
 
+                            {/* FAQ 목록 출력 */}
                             {currentFaqList.map((faq) => (
 
                                 <tr key={faq.faqId}>
@@ -151,6 +168,7 @@ function FaqList() {
 
                                     </td>
 
+                                    {/* 관리자 전용 */}
                                     {isAdmin && (
 
                                         <td>
@@ -175,6 +193,7 @@ function FaqList() {
 
                     </table>
 
+                    {/* 페이지네이션 */}
                     <Pagination
                         currentPage={currentPage}
                         totalPage={totalPage}

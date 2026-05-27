@@ -10,14 +10,22 @@ import './FaqDetail.css';
 
 function FaqDetail() {
 
+    /* FAQ 번호 */
     const { faqId } = useParams();
+
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* FAQ 상세 */
     const [detail, setDetail] = useState(null);
 
+    /* 로그인 사용자 */
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+
+    /* 관리자 여부 */
     const isAdmin = loginUser?.roleCd === 'ADMIN';
 
+    /* FAQ 상세 조회 */
     useEffect(() => {
 
         getFaqDetail(faqId)
@@ -33,14 +41,17 @@ function FaqDetail() {
 
     }, [faqId, navigate]);
 
+    /* 목록 이동 */
     const moveList = () => {
         navigate('/cscenter/faqs');
     };
 
+    /* 수정 이동 */
     const moveEdit = () => {
         navigate(`/cscenter/faqs/${faqId}/edit`);
     };
 
+    /* FAQ 삭제 */
     const removeFaq = () => {
 
         if (!isAdmin) {
@@ -64,35 +75,49 @@ function FaqDetail() {
 
     };
 
+    /* 로딩 */
     if (detail === null) {
         return <div>로딩중...</div>;
     }
 
     return (
+
         <div className="cs-faq-detail-container">
 
+            {/* 제목 */}
             <h1 className="cs-faq-detail-title">
                 {detail.ttl}
             </h1>
 
+            {/* 상세 정보 */}
             <div className="cs-faq-detail-info">
+
                 <span>카테고리 : {detail.faqCtgCd}</span>
+
                 <span>조회수 : {detail.viewCnt}</span>
+
                 <span>작성일 : {detail.crtAt?.substring(0, 10)}</span>
 
+                {/* 관리자 전용 */}
                 {isAdmin && (
                     <span>사용여부 : {detail.useYn}</span>
                 )}
+
             </div>
 
+            {/* 내용 */}
             <div className="cs-faq-detail-content">
                 {detail.faqTxt}
             </div>
 
+            {/* 버튼 영역 */}
             <div className="cs-faq-detail-btn-wrap">
 
+                {/* 관리자 버튼 */}
                 {isAdmin && (
+
                     <>
+
                         <button
                             type="button"
                             className="cs-faq-edit-btn"
@@ -108,9 +133,12 @@ function FaqDetail() {
                         >
                             삭제
                         </button>
+
                     </>
+
                 )}
 
+                {/* 목록 버튼 */}
                 <button
                     type="button"
                     className="cs-faq-detail-btn"
@@ -122,6 +150,7 @@ function FaqDetail() {
             </div>
 
         </div>
+
     );
 }
 

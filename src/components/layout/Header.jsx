@@ -19,17 +19,23 @@ import { Link } from 'react-router-dom';
 
 function Header({ userInfo, isLoggedIn, onLogout }) {
 
-    {/* 검색어 상태 */}
+    /* 검색어 상태 */
     const [searchKeyword, setSearchKeyword] = useState('');
+
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* 검색 */
     const handleSearch = () => {
+
         if (!searchKeyword.trim()) return;
+
         if (searchKeyword.trim().length < 2) {
             alert('두 글자 이상 입력해주세요.');
             return;
         }
-     navigate(`/products/search/${searchKeyword}`);
+
+        navigate(`/products/search/${searchKeyword}`);
     };
 
     return (
@@ -53,30 +59,33 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                 </div>
 
-            {/* 검색창 */}
-            <div className="headerSearch">
+                {/* 검색창 */}
+                <div className="headerSearch">
 
-                {/* 검색 입력창 - 입력할때마다 searchKeyword에 저장, 엔터 누르면 검색 */}
-                <input
-                    type="text"
-                    placeholder="비타민, 유산균, 오메가3 검색"
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                />
+                    {/* 검색 입력 */}
+                    <input
+                        type="text"
+                        placeholder="비타민, 유산균, 오메가3 검색"
+                        value={searchKeyword}
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                    />
 
-                {/* 검색 버튼 - 클릭하면 검색 결과 페이지로 이동 */}
-                <button onClick={handleSearch}>
-                    <Search size={22} />
-                </button>
+                    {/* 검색 버튼 */}
+                    <button onClick={handleSearch}>
 
-            </div>
+                        <Search size={22} />
+
+                    </button>
+
+                </div>
 
                 {/* 우측 메뉴 */}
                 <div className="headerMenu">
 
                     <ul>
 
+                        {/* 로그인 상태 */}
                         {isLoggedIn ? (
 
                             <>
@@ -287,19 +296,19 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                         </div>
 
-                        {/* 드롭다운 */}
+                        {/* 카테고리 드롭다운 */}
                         <div className="categoryDropdown">
 
                             <Link to="/products/6">종합영양</Link>
-                            
+
                             <Link to="/products/1">유산균</Link>
-                            
+
                             <Link to="/products/2">비타민</Link>
-                            
+
                             <Link to="/products/3">오메가3</Link>
-                            
+
                             <Link to="/products/4">미네랄</Link>
-                            
+
                             <Link to="/products/5">뷰티/다이어트</Link>
 
                         </div>
@@ -358,7 +367,7 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                     </li>
 
-                    {/* join */}
+                    {/* 회원가입 */}
                     <li>
 
                         <Link to="/v1/auth/join">

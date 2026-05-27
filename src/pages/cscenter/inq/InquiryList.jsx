@@ -9,30 +9,41 @@ import './InquiryList.css';
 
 function InquiryList() {
 
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* 문의 목록 */
     const [inqList, setInqList] = useState([]);
+
+    /* 현재 페이지 */
     const [currentPage, setCurrentPage] = useState(1);
 
+    /* 페이지당 개수 */
     const itemPerPage = 10;
 
+    /* 로그인 사용자 */
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
+    /* 전체 페이지 */
     const totalPage = Math.ceil(inqList.length / itemPerPage);
 
+    /* 시작 인덱스 */
     const startIndex = (currentPage - 1) * itemPerPage;
 
+    /* 현재 페이지 문의 목록 */
     const currentInqList = inqList.slice(
         startIndex,
         startIndex + itemPerPage
     );
 
+    /* 문의 목록 조회 */
     useEffect(() => {
 
         fetchInqList();
 
     }, []);
 
+    /* 문의 목록 조회 함수 */
     const fetchInqList = async () => {
 
         try {
@@ -52,6 +63,7 @@ function InquiryList() {
         }
     };
 
+    /* 상세 이동 */
     const handleMoveDetail = (item) => {
 
         if (!loginUser) {
@@ -80,6 +92,7 @@ function InquiryList() {
         alert('본인이 작성한 문의글만 확인할 수 있습니다.');
     };
 
+    /* 문의 등록 이동 */
     const handleMoveWrite = () => {
 
         if (!loginUser) {
@@ -105,12 +118,14 @@ function InquiryList() {
 
         <div className="inq-wrap">
 
+            {/* 상단 영역 */}
             <div className="inq-top">
 
                 <h2 className="inq-title">
                     1:1 문의
                 </h2>
 
+                {/* 문의 등록 버튼 */}
                 <button
                     className="inq-write-btn"
                     onClick={handleMoveWrite}
@@ -120,6 +135,7 @@ function InquiryList() {
 
             </div>
 
+            {/* 문의 테이블 */}
             <table className="inq-table">
 
                 <thead>
@@ -193,6 +209,7 @@ function InquiryList() {
 
             </table>
 
+            {/* 페이지네이션 */}
             {inqList.length > 0 && (
 
                 <Pagination

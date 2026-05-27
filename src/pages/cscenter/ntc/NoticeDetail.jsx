@@ -8,15 +8,22 @@ import './NoticeDetail.css';
 
 function NoticeDetail() {
 
+    /* 공지사항 번호 */
     const { ntcId } = useParams();
+
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* 공지사항 상세 */
     const [detail, setDetail] = useState(null);
 
+    /* 로그인 사용자 */
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
+    /* 관리자 여부 */
     const isAdmin = loginUser?.roleCd === 'ADMIN';
 
+    /* 공지사항 상세 조회 */
     useEffect(() => {
 
         getNoticeDetail(ntcId)
@@ -32,14 +39,17 @@ function NoticeDetail() {
 
     }, [ntcId, navigate]);
 
+    /* 목록 이동 */
     const moveList = () => {
         navigate('/cscenter/notices');
     };
 
+    /* 수정 이동 */
     const moveEdit = () => {
         navigate(`/cscenter/notices/${ntcId}/edit`);
     };
 
+    /* 공지사항 삭제 */
     const removeNotice = () => {
 
         if (!isAdmin) {
@@ -63,33 +73,47 @@ function NoticeDetail() {
 
     };
 
+    /* 로딩 */
     if (detail == null) {
         return <div>로딩중...</div>;
     }
 
     return (
+
         <div className="cs-notice-detail-container">
 
+            {/* 제목 */}
             <h1 className="cs-notice-detail-title">
                 {detail.ttl}
             </h1>
 
+            {/* 상세 정보 */}
             <div className="cs-notice-detail-info">
+
                 <span>조회수 : {detail.viewCnt}</span>
+
                 <span>작성일 : {detail.crtAt?.substring(0, 10)}</span>
+
+                {/* 관리자 전용 */}
                 {isAdmin && (
                     <span>사용여부 : {detail.useYn}</span>
                 )}
+
             </div>
 
+            {/* 내용 */}
             <div className="cs-notice-detail-content">
                 {detail.ntcTxt}
             </div>
 
+            {/* 버튼 영역 */}
             <div className="cs-notice-detail-btn-wrap">
 
+                {/* 관리자 버튼 */}
                 {isAdmin && (
+
                     <>
+
                         <button
                             type="button"
                             className="cs-notice-edit-btn"
@@ -105,9 +129,12 @@ function NoticeDetail() {
                         >
                             삭제
                         </button>
+
                     </>
+
                 )}
 
+                {/* 목록 버튼 */}
                 <button
                     type="button"
                     className="cs-notice-detail-btn"

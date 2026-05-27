@@ -9,29 +9,39 @@ import './NoticeForm.css';
 
 function NoticeForm() {
 
+    /* 공지사항 번호 */
     const { ntcId } = useParams();
+
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* 수정 여부 */
     const isEdit = ntcId !== undefined;
 
+    /* 로그인 사용자 */
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
+    /* 관리자 여부 */
     const isAdmin = loginUser?.roleCd === 'ADMIN';
 
+    /* 폼 데이터 */
     const [formData, setFormData] = useState({
         ttl: '',
         ntcTxt: '',
         useYn: 'Y'
     });
 
+    /* 공지사항 상세 조회 */
     useEffect(() => {
 
+        /* 관리자 체크 */
         if (!isAdmin) {
             alert('관리자만 접근 가능합니다.');
             navigate('/cscenter/notices');
             return;
         }
 
+        /* 수정 모드 */
         if (isEdit) {
 
             getNoticeDetail(ntcId)
@@ -52,6 +62,7 @@ function NoticeForm() {
 
     }, [isEdit, ntcId, isAdmin, navigate]);
 
+    /* 입력값 변경 */
     const changeHandler = (e) => {
 
         const { name, value } = e.target;
@@ -62,15 +73,18 @@ function NoticeForm() {
         });
     };
 
+    /* 공지사항 등록 / 수정 */
     const submitHandler = async (e) => {
 
         e.preventDefault();
 
+        /* 제목 체크 */
         if (!formData.ttl.trim()) {
             alert('제목을 입력해주세요.');
             return;
         }
 
+        /* 내용 체크 */
         if (!formData.ntcTxt.trim()) {
             alert('내용을 입력해주세요.');
             return;
@@ -80,12 +94,14 @@ function NoticeForm() {
 
             if (isEdit) {
 
+                /* 수정 */
                 await updateNotice(ntcId, formData);
 
                 alert('공지사항 수정 완료!');
 
             } else {
 
+                /* 등록 */
                 await createNotice(formData);
 
                 alert('공지사항 등록 완료!');
@@ -101,22 +117,27 @@ function NoticeForm() {
         }
     };
 
+    /* 취소 */
     const cancelHandler = () => {
         navigate('/cscenter/notices');
     };
 
     return (
+
         <div className="notice-form-wrap">
 
+            {/* 제목 */}
             <h2 className="notice-form-title">
                 {isEdit ? '공지사항 수정' : '공지사항 등록'}
             </h2>
 
+            {/* 공지사항 폼 */}
             <form
                 className="notice-form"
                 onSubmit={submitHandler}
             >
 
+                {/* 제목 입력 */}
                 <div className="notice-form-group">
 
                     <label>제목</label>
@@ -131,6 +152,7 @@ function NoticeForm() {
 
                 </div>
 
+                {/* 내용 입력 */}
                 <div className="notice-form-group">
 
                     <label>내용</label>
@@ -144,6 +166,7 @@ function NoticeForm() {
 
                 </div>
 
+                {/* 사용 여부 */}
                 <div className="notice-form-group">
 
                     <label>사용 여부</label>
@@ -159,8 +182,10 @@ function NoticeForm() {
 
                 </div>
 
+                {/* 버튼 영역 */}
                 <div className="notice-form-btn-wrap">
 
+                    {/* 취소 버튼 */}
                     <button
                         type="button"
                         className="notice-form-cancel-btn"
@@ -169,6 +194,7 @@ function NoticeForm() {
                         취소
                     </button>
 
+                    {/* 등록 / 수정 버튼 */}
                     <button
                         type="submit"
                         className="notice-form-submit-btn"

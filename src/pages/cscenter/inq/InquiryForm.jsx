@@ -11,22 +11,29 @@ import './InquiryForm.css';
 
 function InquiryForm() {
 
+    /* 문의 번호 */
     const { inqId } = useParams();
 
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* 수정 여부 */
     const isEdit = inqId !== undefined;
 
+    /* 로그인 사용자 */
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
+    /* 폼 데이터 */
     const [formData, setFormData] = useState({
         inqTpCd: 'PRODUCT',
         ttl: '',
         inqTxt: ''
     });
 
+    /* 문의 상세 조회 */
     useEffect(() => {
 
+        /* 로그인 체크 */
         if (!loginUser) {
 
             alert('로그인 후 이용 가능합니다.');
@@ -36,6 +43,7 @@ function InquiryForm() {
             return;
         }
 
+        /* 관리자 체크 */
         if (loginUser.roleCd === 'ADMIN') {
 
             alert('관리자는 1:1 문의를 등록하거나 수정할 수 없습니다.');
@@ -45,6 +53,7 @@ function InquiryForm() {
             return;
         }
 
+        /* 수정 모드 */
         if (isEdit) {
 
             fetchInqDetail();
@@ -52,6 +61,7 @@ function InquiryForm() {
 
     }, []);
 
+    /* 문의 상세 조회 함수 */
     const fetchInqDetail = async () => {
 
         try {
@@ -60,6 +70,7 @@ function InquiryForm() {
 
             console.log('문의 수정 데이터 = ', result);
 
+            /* 본인 글 체크 */
             if (Number(loginUser?.userNum) !== Number(result.userNum)) {
 
                 alert('본인이 작성한 문의글만 수정할 수 있습니다.');
@@ -85,6 +96,7 @@ function InquiryForm() {
         }
     };
 
+    /* 입력값 변경 */
     const handleChange = (e) => {
 
         const { name, value } = e.target;
@@ -95,10 +107,12 @@ function InquiryForm() {
         });
     };
 
+    /* 문의 등록 / 수정 */
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
+        /* 로그인 체크 */
         if (!loginUser) {
 
             alert('로그인 후 이용 가능합니다.');
@@ -108,6 +122,7 @@ function InquiryForm() {
             return;
         }
 
+        /* 관리자 체크 */
         if (loginUser.roleCd === 'ADMIN') {
 
             alert('관리자는 1:1 문의를 등록하거나 수정할 수 없습니다.');
@@ -117,6 +132,7 @@ function InquiryForm() {
             return;
         }
 
+        /* 제목 체크 */
         if (!formData.ttl.trim()) {
 
             alert('제목을 입력해주세요.');
@@ -124,6 +140,7 @@ function InquiryForm() {
             return;
         }
 
+        /* 문의 내용 체크 */
         if (!formData.inqTxt.trim()) {
 
             alert('문의 내용을 입력해주세요.');
@@ -133,11 +150,13 @@ function InquiryForm() {
 
         try {
 
+            /* 요청 데이터 */
             const requestData = {
                 ...formData,
                 userNum: loginUser.userNum
             };
 
+            /* 수정 */
             if (isEdit) {
 
                 await updateInq(
@@ -150,6 +169,7 @@ function InquiryForm() {
 
             } else {
 
+                /* 등록 */
                 await createInq(requestData);
 
                 alert('문의글이 등록되었습니다.');
@@ -169,14 +189,17 @@ function InquiryForm() {
         }
     };
 
+    /* 취소 */
     const handleCancel = () => {
 
         navigate('/cscenter/inquiries');
     };
 
     return (
+
         <div className="inq-form-wrap">
 
+            {/* 상단 제목 */}
             <div className="inq-form-top">
 
                 <h2 className="inq-form-title">
@@ -189,11 +212,13 @@ function InquiryForm() {
 
             </div>
 
+            {/* 문의 폼 */}
             <form
                 className="inq-form"
                 onSubmit={handleSubmit}
             >
 
+                {/* 문의 유형 */}
                 <div className="inq-form-row">
 
                     <label className="inq-form-label">
@@ -206,15 +231,18 @@ function InquiryForm() {
                         value={formData.inqTpCd}
                         onChange={handleChange}
                     >
+
                         <option value="ORDER">주문</option>
                         <option value="DELIVERY">배송</option>
                         <option value="PRODUCT">상품</option>
                         <option value="MEMBER">회원</option>
                         <option value="ETC">기타</option>
+
                     </select>
 
                 </div>
 
+                {/* 제목 */}
                 <div className="inq-form-row">
 
                     <label className="inq-form-label">
@@ -232,6 +260,7 @@ function InquiryForm() {
 
                 </div>
 
+                {/* 문의 내용 */}
                 <div className="inq-form-text-row">
 
                     <label className="inq-form-label">
@@ -248,8 +277,10 @@ function InquiryForm() {
 
                 </div>
 
+                {/* 버튼 영역 */}
                 <div className="inq-form-btn-wrap">
 
+                    {/* 취소 버튼 */}
                     <button
                         type="button"
                         className="inq-cancel-btn"
@@ -258,6 +289,7 @@ function InquiryForm() {
                         취소
                     </button>
 
+                    {/* 등록 / 수정 버튼 */}
                     <button
                         type="submit"
                         className="inq-submit-btn"

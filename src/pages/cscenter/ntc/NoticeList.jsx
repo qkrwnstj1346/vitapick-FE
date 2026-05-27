@@ -11,26 +11,37 @@ import './NoticeList.css';
 
 function NoticeList() {
 
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* 공지사항 목록 */
     const [noticeList, setNoticeList] = useState([]);
+
+    /* 현재 페이지 */
     const [currentPage, setCurrentPage] = useState(1);
 
+    /* 페이지당 개수 */
     const itemPerPage = 10;
 
+    /* 로그인 사용자 */
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
+    /* 관리자 여부 */
     const isAdmin = loginUser?.roleCd === 'ADMIN';
 
+    /* 전체 페이지 */
     const totalPage = Math.ceil(noticeList.length / itemPerPage);
 
+    /* 시작 인덱스 */
     const startIndex = (currentPage - 1) * itemPerPage;
 
+    /* 현재 페이지 공지사항 목록 */
     const currentNoticeList = noticeList.slice(
         startIndex,
         startIndex + itemPerPage
     );
 
+    /* 공지사항 목록 조회 */
     useEffect(() => {
 
         const api = isAdmin ? getAdminNoticeList : getNoticeList;
@@ -49,25 +60,31 @@ function NoticeList() {
     }, [isAdmin]);
 
     return (
+
         <div className="cs-notice-wrap">
 
+            {/* 상단 영역 */}
             <div className="cs-notice-header">
 
                 <h2 className="cs-notice-title">
                     공지사항
                 </h2>
 
+                {/* 관리자 등록 버튼 */}
                 {isAdmin && (
+
                     <button
                         className="cs-notice-write-btn"
                         onClick={() => navigate('/cscenter/notices/new')}
                     >
                         등록하기
                     </button>
+
                 )}
 
             </div>
 
+            {/* 공지사항 없음 */}
             {noticeList.length === 0 ? (
 
                 <div className="cs-notice-empty">
@@ -78,20 +95,31 @@ function NoticeList() {
 
                 <>
 
+                    {/* 공지사항 테이블 */}
                     <table className="cs-notice-table">
 
                         <thead>
+
                             <tr>
+
                                 <th width="10%">번호</th>
+
                                 <th width="50%">제목</th>
+
+                                {/* 관리자 전용 */}
                                 {isAdmin && <th width="10%">사용여부</th>}
+
                                 <th width="10%">조회수</th>
+
                                 <th width="20%">작성일</th>
+
                             </tr>
+
                         </thead>
 
                         <tbody>
 
+                            {/* 공지사항 목록 출력 */}
                             {currentNoticeList.map((notice) => (
 
                                 <tr key={notice.ntcId}>
@@ -99,11 +127,14 @@ function NoticeList() {
                                     <td>{notice.ntcId}</td>
 
                                     <td className="cs-notice-title-cell">
+
                                         <Link to={`/cscenter/notices/${notice.ntcId}`}>
                                             {notice.ttl}
                                         </Link>
+
                                     </td>
 
+                                    {/* 관리자 전용 */}
                                     {isAdmin && (
                                         <td>{notice.useYn}</td>
                                     )}
@@ -122,6 +153,7 @@ function NoticeList() {
 
                     </table>
 
+                    {/* 페이지네이션 */}
                     <Pagination
                         currentPage={currentPage}
                         totalPage={totalPage}

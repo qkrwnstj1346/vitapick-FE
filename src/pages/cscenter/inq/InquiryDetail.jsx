@@ -13,24 +13,32 @@ import './InquiryDetail.css';
 
 function InquiryDetail() {
 
+    /* 문의 번호 */
     const { inqId } = useParams();
 
+    /* 페이지 이동 */
     const navigate = useNavigate();
 
+    /* 문의 상세 */
     const [inquiry, setInquiry] = useState(null);
 
+    /* 답변 내용 */
     const [answerText, setAnswerText] = useState('');
 
+    /* 로그인 사용자 */
     const loginUser = JSON.parse(localStorage.getItem('userInfo'));
 
+    /* 관리자 여부 */
     const isAdmin = loginUser?.roleCd === 'ADMIN';
 
+    /* 문의 상세 조회 */
     useEffect(() => {
 
         fetchInquiryDetail();
 
     }, []);
 
+    /* 문의 상세 조회 함수 */
     const fetchInquiryDetail = async () => {
 
         try {
@@ -41,6 +49,7 @@ function InquiryDetail() {
 
             setInquiry(response.data);
 
+            /* 답변 존재 시 */
             if (response.data?.ansTxt) {
 
                 setAnswerText(response.data.ansTxt);
@@ -55,6 +64,7 @@ function InquiryDetail() {
         }
     };
 
+    /* 문의 삭제 */
     const handleDelete = async () => {
 
         const confirmDelete = window.confirm('문의를 삭제하시겠습니까?');
@@ -77,6 +87,7 @@ function InquiryDetail() {
         }
     };
 
+    /* 답변 등록 */
     const handleAnswerSubmit = async () => {
 
         if (!answerText.trim()) {
@@ -102,14 +113,17 @@ function InquiryDetail() {
         }
     };
 
+    /* 로딩 */
     if (!inquiry) {
 
         return <div>로딩중...</div>;
     }
 
     return (
+
         <div className="inq-detail-wrap">
 
+            {/* 상단 제목 */}
             <div className="inq-detail-top">
 
                 <h2 className="inq-detail-title">
@@ -118,6 +132,7 @@ function InquiryDetail() {
 
             </div>
 
+            {/* 문의 상세 테이블 */}
             <table className="inq-detail-table">
 
                 <tbody>
@@ -218,12 +233,14 @@ function InquiryDetail() {
 
             )}
 
+            {/* 하단 버튼 */}
             <div className="inq-detail-bottom">
 
                 {/* 일반 회원 본인 글 */}
                 {!isAdmin && loginUser?.userNum === inquiry.userNum && (
 
                     <>
+
                         <button
                             className="inq-edit-btn"
                             onClick={() =>
@@ -239,10 +256,12 @@ function InquiryDetail() {
                         >
                             삭제
                         </button>
+
                     </>
 
                 )}
 
+                {/* 목록 버튼 */}
                 <button
                     className="inq-list-btn"
                     onClick={() => navigate(-1)}
