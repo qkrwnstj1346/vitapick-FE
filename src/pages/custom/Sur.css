@@ -33,9 +33,10 @@
   display: grid;
   grid-template-columns: 340px minmax(0, 1fr);
   grid-template-areas:
-    "intro card"
-    "progress card";
-  gap: 24px 36px;
+    "progress card"
+    "intro card";
+    
+  gap: 0px 20px;
   align-items: start;
   color: var(--vp-text);
   font-family: 'Pretendard', 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -47,94 +48,17 @@
   overflow: hidden;
 }
 
-.sur-wrap::before {
-  content: "";
-  position: absolute;
-  left: -80px;
-  top: 120px;
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(127, 175, 139, 0.16), transparent 80%);
-  pointer-events: none;
-}
-
-.sur-wrap::after {
-  content: "";
-  position: absolute;
-  right: -90px;
-  bottom: 40px;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(179, 220, 194, 0.25), transparent 70%);
-  pointer-events: none;
-}
-
-/* =========================================================
-   왼쪽 브랜드 영역
-   ========================================================= */
-
-.sur-header {
-  grid-area: intro;
-  min-height: 560px;
-  padding: 34px 24px 32px;
+.sur__logo {
   position: relative;
-  z-index: 1;
-  border-radius: 34px;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(127, 175, 139, 0.13), transparent 30%),
-    radial-gradient(circle at 82% 18%, rgba(127, 175, 139, 0.13), transparent 30%);
-}
-
-/* 좌측 상단 로고 */
-.sur-header::before {
-  content: "";
-  display: block;
-  width: 210px;
-  height: 74px;
-  margin-bottom: 30px;
-  background: url('/images/VitaPick_Logo.png') no-repeat left center / contain;
-}
-
-/* 좌측 하단 캐릭터 */
-.sur-header::after {
-  content: "";
-  position: absolute;
-  left: 34px;
-  bottom: 18px;
   width: 250px;
-  height: 210px;
-  background: url('/images/VitaPick_ChatBot_Logo.png') no-repeat center bottom / contain;
-  opacity: 0.94;
-  filter: drop-shadow(0 18px 26px rgba(92, 145, 111, 0.18));
-  pointer-events: none;
+  height: 75px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  /* margin-left: 35px; */
 }
-
-.sur-header__title {
-  max-width: 290px;
-  font-size: 30px;
-  font-weight: 750;
-  color: var(--vp-title);
-  letter-spacing: -0.55px;
-}
-
-.sur-header__sub {
-  margin: -15px 0 0;
-  max-width: 280px;
-  color: var(--vp-sub);
-  color: var(--vp-mint-3);
-  font-size: 16px;
-  line-height: 1.7;
-  font-weight: 500;
-  letter-spacing: -0.55px;
-}
-
 /* =========================================================
    왼쪽 진행 단계 카드
    ========================================================= */
-
 .sur-progress {
   grid-area: progress;
   position: relative;
@@ -144,7 +68,7 @@
   border-radius: 28px;
   background: rgba(255, 255, 255, 0.84);
   border: 1px solid rgba(216, 230, 221, 0.88);
-  box-shadow: 0 22px 46px rgba(86, 125, 98, 0.13);
+  box-shadow: 0 22px 22px rgba(86, 125, 98, 0.13);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   column-gap: 0;
@@ -156,7 +80,7 @@
   position: absolute;
   left: 28px;
   top: 26px;
-  color: var(--vp-text);
+  color: var(--vp-mint-3);
   font-size: 17px;
   font-weight: 900;
   letter-spacing: -0.5px;
@@ -165,15 +89,16 @@
 .sur-progress::after {
   content: "모든 정보는 안전하게 보호되며 추천 목적 외에는 사용되지 않습니다.";
   position: absolute;
-  left: 28px;
+  left: 30px;
   right: 28px;
-  bottom: 22px;
-  padding-top: 18px;
+  bottom: 20px;
+  padding-top: 10px;
   border-top: 1px solid #edf3ef;
   color: #8a968f;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 10px;
+  line-height: 1;
   letter-spacing: -0.35px;
+  text-align: center;
 }
 
 .sur-progress__item {
@@ -197,7 +122,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 900;
   position: relative;
   z-index: 2;
@@ -241,6 +166,63 @@
 .sur-progress__line.done {
   background: var(--vp-mint-2);
 }
+
+/* =========================================================
+   왼쪽 브랜드 영역
+   ========================================================= */
+
+.sur-header {
+  grid-area: intro;
+  width: 100%;
+  min-height: 560px;
+  padding: 0px 0px 18px px;
+  position: absolute;
+  z-index: 1;
+  border-radius: 34px;
+  overflow: hidden;
+  /* background:
+    radial-gradient(circle at 18% 18%, rgba(143, 197, 156, 0.13), transparent 30%),
+    radial-gradient(circle at 82% 18%, rgba(97, 138, 108, 0.13), transparent 30%); */
+}
+
+/* 좌측 상단 로고 */
+
+/* 좌측 하단 캐릭터 */
+.sur-header::after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  bottom: 20px;
+  width: 300px;
+  height: 280px;
+  background: url('/images/VitaPick_ChatBot_Logo.png') no-repeat center bottom / contain;
+  filter: drop-shadow(0 18px 26px rgba(92, 145, 111, 0.18));
+  pointer-events: none;
+  animation: floatChatbot 3s ease-in-out infinite;
+}
+
+.sur-header__title {
+  max-width: 290px;
+  margin-left: 30px;
+  font-size: 30px;
+  font-weight: 750;
+  color: var(--vp-title);
+  letter-spacing: -0.55px;
+}
+
+.sur-header__sub {
+  margin: -15px 0 0;
+  text-align: center;
+  max-width: 280px;
+  color: var(--vp-sub);
+  color: var(--vp-mint-3);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 500;
+  letter-spacing: -0.55px;
+}
+
+
 
 /* =========================================================
    오른쪽 설문 카드
