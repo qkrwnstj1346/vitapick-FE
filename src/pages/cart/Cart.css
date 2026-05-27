@@ -1,0 +1,287 @@
+/* 전체 */
+.cartPage {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 100px;
+}
+
+/* 상단 */
+.cartTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.cartTitle {
+    font-size: 32px;
+    font-weight: 700;
+    color: #222;
+}
+
+.deleteAllBtn {
+    border: none;
+    background: #eef5ef;
+    color: #4f7a57;
+    padding: 12px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.deleteAllBtn:hover {
+    background: #dfeee2;
+}
+
+/* 섹션 */
+.cartSection {
+    margin-bottom: 50px;
+}
+
+.sectionTitle {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.emptyText {
+    color: #888;
+    font-size: 15px;
+    padding: 30px 0;
+}
+
+/* 커스텀 그룹 */
+.customGroup {
+    margin-bottom: 35px;
+}
+
+.customGroupTitleBox {
+    margin-bottom: 16px;
+}
+
+.customGroupTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: #4f7a57;
+    margin-bottom: 4px;
+}
+
+.customGroupSub {
+    font-size: 13px;
+    color: #888;
+}
+
+/* 상품 */
+.cartItem {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+    background: #fff;
+    margin-bottom: 16px;
+}
+
+/* 체크박스 */
+.cartCheckBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cartCheckBox input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* 이미지 */
+.cartImgBox {
+    width: 110px;
+    height: 110px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f7f7f7;
+    flex-shrink: 0;
+}
+
+.cartImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 정보 */
+.cartInfo {
+    flex: 1;
+}
+
+.cartBrand {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.cartPrdNm {
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.cartPrice {
+    font-size: 20px;
+    font-weight: 700;
+    color: #4f7a57;
+}
+
+/* 버튼 */
+.cartBtnBox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cartBtnBox button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 10px;
+    background: #eef5ef;
+    color: #4f7a57;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cartBtnBox button:hover {
+    background: #dcebdd;
+}
+
+.qtyText {
+    min-width: 24px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.deleteBtn {
+    width: auto !important;
+    padding: 0 14px;
+    font-size: 14px !important;
+    background: #ffe8e8 !important;
+    color: #d94b4b !important;
+}
+
+.deleteBtn:hover {
+    background: #ffd5d5 !important;
+}
+
+/* 하단 */
+.cartBottom {
+    margin-top: 60px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.orderBtn {
+    border: none;
+    background: #7FAF8B;
+    color: #fff;
+    padding: 18px 40px;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.orderBtn:hover {
+    opacity: 0.9;
+}
+
+/* 태블릿 */
+@media screen and (max-width:1024px) {
+
+    .cartItem {
+        gap: 14px;
+    }
+
+    .cartImgBox {
+        width: 95px;
+        height: 95px;
+    }
+
+    .cartPrdNm {
+        font-size: 16px;
+    }
+}
+
+/* 모바일 */
+@media screen and (max-width:768px) {
+
+    .cartTop {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .cartItem {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cartCheckBox {
+        align-self: flex-start;
+    }
+
+    .cartImgBox {
+        width: 100%;
+        height: 220px;
+    }
+
+    .cartBtnBox {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .cartBottom {
+        justify-content: center;
+    }
+
+    .orderBtn {
+        width: 100%;
+    }
+}
+
+/* 작은 모바일 */
+@media screen and (max-width:480px) {
+
+    .cartPage {
+        padding: 30px 14px 80px;
+    }
+
+    .cartTitle {
+        font-size: 26px;
+    }
+
+    .sectionTitle {
+        font-size: 20px;
+    }
+
+    .cartPrdNm {
+        font-size: 15px;
+    }
+
+    .cartPrice {
+        font-size: 18px;
+    }
+}

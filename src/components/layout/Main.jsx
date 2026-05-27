@@ -27,7 +27,9 @@ import CusList from '../../pages/custom/CusList';
 import ProductList from '../../pages/products/ProductList';
 import ProductDetail from '../../pages/products/ProductDetail';
 
-function Main({ token, onLogin, isLoggedIn  }) {
+import Cart from '../../pages/cart/Cart';
+
+function Main({ token, onLogin, isLoggedIn }) {
 
     return (
         <main>
@@ -72,16 +74,16 @@ function Main({ token, onLogin, isLoggedIn  }) {
 
                 {/* 상품 상세 */}
                 <Route path="/products/detail/:prdId" element={<ProductDetail />} />
-                
+
                 {/* 상품 검색 결과 */}
                 <Route path="/products/search/:keyword" element={<ProductList />} />
 
                 {/* 상품 목록 */}
                 <Route path="/products/:catCd" element={<ProductList />} />
-                
+
                 {/* 챗봇 */}
                 <Route path="/chatbot" element={<Chatbot />} />
-                
+
                 {/* 설문 작성 */}
                 <Route path="/v1/sur/save" element={<Sur />} />
 
@@ -90,6 +92,9 @@ function Main({ token, onLogin, isLoggedIn  }) {
 
                 {/* 내 추천 목록 */}
                 <Route path="/v1/cus/list" element={<CusList />} />
+
+                {/* 장바구니 */}
+                <Route path="/cart" element={<Cart />} />
 
             </Routes>
         </main>
