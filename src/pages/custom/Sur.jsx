@@ -424,14 +424,16 @@ export default function Sur() {
 
   return (
     <div className="sur-wrap">
+      <div>
+      <img src='/images/VitaPick_Logo.png' className="sur__logo"/>
+      <ProgressBar step={step}/>
+      </div>
       <div className="sur-header">
         <h1 className="sur-header__title"> 나에게 딱 맞는<br/> 영양설계</h1>
         <p className="sur-header__sub">
           간단한 설문을 통해 나에게 딱 맞는 영양제를 추천해 드릴게요.
         </p>
       </div>
-
-      <ProgressBar step={step} />
 
       <div className="sur-card">
 
