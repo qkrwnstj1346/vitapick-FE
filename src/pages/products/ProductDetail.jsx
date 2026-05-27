@@ -138,28 +138,31 @@ const ProductDetail = () => {
                 {activeTab === 'rvw' && (
                     <div className='detail_rvw'>
 
-                    {/* 평균 평점 */}
-                    <div className='rvw_summary'>
-                    <strong>⭐ {rvwList.length > 0 ? (rvwList.reduce((sum, r) => sum + r.rating, 0) / rvwList.length).toFixed(1) : 0} / 5.0</strong>
-                    <p>총 {rvwList.length}개의 리뷰</p>
-                </div>
+                        {/* 평균 평점 */}
+                        <div className='rvw_summary'>
+                            <strong>⭐ {rvwList.length > 0 ? (rvwList.reduce((sum, r) => sum + r.rating, 0) / rvwList.length).toFixed(1) : 0} / 5.0</strong>
+                            <p>총 {rvwList.length}개의 리뷰</p>
+                        </div>
 
-                    {/* 리뷰 작성 버튼 */}
-                    <button className='rvw_write_btn' onClick={() => setShowRvwForm(prev => !prev)}>
-                        리뷰 작성하기
-                    </button>
+                        {/* 리뷰 작성 버튼 */}
+        <button className='rvw_write_btn' onClick={() => setShowRvwForm(prev => !prev)}>
+            리뷰 작성하기
+        </button>
 
-                    {/* 리뷰 없을때 */}
-                    {rvwList.length === 0 && <p className='rvw_empty'>아직 작성된 리뷰가 없습니다.</p>}
+        {/* 리뷰 없을때 */}
+        {rvwList.length === 0 && <p className='rvw_empty'>아직 작성된 리뷰가 없습니다.</p>}
 
-                    {/* 리뷰 목록 */}
-                    {rvwList.map((rvw, idx) => (
-                        <div key={idx} className='rvw_item'>
-                            <span className='rvw_star'>{'★'.repeat(rvw.rating)}{'☆'.repeat(5 - rvw.rating)}</span>
-                            <span className='rvw_date'>{rvw.crtAt?.slice(0, 10)}</span>
-                        <p className='rvw_cmt'>{rvw.cmt}</p>
-                    </div>
-                ))}
+        {/* 리뷰 목록 */}
+        {rvwList.map((rvw, idx) => (
+            <div key={idx} className='rvw_item'>
+                <span className='rvw_star'>{'★'.repeat(rvw.rating)}{'☆'.repeat(5 - rvw.rating)}</span>
+                <span className='rvw_date'>{rvw.crtAt?.slice(0, 10)}</span>
+                <p className='rvw_cmt'>{rvw.cmt}</p>
+            </div>
+        ))}
+
+    </div>
+)}
 
             </div>
             )}
