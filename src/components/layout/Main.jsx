@@ -29,7 +29,7 @@ import ProductDetail from '../../pages/products/ProductDetail';
 
 import Cart from '../../pages/cart/Cart';
 
-function Main({onLoginSubmit, isLoggedIn }) {
+function Main({ token, onLogin, isLoggedIn }) {
 
     return (
         <main>
@@ -38,7 +38,7 @@ function Main({onLoginSubmit, isLoggedIn }) {
 
                 <Route
                     path="/v1/auth/login"
-                    element={<Login onLoginSubmit={onLoginSubmit} />}
+                    element={<Login onLogin={onLogin} />}
                 />
 
                 <Route
