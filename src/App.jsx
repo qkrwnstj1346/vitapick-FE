@@ -85,22 +85,17 @@ function App() {
 
             .then(response => {
 
-                // localStorage 저장
                 localStorage.setItem(
                     "userInfo",
                     JSON.stringify(response)
                 );
 
-                // 토큰 저장
                 saveToken(response.token);
 
-                // 로그인 상태 변경
                 setIsLoggedIn(true);
 
-                // 회원 정보 저장
                 setUserInfo(response);
 
-                // 홈 이동
                 navigate("/");
 
             })
@@ -130,19 +125,14 @@ function App() {
     // 로그아웃
     const onLogout = () => {
 
-        // localStorage 삭제
         localStorage.removeItem("userInfo");
 
-        // 토큰 삭제
         removeToken();
 
-        // 로그인 상태 변경
         setIsLoggedIn(false);
 
-        // 회원 정보 초기화
         setUserInfo(null);
 
-        // 홈 이동
         navigate("/");
 
     };
