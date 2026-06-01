@@ -113,7 +113,7 @@ function App() {
             setUserNm('');
             alert("로그아웃 되었습니다.");
             navigate("/");
-
+        }
     };
 
     return (
