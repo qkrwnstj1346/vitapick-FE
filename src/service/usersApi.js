@@ -9,7 +9,7 @@ export const UsersApi={
             pwd: pwd,
         };
         const result = await apiCall.post(`/v1/auth/login`, loginData, {withCredentials: true,});
-        console.log(`** login, result.data =${result.data.userNm}`)
+        console.log(`** login, result.data =${result.data}`)
         return result.data;
     },
 

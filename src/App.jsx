@@ -42,9 +42,9 @@ function App() {
         await UsersApi.login(loginId, pwd)
         .then((response)=>{
             sessionStorage.setItem("accessToken", response.accessToken);
-            sessionStorage.setItem("usersNum", response.userNum);
+            sessionStorage.setItem("userNum", response.userNum);
             sessionStorage.setItem("loginId", response.loginId);
-            sessionStorage.setItem("usersNm", response.userNm);
+            sessionStorage.setItem("userNm", response.userNm);
             sessionStorage.setItem("roleCd", response.roleCd);
         alert(`로그인 성공 response =${response.id}`);
         setIsLoggedIn(true);
@@ -61,16 +61,18 @@ function App() {
 
     // 로그아웃
     const onLogout = async () => {
-        await UsersApi.logout()
-        //=> 로그인상태값 과 loginInfo 값 초기화  
-        //=> sessionStorage.removeItem("loginInfo");
-        sessionStorage.clear();
-        localStorage.clear();
-        setIsLoggedIn(false);
-        setUserName('');
-        alert("로그아웃 되었습니다.");
-        // 홈 이동
-        navigate("/");
+        try {
+            await UsersApi.logout();
+        } catch (e) {
+            // 401이든 뭐든 로그아웃은 진행
+        } finally {
+            sessionStorage.clear();
+            localStorage.clear();
+            setIsLoggedIn(false);
+            setUserNm('');
+            alert("로그아웃 되었습니다.");
+            navigate("/");
+        }
     };
 
 
