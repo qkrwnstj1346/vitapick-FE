@@ -1,18 +1,15 @@
 import './App.css';
-
 import React, { useEffect, useState } from 'react';
-
 import {
     useNavigate,
     useLocation
 } from 'react-router-dom';
 
 import {
-    apiCall,
-    saveToken,
-    getToken,
-    removeToken
+    getToken
 } from './service/apiService';
+
+import { UsersApi } from './service/usersApi';
 
 import Header from './components/layout/Header';
 import Main from './components/layout/Main';
@@ -23,115 +20,98 @@ import Chatbot from './pages/chatbot/Chatbot';
 function App() {
 
     const navigate = useNavigate();
-
-    /* 현재 페이지 주소 */
     const location = useLocation();
 
-    // 로그인 상태
+    const [userNm, setUserNm] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    // 회원 정보
     const [userInfo, setUserInfo] = useState(null);
-
-    // 챗봇 열림/닫힘
     const [isChatOpen, setIsChatOpen] = useState(false);
 
-    /* 챗봇 숨길 페이지 */
     const hideChatbotPaths = [
         '/cart',
         '/order'
     ];
 
-    /* 현재 페이지가 챗봇 숨김 페이지인지 체크 */
     const isHideChatbot = hideChatbotPaths.some(path =>
         location.pathname.startsWith(path)
     );
 
-    // 로그인 상태 확인
     useEffect(() => {
 
-        const storedUserInfo = JSON.parse(
-            localStorage.getItem("userInfo")
-        );
+        const accessToken = sessionStorage.getItem("accessToken");
+        const userNm = sessionStorage.getItem("usersNm");
 
-        if (
-            storedUserInfo !== null &&
-            storedUserInfo.token !== null
-        ) {
+        if (accessToken !== null) {
 
             setIsLoggedIn(true);
+            setUserNm(userNm);
 
-            setUserInfo(storedUserInfo);
+            setUserInfo({
+                token: accessToken,
+                userNum: sessionStorage.getItem("usersNum"),
+                loginId: sessionStorage.getItem("loginId"),
+                userNm: userNm,
+                roleCd: sessionStorage.getItem("roleCd")
+            });
 
         }
 
     }, []);
 
-    // 로그인
-    const onLogin = (loginId, pwd) => {
+    const onLoginSubmit = async (loginId, pwd) => {
 
-        const data = {
-            loginId: loginId,
-            pwd: pwd
-        };
+        await UsersApi.login(loginId, pwd)
+            .then((response) => {
 
-        apiCall(
-            "/v1/auth/login",
-            "POST",
-            data,
-            null,
-            false
-        )
-
-            .then(response => {
-
-                localStorage.setItem(
-                    "userInfo",
-                    JSON.stringify(response)
-                );
-
-                saveToken(response.token);
+                sessionStorage.setItem("accessToken", response.accessToken);
+                sessionStorage.setItem("usersNum", response.userNum);
+                sessionStorage.setItem("loginId", response.loginId);
+                sessionStorage.setItem("usersNm", response.userNm);
+                sessionStorage.setItem("roleCd", response.roleCd);
 
                 setIsLoggedIn(true);
+                setUserNm(response.userNm);
 
-                setUserInfo(response);
+                setUserInfo({
+                    token: response.accessToken,
+                    userNum: response.userNum,
+                    loginId: response.loginId,
+                    userNm: response.userNm,
+                    roleCd: response.roleCd
+                });
 
                 navigate("/");
 
             })
-
-            .catch(err => {
+            .catch((err) => {
 
                 setIsLoggedIn(false);
-
                 setUserInfo(null);
 
-                if (err === 502) {
-
-                    alert("아이디 또는 비밀번호가 다릅니다");
-
+                if (err.status === 502) {
+                    alert("id 또는 password 가 다릅니다, 다시하세요 ~~");
                 } else {
-
-                    alert(`로그인 오류 => ${err}`);
-
+                    alert(`** onLoginSubmit 시스템 오류, err=${err}`);
                 }
 
-                navigate("/v1/auth/login");
+                navigate("/login");
 
             });
 
     };
 
-    // 로그아웃
-    const onLogout = () => {
+    const onLogout = async () => {
 
-        localStorage.removeItem("userInfo");
+        await UsersApi.logout();
 
-        removeToken();
+        sessionStorage.clear();
+        localStorage.clear();
 
         setIsLoggedIn(false);
-
+        setUserNm("");
         setUserInfo(null);
+
+        alert("로그아웃 되었습니다.");
 
         navigate("/");
 
@@ -149,31 +129,25 @@ function App() {
 
             <Main
                 token={getToken()}
-                onLogin={onLogin}
+                onLoginSubmit={onLoginSubmit}
                 isLoggedIn={isLoggedIn}
             />
 
             <Footer />
 
-            {/* 장바구니/주문서 제외 플로팅 버튼 */}
             {!isHideChatbot && (
                 <div
                     className="chatbotFloatingBtn"
                     onClick={() => {
 
                         if (isLoggedIn) {
-
                             setIsChatOpen(prev => !prev);
-
                         } else {
-
                             navigate('/v1/auth/login');
-
                         }
 
                     }}
                 >
-
                     <img
                         src="/images/VitaPick_ChatBot_Logo.png"
                         alt="챗봇"
@@ -182,11 +156,9 @@ function App() {
                     <p className="chatbotFloatingText">
                         ChatBot
                     </p>
-
                 </div>
             )}
 
-            {/* 장바구니/주문서 제외 챗봇 팝업 */}
             {!isHideChatbot && isChatOpen && (
                 <Chatbot
                     onClose={() => setIsChatOpen(false)}

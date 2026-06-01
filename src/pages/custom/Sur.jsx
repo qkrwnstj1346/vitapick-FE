@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiCall, getLocalData, getToken } from "../../service/apiService";
+import { apiCall, getToken, getSessionData } from "../../service/apiService";
 import "./Sur.css";
 
 // ─── 상수 ────────────────────────────────────────────────────────────────────
@@ -244,7 +244,7 @@ export default function Sur() {
 
   // ── 로그인 체크 (진입 시) ────────────────────────────────────────────────────
   useEffect(() => {
-    const userInfo = getLocalData("userInfo");
+    const userInfo = getSessionData("userInfo");
     if (!userInfo?.userNum) {
       alert("로그인이 필요합니다.");
       navigate("/v1/auth/login");
@@ -357,7 +357,7 @@ export default function Sur() {
   async function handleSubmit() {
     if (!validateStep(3)) return;
 
-    const userInfo = getLocalData("userInfo");
+    const userInfo = getSessionData("userInfo");
     const userNum = userInfo?.userNum;
     if (!userNum) {
       alert("로그인이 필요합니다.");
