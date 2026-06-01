@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLoginSubmit }) => {
     const [loginId, setLoginId] = useState("");
     const [pwd, setPwd] = useState("");
-    const navigate = useNavigate();
 
     return (
         <div className='body_container'>
@@ -17,8 +16,7 @@ const Login = ({ onLogin }) => {
                     autoComplete='off'
                     onSubmit={(e) => {
                         e.preventDefault();
-                        onLogin(loginId, pwd)
-                    }} >
+                        onLoginSubmit(loginId, pwd)}}>
                     <input type="text" name="loginId" placeholder="아이디"
                         autoComplete='off'
                         size={20} value={loginId}
