@@ -19,9 +19,6 @@ export const UsersApi={
         return result;
     },
 
-    //아이디 찾기
-    findId: async()
-
     //Server Data 요청
     //=> userdetail, memberlist, boardlist 
     getServerData: async (url) => {
