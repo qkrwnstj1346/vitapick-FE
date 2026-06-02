@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiCall, getsessionData } from "../../service/apiService";
+import { apiCall, getSessionData } from "../../service/apiService";
 import "./cusList.css";
 
 export default function CusList() {
@@ -11,7 +11,7 @@ export default function CusList() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const userNum = getsessionData("userNum");
+    const userNum = getSessionData("userNum");
     if (!userNum) {
       alert("로그인이 필요합니다.");
       navigate("/v1/auth/login");

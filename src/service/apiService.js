@@ -10,7 +10,7 @@ export const refreshapi = axios.create(
     }
 );
 const getRefresh = async()=>{
-    const result = await refreshapi.get("v1/auth/getrefresh");
+    const result = await refreshapi.get("/v1/auth/getrefresh");
     return result.data;
 }
 
