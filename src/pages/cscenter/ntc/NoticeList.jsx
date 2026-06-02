@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-    getNoticeList,
-    getAdminNoticeList
-} from '../../../service/cscenter/csCenterApi';
+import { getNoticeList } from '../../../service/cscenter/csCenterApi';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Pagination from '../../../components/layout/Pagination';
@@ -23,11 +20,15 @@ function NoticeList() {
     /* 페이지당 개수 */
     const itemPerPage = 10;
 
-    /* 로그인 사용자 */
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+    /* 로그인 정보 */
+    const userNum = sessionStorage.getItem('userNum');
+    const roleCd = sessionStorage.getItem('roleCd');
+
+    /* 로그인 여부 */
+    const isLogin = !!userNum;
 
     /* 관리자 여부 */
-    const isAdmin = loginUser?.roleCd === 'ADMIN';
+    const isAdmin = roleCd === 'ADMIN';
 
     /* 전체 페이지 */
     const totalPage = Math.ceil(noticeList.length / itemPerPage);
@@ -44,12 +45,10 @@ function NoticeList() {
     /* 공지사항 목록 조회 */
     useEffect(() => {
 
-        const api = isAdmin ? getAdminNoticeList : getNoticeList;
-
-        api()
+        getNoticeList()
             .then((data) => {
                 console.log('공지사항 데이터:', data);
-                setNoticeList(data);
+                setNoticeList(Array.isArray(data) ? data : []);
                 setCurrentPage(1);
             })
             .catch((err) => {
@@ -57,7 +56,7 @@ function NoticeList() {
                 alert('공지사항 조회 실패');
             });
 
-    }, [isAdmin]);
+    }, []);
 
     return (
 
@@ -71,7 +70,7 @@ function NoticeList() {
                 </h2>
 
                 {/* 관리자 등록 버튼 */}
-                {isAdmin && (
+                {isLogin && isAdmin && (
 
                     <button
                         className="cs-notice-write-btn"
@@ -154,11 +153,13 @@ function NoticeList() {
                     </table>
 
                     {/* 페이지네이션 */}
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPage={totalPage}
-                        onPageChange={setCurrentPage}
-                    />
+                    {totalPage > 1 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPage={totalPage}
+                            onPageChange={setCurrentPage}
+                        />
+                    )}
 
                 </>
 

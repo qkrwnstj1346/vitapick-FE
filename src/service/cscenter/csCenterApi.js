@@ -3,15 +3,9 @@ import { apiCall } from '../apiService';
 /* 공지사항 */
 
 /* 공지사항 목록 조회 */
-/* 일반 회원: use_yn = Y */
+/* 관리자: 전체 / 일반 회원: use_yn = Y */
 export function getNoticeList() {
     return apiCall.get('/cscenter/notices');
-}
-
-/* 공지사항 목록 조회 */
-/* 관리자: use_yn = Y/N 전체 */
-export function getAdminNoticeList() {
-    return apiCall.get('/cscenter/admin/notices');
 }
 
 /* 공지사항 상세 조회 */
@@ -23,7 +17,7 @@ export function getNoticeDetail(ntcId) {
 /* 관리자 */
 export function createNotice(data) {
     return apiCall.post(
-        '/cscenter/admin/notices',
+        '/cscenter/notices',
         data
     );
 }
@@ -32,7 +26,7 @@ export function createNotice(data) {
 /* 관리자 */
 export function updateNotice(ntcId, data) {
     return apiCall.patch(
-        `/cscenter/admin/notices/${ntcId}`,
+        `/cscenter/notices/${ntcId}`,
         data
     );
 }
@@ -41,23 +35,18 @@ export function updateNotice(ntcId, data) {
 /* 관리자 */
 export function deleteNotice(ntcId) {
     return apiCall.delete(
-        `/cscenter/admin/notices/${ntcId}`
+        `/cscenter//notices/${ntcId}`
     );
 }
 
 /* FAQ */
 
 /* FAQ 전체 목록 조회 */
-/* 관리자 */
+/* 관리자: 전체 / 일반 회원: use_yn = Y */
 export function getFaqList() {
     return apiCall.get('/faqs');
 }
 
-/* FAQ 사용여부 Y 목록 조회 */
-/* 일반 회원 */
-export function getUseYnFaqList() {
-    return apiCall.get('/faqs/useyn/Y');
-}
 
 /* FAQ 카테고리별 조회 */
 export function getFaqListByCategory(faqCtgCd) {
@@ -100,66 +89,52 @@ export function deleteFaq(faqId) {
 /* 1:1 문의 */
 
 /* 전체 문의 목록 조회 */
-/* 관리자 */
+/* 전체 사용자 조회 가능 */
 export function getAllInq() {
-    return apiCall.get('/inquiries');
+    return apiCall.get('/cscenter/inquiries');
 }
 
 /* 마이페이지 내 문의 목록 조회 */
-/* 본인 문의만 */
-export function getMyInq(userNum) {
-    return apiCall.get(
-        `/mypage/inquiries/${userNum}`
-    );
+/* 로그인한 본인 문의만 */
+export function getMyInq() {
+    return apiCall.get('/cscenter/mypage/inquiries');
 }
 
-/* 관리자 문의 상세 조회 */
+/* 문의 상세 조회 */
+/* 관리자: 전체 / 회원: 본인 문의만 */
 export function getInqDetail(inqId) {
-    return apiCall.get(
-        `/inquiries/${inqId}`
-    );
+    return apiCall.get(`/cscenter/inquiries/${inqId}`);
 }
 
 /* 회원 본인 문의 상세 조회 */
-export function getMyInqDetail(inqId, userNum) {
-    return apiCall.get(
-        `/inquiries/${inqId}/${userNum}`
-    );
+/* 기존 프론트 코드 호환용 */
+export function getMyInqDetail(inqId) {
+    return apiCall.get(`/cscenter/inquiries/${inqId}`);
 }
 
 /* 문의 등록 */
-/* USER만 가능 */
+/* 로그인 회원만 가능 */
 export function createInq(data) {
-    return apiCall.post(
-        '/inquiries',
-        data
-    );
+    return apiCall.post('/cscenter/inquiries', data);
 }
 
 /* 문의 수정 */
 /* 작성자만 가능 */
-export function updateInq(inqId, userNum, data) {
-    return apiCall.patch(
-        `/inquiries/${inqId}/${userNum}`,
-        data
-    );
+export function updateInq(inqId, data) {
+    return apiCall.patch(`/cscenter/inquiries/${inqId}`, data);
 }
 
 /* 문의 삭제 */
 /* 작성자만 가능 */
-export function deleteInq(inqId, userNum) {
-    return apiCall.delete(
-        `/inquiries/${inqId}/${userNum}`
-    );
+export function deleteInq(inqId) {
+    return apiCall.delete(`/cscenter/inquiries/${inqId}`);
 }
 
 /* 관리자 답변 등록 */
 /* ADMIN만 가능 */
 export function answerInq(inqId, ansTxt) {
     return apiCall.patch(
-        `/inquiries/${inqId}/answer`,
-        {
-            ansTxt
-        }
+        `/cscenter/inquiries/${inqId}/answer`,
+        { ansTxt }
     );
 }
