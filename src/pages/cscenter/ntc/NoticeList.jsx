@@ -142,8 +142,8 @@ function NoticeList() {
 
                         <tr>
                             <td
-                                className="cs-notice-empty"
                                 colSpan={isAdmin ? 5 : 4}
+                                className="cs-notice-table-empty"
                             >
                                 등록된 공지사항이 없습니다.
                             </td>

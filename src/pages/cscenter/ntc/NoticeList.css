@@ -99,12 +99,12 @@
     color: #7FAF8B;
 }
 
-/* 빈 데이터 */
-.cs-notice-empty {
+/* 테이블 빈 데이터 */
+.cs-notice-table-empty {
     padding: 80px 0 !important;
+    text-align: center !important;
     color: #999;
     font-size: 15px;
-    text-align: center !important;
 }
 
 /* 태블릿 */

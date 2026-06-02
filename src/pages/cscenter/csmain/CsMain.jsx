@@ -84,7 +84,7 @@ function CsMain() {
 
                     {noticeList.length === 0 ? (
 
-                        <li className="cs-notice-empty">
+                        <li className="cs-main-notice-empty">
                             등록된 공지사항이 없습니다.
                         </li>
 
