@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiCall, getToken, getLocalData } from "../../service/apiService";
+import { apiCall, getsessionData } from "../../service/apiService";
 import "./cusList.css";
 
 export default function CusList() {
@@ -11,15 +11,14 @@ export default function CusList() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const userInfo = getLocalData("userInfo");
-    if (!userInfo?.userNum) {
+    const userNum = getsessionData("userNum");
+    if (!userNum) {
       alert("로그인이 필요합니다.");
       navigate("/v1/auth/login");
       return;
     }
 
-    const token = getToken();
-    apiCall(`/v1/cus/list/${userInfo.userNum}`, "GET", null, token, false)
+    apiCall.get(`/v1/cus/list/${userNum}`)
       .then((data) => {
         // 최신순 정렬
         const sorted = [...(data || [])].sort(

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { apiCall, getToken, getLocalData } from "../../service/apiService";
+import { apiCall, getToken, getLocalData, getSessionData } from "../../service/apiService";
 import "./cusResult.css";
 
 // ── 아이템별 장바구니 버튼 상태: idle | loading | done | error
-function CartBtn({ item, cusId, userNum, token }) {
+function CartBtn({ item, cusId, userNum}) {
   const [status, setStatus] = useState("idle"); // idle | loading | done | error
 
   function handleAddCart(e) {
@@ -20,7 +20,7 @@ function CartBtn({ item, cusId, userNum, token }) {
       itQty: 1,
     };
 
-    apiCall("/cart/add", "POST", cartDTO, token, false)
+    apiCall.post("/cart/add", cartDTO)
       .then(() => {
         setStatus("done");
       })
@@ -61,17 +61,16 @@ export default function CusResult() {
   // 전체 담기 상태
   const [allCartStatus, setAllCartStatus] = useState("idle"); // idle | loading | done | error
 
-  const userInfo = getLocalData("userInfo");
-  const token = getToken();
+  const userNum = getSessionData("userNum");
 
   useEffect(() => {
-    if (!userInfo?.userNum) {
-      alert("로그인이 필요합니다.");
+    if (!userNum) {
+      alert("로그인이 필요합니다.!!");
       navigate("/v1/auth/login");
       return;
     }
 
-    apiCall(`/v1/cus/detail/${cusId}`, "GET", null, token, false)
+    apiCall.get(`/v1/cus/detail/${cusId}`)
       .then((data) => setCusData(data))
       .catch((err) => {
         console.error("추천 결과 조회 실패", err);
@@ -90,12 +89,12 @@ export default function CusResult() {
     try {
       // 순차적으로 담기 (동시 요청 시 totalCheckQty 충돌 방지)
       for (const item of cusData.items) {
-        await apiCall("/cart/add", "POST", {
-          userNum: userInfo.userNum,
+        await apiCall.post("/cart/add", {
+          userNum: userNum,
           prdId: item.prdId,
           cusId: Number(cusId),
           itQty: 1,
-        }, token, false);
+        });
       }
       setAllCartStatus("done");
     } catch (err) {
@@ -219,8 +218,7 @@ export default function CusResult() {
                 <CartBtn
                   item={item}
                   cusId={Number(cusId)}
-                  userNum={userInfo?.userNum}
-                  token={token}
+                  userNum={userNum}
                 />
 
               </div>
