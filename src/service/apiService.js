@@ -30,7 +30,7 @@ let requestQueue = []; //요청이 겹칠 때 대기 큐
 //=> 응답 인터셉터
 //-> 성공이면 그대로 넘기고, 에러이면 async 함수 호출. 401 이면 accessToken 만료, refreshToken으로 재발급 요청(다른 에러는 에러처리)
 apiCall.interceptors.response.use(
-    (response)=>response, //성공 응답이면 그대로 반환
+    (response)=>response.data, //성공 응답이면 그대로 반환
     async(error)=>{
         console.log("요청 URL:", error.config?.url);
         console.log("요청 method:", error.config?.method);
