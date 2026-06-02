@@ -33,6 +33,13 @@ const Login = ({ onLoginSubmit }) => {
                     /><br /><br />
                     <input type="submit" className="loginBtn" value="로그인" style={{ width: 175 }} /><br /><br />
                 </form>
+                
+                <div className="find-links">
+                    <Link to="/v1/auth/findid">아이디 찾기</Link>
+                    <span className="divider">|</span>
+                    비밀번호 찾기
+                </div>
+
 
                 <span>
                     <span>아직 회원이 아니신가요?</span>&nbsp;
