@@ -1,0 +1,142 @@
+/* 배송지 폼 전체 */
+.userAddrFormWrap {
+    width: 100%;
+}
+
+/* 배송지 폼 */
+.userAddrForm {
+    padding: 28px;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+    background-color: #fff;
+    box-shadow: 0 6px 18px rgba(127, 175, 139, 0.08);
+}
+
+/* 제목 */
+.userAddrFormTitle {
+    margin: 0 0 24px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 입력 그룹 */
+.userAddrFormGroup {
+    margin-bottom: 18px;
+}
+
+/* 라벨 */
+.userAddrFormGroup label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+
+/* 입력창 */
+.userAddrFormGroup input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #333;
+    box-sizing: border-box;
+}
+
+/* 입력창 포커스 */
+.userAddrFormGroup input:focus {
+    outline: none;
+    border-color: #7FAF8B;
+}
+
+/* 체크박스 */
+.userAddrCheckBox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 24px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* 버튼 영역 */
+.userAddrBtnBox {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* 취소 버튼 */
+.userAddrCancelBtn {
+    min-width: 86px;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 저장 버튼 */
+.userAddrSaveBtn {
+    min-width: 86px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background-color: #7FAF8B;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 버튼 hover */
+.userAddrCancelBtn:hover,
+.userAddrSaveBtn:hover {
+    opacity: 0.85;
+}
+
+/* 태블릿 */
+@media (max-width: 1024px) {
+    .userAddrForm {
+        padding: 24px;
+    }
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .userAddrForm {
+        padding: 22px;
+    }
+
+    .userAddrBtnBox {
+        flex-direction: column-reverse;
+    }
+
+    .userAddrCancelBtn,
+    .userAddrSaveBtn {
+        width: 100%;
+    }
+}
+
+/* 작은 모바일 */
+@media (max-width: 480px) {
+    .userAddrForm {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .userAddrFormTitle {
+        font-size: 22px;
+    }
+
+    .userAddrFormGroup input {
+        height: 42px;
+        font-size: 14px;
+    }
+}
