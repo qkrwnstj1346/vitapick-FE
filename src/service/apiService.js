@@ -9,6 +9,10 @@ export const refreshapi = axios.create(
     withCredentials: true, //Cookie 반드시 필요
     }
 );
+const getRefresh = async()=>{
+    const result = await refreshapi.get("v1/auth/getrefresh");
+    return result.data;
+}
 
 //=> 요청 인터셉터 (request interceptor)
 //-> API 요청 보내기전 토큰이 존재할 경우, Header에 Authorization: Bearer xxx 자동추가.

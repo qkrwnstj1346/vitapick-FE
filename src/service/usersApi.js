@@ -21,10 +21,10 @@ export const UsersApi={
 
     //리프레쉬 가져오기기
     //-> response 인터셉터에서 제외시켜야 하므로 별도의 인스턴스_refreshapi 사용
-    getRefresh: async () => {
-        const result = await refreshapi.get(`/auth/getrefresh`, {withCredentials: true,});
-        return result.data;
-    },
+    // getRefresh: async () => {
+    //     const result = await refreshapi.get(`/auth/getrefresh`, {withCredentials: true,});
+    //     return result.data;
+    // },
 
     //Server Data 요청
     //=> userdetail, memberlist, boardlist 

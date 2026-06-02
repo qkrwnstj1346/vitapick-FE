@@ -241,14 +241,16 @@ export default function Sur() {
   const [surTitle, setSurTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const [userNum, setUserNum] = useState(null);
   // ── 로그인 체크 (진입 시) ────────────────────────────────────────────────────
   useEffect(() => {
-    const userInfo = getSessionData("userInfo");
-    if (!userInfo?.userNum) {
+    const userNum = getSessionData("userNum");
+    if (!userNum) {
       alert("로그인이 필요합니다.");
       navigate("/v1/auth/login");
+      return;
     }
+    setUserNum(userNum);
   }, [navigate]);
 
   // ── 상태 업데이트 헬퍼 ──────────────────────────────────────────────────────
@@ -357,8 +359,6 @@ export default function Sur() {
   async function handleSubmit() {
     if (!validateStep(3)) return;
 
-    const userInfo = getSessionData("userInfo");
-    const userNum = userInfo?.userNum;
     if (!userNum) {
       alert("로그인이 필요합니다.");
       navigate("/v1/auth/login");
@@ -396,18 +396,13 @@ export default function Sur() {
 
     try {
       setLoading(true);
-      const token = getToken();
 
       // 1단계: 설문 저장
-      const surResult = await apiCall("/v1/sur/save", "POST", surDTO, token);
+      const surResult = await apiCall.post("/v1/sur/save", surDTO);
 
       // 2단계: AI 추천 실행
-      const cusResult = await apiCall(
-        `/v1/cus/recommend?surId=${surResult.surId}&userNum=${userNum}`,
-        "POST",
-        null,
-        token,
-        false
+      const cusResult = await apiCall.post(
+        `/v1/cus/recommend?surId=${surResult.surId}&userNum=${userNum}`
       );
 
       // 3단계: 추천 결과 페이지로 이동
