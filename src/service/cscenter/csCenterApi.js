@@ -44,27 +44,26 @@ export function deleteNotice(ntcId) {
 /* FAQ 전체 목록 조회 */
 /* 관리자: 전체 / 일반 회원: use_yn = Y */
 export function getFaqList() {
-    return apiCall.get('/faqs');
+    return apiCall.get('/cscenter/faqs');
 }
-
 
 /* FAQ 카테고리별 조회 */
 export function getFaqListByCategory(faqCtgCd) {
     return apiCall.get(
-        `/faqs?faqCtgCd=${faqCtgCd}`
+        `/cscenter/faqs?faqCtgCd=${faqCtgCd}`
     );
 }
 
 /* FAQ 상세 조회 */
 export function getFaqDetail(faqId) {
-    return apiCall.get(`/faqs/${faqId}`);
+    return apiCall.get(`/cscenter/faqs/${faqId}`);
 }
 
 /* FAQ 등록 */
 /* 관리자 */
 export function createFaq(data) {
     return apiCall.post(
-        '/faqs',
+        '/cscenter/faqs',
         data
     );
 }
@@ -73,7 +72,7 @@ export function createFaq(data) {
 /* 관리자 */
 export function updateFaq(faqId, data) {
     return apiCall.patch(
-        `/faqs/${faqId}`,
+        `/cscenter/faqs/${faqId}`,
         data
     );
 }
@@ -82,7 +81,7 @@ export function updateFaq(faqId, data) {
 /* 관리자 */
 export function deleteFaq(faqId) {
     return apiCall.delete(
-        `/faqs/${faqId}`
+        `/cscenter/faqs/${faqId}`
     );
 }
 

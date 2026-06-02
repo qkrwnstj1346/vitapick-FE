@@ -98,117 +98,118 @@ function FaqList() {
 
             </div>
 
-            {/* FAQ 없음 */}
-            {faqList.length === 0 ? (
+            {/* FAQ 테이블 */}
+            <table className="cs-faq-table">
 
-                <div className="cs-faq-empty">
-                    등록된 FAQ가 없습니다.
-                </div>
+                <thead>
 
-            ) : (
+                    <tr>
 
-                <>
+                        <th width="10%">
+                            번호
+                        </th>
 
-                    {/* FAQ 테이블 */}
-                    <table className="cs-faq-table">
+                        <th width="15%">
+                            카테고리
+                        </th>
 
-                        <thead>
+                        <th width="45%">
+                            제목
+                        </th>
 
-                            <tr>
+                        {/* 관리자 전용 */}
+                        {isAdmin && (
 
-                                <th width="10%">
-                                    번호
-                                </th>
+                            <th width="10%">
+                                사용여부
+                            </th>
 
-                                <th width="15%">
-                                    카테고리
-                                </th>
+                        )}
 
-                                <th width="45%">
-                                    제목
-                                </th>
+                        <th width="10%">
+                            조회수
+                        </th>
+
+                        <th width="10%">
+                            작성일
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {faqList.length > 0 ? (
+
+                        currentFaqList.map((faq) => (
+
+                            <tr key={faq.faqId}>
+
+                                <td>
+                                    {faq.faqId}
+                                </td>
+
+                                <td>
+                                    {faq.faqCtgCd}
+                                </td>
+
+                                <td className="cs-faq-title-cell">
+
+                                    <Link to={`/cscenter/faqs/${faq.faqId}`}>
+                                        {faq.ttl}
+                                    </Link>
+
+                                </td>
 
                                 {/* 관리자 전용 */}
                                 {isAdmin && (
 
-                                    <th width="10%">
-                                        사용여부
-                                    </th>
+                                    <td>
+                                        {faq.useYn}
+                                    </td>
 
                                 )}
 
-                                <th width="10%">
-                                    조회수
-                                </th>
+                                <td>
+                                    {faq.viewCnt}
+                                </td>
 
-                                <th width="10%">
-                                    작성일
-                                </th>
+                                <td>
+                                    {faq.crtAt?.substring(0, 10)}
+                                </td>
 
                             </tr>
 
-                        </thead>
+                        ))
 
-                        <tbody>
+                    ) : (
 
-                            {/* FAQ 목록 출력 */}
-                            {currentFaqList.map((faq) => (
+                        <tr>
 
-                                <tr key={faq.faqId}>
+                            <td
+                                colSpan={isAdmin ? 6 : 5}
+                                className="cs-faq-empty"
+                            >
+                                등록된 FAQ가 없습니다.
+                            </td>
 
-                                    <td>
-                                        {faq.faqId}
-                                    </td>
-
-                                    <td>
-                                        {faq.faqCtgCd}
-                                    </td>
-
-                                    <td className="cs-faq-title-cell">
-
-                                        <Link to={`/cscenter/faqs/${faq.faqId}`}>
-                                            {faq.ttl}
-                                        </Link>
-
-                                    </td>
-
-                                    {/* 관리자 전용 */}
-                                    {isAdmin && (
-
-                                        <td>
-                                            {faq.useYn}
-                                        </td>
-
-                                    )}
-
-                                    <td>
-                                        {faq.viewCnt}
-                                    </td>
-
-                                    <td>
-                                        {faq.crtAt?.substring(0, 10)}
-                                    </td>
-
-                                </tr>
-
-                            ))}
-
-                        </tbody>
-
-                    </table>
-
-                    {/* 페이지네이션 */}
-                    {totalPage > 1 && (
-
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPage={totalPage}
-                            onPageChange={setCurrentPage}
-                        />
+                        </tr>
 
                     )}
 
-                </>
+                </tbody>
+
+            </table>
+
+            {/* 페이지네이션 */}
+            {totalPage > 1 && (
+
+                <Pagination
+                    currentPage={currentPage}
+                    totalPage={totalPage}
+                    onPageChange={setCurrentPage}
+                />
 
             )}
 
