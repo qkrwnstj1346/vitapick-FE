@@ -22,7 +22,7 @@ function App() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [userNm, setUserNm] = useState("");
+    
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const [isChatOpen, setIsChatOpen] = useState(false);
@@ -37,32 +37,24 @@ function App() {
     );
 
     useEffect(() => {
-
         const accessToken = sessionStorage.getItem("accessToken");
-        const userNm = sessionStorage.getItem("usersNm");
-
+        
         if (accessToken !== null) {
-
             setIsLoggedIn(true);
-            setUserNm(userNm);
-
             setUserInfo({
                 token: accessToken,
-                userNum: sessionStorage.getItem("usersNum"),
+                userNum: sessionStorage.getItem("userNum"),
                 loginId: sessionStorage.getItem("loginId"),
-                userNm: userNm,
+                userNm: sessionStorage.getItem("userNm"),
                 roleCd: sessionStorage.getItem("roleCd")
             });
-
         }
-
     }, []);
 
     const onLoginSubmit = async (loginId, pwd) => {
 
         await UsersApi.login(loginId, pwd)
             .then((response) => {
-
                 sessionStorage.setItem("accessToken", response.accessToken);
                 sessionStorage.setItem("userNum", response.userNum);
                 sessionStorage.setItem("loginId", response.loginId);
@@ -70,7 +62,6 @@ function App() {
                 sessionStorage.setItem("roleCd", response.roleCd);
 
                 setIsLoggedIn(true);
-                setUserNm(response.userNm);
 
                 setUserInfo({
                     token: response.accessToken,
@@ -84,24 +75,18 @@ function App() {
 
             })
             .catch((err) => {
-
                 setIsLoggedIn(false);
                 setUserInfo(null);
-
                 if (err.status === 502) {
                     alert("id 또는 password 가 다릅니다, 다시하세요 ~~");
                 } else {
                     alert(`** onLoginSubmit 시스템 오류, err=${err}`);
                 }
-
                 navigate("/login");
-
             });
-
     };
 
     const onLogout = async () => {
-
         try {
             await UsersApi.logout();
         } catch (e) {
@@ -110,7 +95,6 @@ function App() {
             sessionStorage.clear();
             localStorage.clear();
             setIsLoggedIn(false);
-            setUserNm('');
             alert("로그아웃 되었습니다.");
             navigate("/");
         }
