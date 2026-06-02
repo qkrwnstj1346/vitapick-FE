@@ -21,7 +21,10 @@ function InquiryForm() {
     const isEdit = inqId !== undefined;
 
     /* 로그인 사용자 */
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+    const loginUser = {
+        userNum: sessionStorage.getItem('userNum'),
+        roleCd: sessionStorage.getItem('roleCd')
+    };
 
     /* 폼 데이터 */
     const [formData, setFormData] = useState({
@@ -34,7 +37,7 @@ function InquiryForm() {
     useEffect(() => {
 
         /* 로그인 체크 */
-        if (!loginUser) {
+        if (!loginUser.userNum) {
 
             alert('로그인 후 이용 가능합니다.');
 
@@ -71,7 +74,7 @@ function InquiryForm() {
             console.log('문의 수정 데이터 = ', result);
 
             /* 본인 글 체크 */
-            if (Number(loginUser?.userNum) !== Number(result.userNum)) {
+            if (Number(loginUser.userNum) !== Number(result.userNum)) {
 
                 alert('본인이 작성한 문의글만 수정할 수 있습니다.');
 
@@ -113,7 +116,7 @@ function InquiryForm() {
         e.preventDefault();
 
         /* 로그인 체크 */
-        if (!loginUser) {
+        if (!loginUser.userNum) {
 
             alert('로그인 후 이용 가능합니다.');
 
@@ -161,7 +164,6 @@ function InquiryForm() {
 
                 await updateInq(
                     inqId,
-                    loginUser.userNum,
                     requestData
                 );
 
@@ -280,7 +282,6 @@ function InquiryForm() {
                 {/* 버튼 영역 */}
                 <div className="inq-form-btn-wrap">
 
-                    {/* 취소 버튼 */}
                     <button
                         type="button"
                         className="inq-cancel-btn"
@@ -289,7 +290,6 @@ function InquiryForm() {
                         취소
                     </button>
 
-                    {/* 등록 / 수정 버튼 */}
                     <button
                         type="submit"
                         className="inq-submit-btn"

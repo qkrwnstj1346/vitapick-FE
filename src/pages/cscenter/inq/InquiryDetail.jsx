@@ -5,7 +5,6 @@ import {
     getInqDetail,
     getMyInqDetail,
     deleteInq,
-    updateInq,
     answerInq
 } from '../../../service/cscenter/csCenterApi';
 
@@ -26,10 +25,13 @@ function InquiryDetail() {
     const [answerText, setAnswerText] = useState('');
 
     /* 로그인 사용자 */
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+    const loginUser = {
+        userNum: sessionStorage.getItem('userNum'),
+        roleCd: sessionStorage.getItem('roleCd')
+    };
 
     /* 관리자 여부 */
-    const isAdmin = loginUser?.roleCd === 'ADMIN';
+    const isAdmin = loginUser.roleCd === 'ADMIN';
 
     /* 문의 상세 조회 */
     useEffect(() => {
@@ -45,15 +47,13 @@ function InquiryDetail() {
 
             const response = isAdmin
                 ? await getInqDetail(inqId)
-                : await getMyInqDetail(inqId, loginUser.userNum);
+                : await getMyInqDetail(inqId);
 
-            setInquiry(response.data);
+            setInquiry(response);
 
             /* 답변 존재 시 */
-            if (response.data?.ansTxt) {
-
-                setAnswerText(response.data.ansTxt);
-
+            if (response?.ansTxt) {
+                setAnswerText(response.ansTxt);
             }
 
         } catch (error) {
@@ -61,6 +61,8 @@ function InquiryDetail() {
             console.log(error);
 
             alert('문의 상세 조회에 실패했습니다.');
+
+            navigate('/cscenter/inquiries');
         }
     };
 
@@ -73,11 +75,11 @@ function InquiryDetail() {
 
         try {
 
-            await deleteInq(inqId, loginUser.userNum);
+            await deleteInq(inqId);
 
             alert('문의가 삭제되었습니다.');
 
-            navigate('/mypage/inquiries');
+            navigate('/cscenter/inquiries');
 
         } catch (error) {
 
@@ -221,6 +223,7 @@ function InquiryDetail() {
                     <div className="inq-comment-btn-wrap">
 
                         <button
+                            type="button"
                             className="inq-comment-submit-btn"
                             onClick={handleAnswerSubmit}
                         >
@@ -237,34 +240,38 @@ function InquiryDetail() {
             <div className="inq-detail-bottom">
 
                 {/* 일반 회원 본인 글 */}
-                {!isAdmin && loginUser?.userNum === inquiry.userNum && (
+                {!isAdmin &&
+                    Number(loginUser.userNum) === Number(inquiry.userNum) && (
 
-                    <>
+                        <>
 
-                        <button
-                            className="inq-edit-btn"
-                            onClick={() =>
-                                navigate(`/inquiries/edit/${inqId}`)
-                            }
-                        >
-                            수정
-                        </button>
+                            <button
+                                type="button"
+                                className="inq-edit-btn"
+                                onClick={() =>
+                                    navigate(`/cscenter/inquiries/${inqId}/edit`)
+                                }
+                            >
+                                수정
+                            </button>
 
-                        <button
-                            className="inq-delete-btn"
-                            onClick={handleDelete}
-                        >
-                            삭제
-                        </button>
+                            <button
+                                type="button"
+                                className="inq-delete-btn"
+                                onClick={handleDelete}
+                            >
+                                삭제
+                            </button>
 
-                    </>
+                        </>
 
-                )}
+                    )}
 
                 {/* 목록 버튼 */}
                 <button
+                    type="button"
                     className="inq-list-btn"
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate('/cscenter/inquiries')}
                 >
                     목록
                 </button>

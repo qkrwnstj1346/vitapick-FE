@@ -22,7 +22,10 @@ function InquiryList() {
     const itemPerPage = 10;
 
     /* 로그인 사용자 */
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+    const loginUser = {
+        userNum: sessionStorage.getItem('userNum'),
+        roleCd: sessionStorage.getItem('roleCd')
+    };
 
     /* 전체 페이지 */
     const totalPage = Math.ceil(inqList.length / itemPerPage);
@@ -52,7 +55,12 @@ function InquiryList() {
 
             console.log('문의 목록 = ', result);
 
-            setInqList(result);
+            setInqList(
+                Array.isArray(result)
+                    ? result
+                    : []
+            );
+
             setCurrentPage(1);
 
         } catch (err) {
@@ -66,7 +74,7 @@ function InquiryList() {
     /* 상세 이동 */
     const handleMoveDetail = (item) => {
 
-        if (!loginUser) {
+        if (!loginUser.userNum) {
 
             alert('로그인 후 이용 가능합니다.');
 
@@ -95,7 +103,7 @@ function InquiryList() {
     /* 문의 등록 이동 */
     const handleMoveWrite = () => {
 
-        if (!loginUser) {
+        if (!loginUser.userNum) {
 
             alert('로그인 후 이용 가능합니다.');
 
@@ -210,7 +218,7 @@ function InquiryList() {
             </table>
 
             {/* 페이지네이션 */}
-            {inqList.length > 0 && (
+            {totalPage > 1 && (
 
                 <Pagination
                     currentPage={currentPage}

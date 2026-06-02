@@ -83,86 +83,87 @@ function NoticeList() {
 
             </div>
 
-            {/* 공지사항 없음 */}
-            {noticeList.length === 0 ? (
+            {/* 공지사항 테이블 */}
+            <table className="cs-notice-table">
 
-                <div className="cs-notice-empty">
-                    등록된 공지사항이 없습니다.
-                </div>
+                <thead>
 
-            ) : (
+                    <tr>
 
-                <>
+                        <th width="10%">번호</th>
 
-                    {/* 공지사항 테이블 */}
-                    <table className="cs-notice-table">
+                        <th width="50%">제목</th>
 
-                        <thead>
+                        {/* 관리자 전용 */}
+                        {isAdmin && <th width="10%">사용여부</th>}
 
-                            <tr>
+                        <th width="10%">조회수</th>
 
-                                <th width="10%">번호</th>
+                        <th width="20%">작성일</th>
 
-                                <th width="50%">제목</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {noticeList.length > 0 ? (
+
+                        currentNoticeList.map((notice) => (
+
+                            <tr key={notice.ntcId}>
+
+                                <td>{notice.ntcId}</td>
+
+                                <td className="cs-notice-title-cell">
+
+                                    <Link to={`/cscenter/notices/${notice.ntcId}`}>
+                                        {notice.ttl}
+                                    </Link>
+
+                                </td>
 
                                 {/* 관리자 전용 */}
-                                {isAdmin && <th width="10%">사용여부</th>}
+                                {isAdmin && (
+                                    <td>{notice.useYn}</td>
+                                )}
 
-                                <th width="10%">조회수</th>
+                                <td>{notice.viewCnt}</td>
 
-                                <th width="20%">작성일</th>
+                                <td>
+                                    {notice.crtAt?.substring(0, 10)}
+                                </td>
 
                             </tr>
 
-                        </thead>
+                        ))
 
-                        <tbody>
+                    ) : (
 
-                            {/* 공지사항 목록 출력 */}
-                            {currentNoticeList.map((notice) => (
+                        <tr>
 
-                                <tr key={notice.ntcId}>
+                            <td
+                                colSpan={isAdmin ? 5 : 4}
+                                className="cs-notice-empty"
+                            >
+                                등록된 공지사항이 없습니다.
+                            </td>
 
-                                    <td>{notice.ntcId}</td>
+                        </tr>
 
-                                    <td className="cs-notice-title-cell">
-
-                                        <Link to={`/cscenter/notices/${notice.ntcId}`}>
-                                            {notice.ttl}
-                                        </Link>
-
-                                    </td>
-
-                                    {/* 관리자 전용 */}
-                                    {isAdmin && (
-                                        <td>{notice.useYn}</td>
-                                    )}
-
-                                    <td>{notice.viewCnt}</td>
-
-                                    <td>
-                                        {notice.crtAt?.substring(0, 10)}
-                                    </td>
-
-                                </tr>
-
-                            ))}
-
-                        </tbody>
-
-                    </table>
-
-                    {/* 페이지네이션 */}
-                    {totalPage > 1 && (
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPage={totalPage}
-                            onPageChange={setCurrentPage}
-                        />
                     )}
 
-                </>
+                </tbody>
 
+            </table>
+
+            {/* 페이지네이션 */}
+            {totalPage > 1 && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPage={totalPage}
+                    onPageChange={setCurrentPage}
+                />
             )}
 
         </div>
