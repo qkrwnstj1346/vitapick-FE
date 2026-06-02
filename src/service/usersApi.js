@@ -19,6 +19,16 @@ export const UsersApi={
         return result;
     },
 
+    findId: async (userNm, email)=>{
+        const findIdData = {
+            userNm: userNm,
+            email: email,
+        };
+        const result = await apiCall.post(`/v1/auth/findid`, findIdData)
+        return result;
+    },
+
+
     //Server Data 요청
     //=> userdetail, memberlist, boardlist 
     getServerData: async (url) => {
