@@ -9,14 +9,14 @@ export const UsersApi={
             pwd: pwd,
         };
         const result = await apiCall.post(`/v1/auth/login`, loginData, {withCredentials: true,});
-        console.log(`** login, result.data =${result.data.userNm}+${result.data.userNum}`)
-        return result.data;
+        console.log(`** login, result.data =`)
+        return result;
     },
 
     //로그아웃
     logout: async () => {
         const result = await apiCall.get(`/v1/auth/logout`, {withCredentials: true,});
-        return result.data;
+        return result;
     },
 
     //리프레쉬 가져오기기
@@ -30,7 +30,7 @@ export const UsersApi={
     //=> userdetail, memberlist, boardlist 
     getServerData: async (url) => {
         const result = await apiCall.get(url);
-        return result.data;
+        return result;
     },
 };
 

@@ -81,14 +81,8 @@ export default function JoinForm() {
 
     try {
 
-      const data = await apiCall(
-        `/v1/checkid/${value}`,
-        "GET",
-        null,
-        null,
-        false
-      );
-
+      const data = await apiCall.get(`/v1/checkid/${value}`,);
+      console.log(data);
       if (data.idUse === "T") {
 
         setIdCheckMsg(data.message);
@@ -131,12 +125,9 @@ export default function JoinForm() {
 
     try {
 
-      const result = await apiCall(
+      const result = await apiCall.post(
         "/v1/auth/join",
-        "POST",
-        requestData,
-        null,
-        false
+        requestData
       );
 
       alert(result);
