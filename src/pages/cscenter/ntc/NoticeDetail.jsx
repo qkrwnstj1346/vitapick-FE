@@ -17,11 +17,11 @@ function NoticeDetail() {
     /* 공지사항 상세 */
     const [detail, setDetail] = useState(null);
 
-    /* 로그인 사용자 */
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+    /* 로그인 정보 */
+    const roleCd = sessionStorage.getItem('roleCd');
 
     /* 관리자 여부 */
-    const isAdmin = loginUser?.roleCd === 'ADMIN';
+    const isAdmin = roleCd === 'ADMIN';
 
     /* 공지사항 상세 조회 */
     useEffect(() => {

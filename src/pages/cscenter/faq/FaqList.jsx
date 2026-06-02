@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import {
-    getFaqList,
-    getUseYnFaqList
+    getFaqList
 } from '../../../service/cscenter/csCenterApi';
 
 import Pagination from '../../../components/layout/Pagination';
@@ -24,11 +23,15 @@ function FaqList() {
     /* 페이지당 개수 */
     const itemPerPage = 10;
 
-    /* 로그인 사용자 */
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+    /* 로그인 정보 */
+    const userNum = sessionStorage.getItem('userNum');
+    const roleCd = sessionStorage.getItem('roleCd');
+
+    /* 로그인 여부 */
+    const isLogin = !!userNum;
 
     /* 관리자 여부 */
-    const isAdmin = loginUser?.roleCd === 'ADMIN';
+    const isAdmin = roleCd === 'ADMIN';
 
     /* 전체 페이지 */
     const totalPage = Math.ceil(faqList.length / itemPerPage);
@@ -45,16 +48,17 @@ function FaqList() {
     /* FAQ 목록 조회 */
     useEffect(() => {
 
-        const api = isAdmin
-            ? getFaqList
-            : getUseYnFaqList;
-
-        api()
+        getFaqList()
             .then((data) => {
 
                 console.log('FAQ 목록 데이터:', data);
 
-                setFaqList(data);
+                setFaqList(
+                    Array.isArray(data)
+                        ? data
+                        : []
+                );
+
                 setCurrentPage(1);
 
             })
@@ -66,7 +70,7 @@ function FaqList() {
 
             });
 
-    }, [isAdmin]);
+    }, []);
 
     return (
 
@@ -80,7 +84,7 @@ function FaqList() {
                 </h2>
 
                 {/* 관리자 등록 버튼 */}
-                {isAdmin && (
+                {isLogin && isAdmin && (
 
                     <button
                         type="button"
@@ -194,11 +198,15 @@ function FaqList() {
                     </table>
 
                     {/* 페이지네이션 */}
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPage={totalPage}
-                        onPageChange={setCurrentPage}
-                    />
+                    {totalPage > 1 && (
+
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPage={totalPage}
+                            onPageChange={setCurrentPage}
+                        />
+
+                    )}
 
                 </>
 

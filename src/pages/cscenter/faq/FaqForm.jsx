@@ -20,11 +20,15 @@ function FaqForm() {
     /* 수정 여부 */
     const isEdit = faqId !== undefined;
 
-    /* 로그인 사용자 */
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+    /* 로그인 정보 */
+    const userNum = sessionStorage.getItem('userNum');
+    const roleCd = sessionStorage.getItem('roleCd');
+
+    /* 로그인 여부 */
+    const isLogin = !!userNum;
 
     /* 관리자 여부 */
-    const isAdmin = loginUser?.roleCd === 'ADMIN';
+    const isAdmin = roleCd === 'ADMIN';
 
     /* 폼 데이터 */
     const [formData, setFormData] = useState({
@@ -38,7 +42,7 @@ function FaqForm() {
     useEffect(() => {
 
         /* 관리자 체크 */
-        if (!isAdmin) {
+        if (!isLogin || !isAdmin) {
 
             alert('관리자만 접근할 수 있습니다.');
 
@@ -73,7 +77,7 @@ function FaqForm() {
 
         }
 
-    }, [faqId, isEdit, isAdmin, navigate]);
+    }, [faqId, isEdit, isLogin, isAdmin, navigate]);
 
     /* 입력값 변경 */
     const handleChange = (e) => {

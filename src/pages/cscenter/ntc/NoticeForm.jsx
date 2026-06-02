@@ -18,11 +18,15 @@ function NoticeForm() {
     /* 수정 여부 */
     const isEdit = ntcId !== undefined;
 
-    /* 로그인 사용자 */
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
+    /* 로그인 정보 */
+    const userNum = sessionStorage.getItem('userNum');
+    const roleCd = sessionStorage.getItem('roleCd');
+
+    /* 로그인 여부 */
+    const isLogin = !!userNum;
 
     /* 관리자 여부 */
-    const isAdmin = loginUser?.roleCd === 'ADMIN';
+    const isAdmin = roleCd === 'ADMIN';
 
     /* 폼 데이터 */
     const [formData, setFormData] = useState({
@@ -35,7 +39,7 @@ function NoticeForm() {
     useEffect(() => {
 
         /* 관리자 체크 */
-        if (!isAdmin) {
+        if (!isLogin || !isAdmin) {
             alert('관리자만 접근 가능합니다.');
             navigate('/cscenter/notices');
             return;
@@ -60,7 +64,7 @@ function NoticeForm() {
                 });
         }
 
-    }, [isEdit, ntcId, isAdmin, navigate]);
+    }, [isEdit, ntcId, isLogin, isAdmin, navigate]);
 
     /* 입력값 변경 */
     const changeHandler = (e) => {
@@ -185,7 +189,6 @@ function NoticeForm() {
                 {/* 버튼 영역 */}
                 <div className="notice-form-btn-wrap">
 
-                    {/* 취소 버튼 */}
                     <button
                         type="button"
                         className="notice-form-cancel-btn"
@@ -194,7 +197,6 @@ function NoticeForm() {
                         취소
                     </button>
 
-                    {/* 등록 / 수정 버튼 */}
                     <button
                         type="submit"
                         className="notice-form-submit-btn"
