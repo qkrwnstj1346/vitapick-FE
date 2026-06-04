@@ -24,7 +24,7 @@ function FindId() {
         try {
             setIsLoading(true);
             const response = await UsersApi.findId(data.userNm, data.email);
-            setFoundId(response.data.loginId);  // ← .data 주의 (axios 응답 구조)
+            setFoundId(response.loginId);  // ← .data 주의 (axios 응답 구조)
         } catch (err) {
             if (err.response?.status === 404) {
                 setServerError("일치하는 회원 정보가 없습니다.");

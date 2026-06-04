@@ -91,7 +91,7 @@ export default function JoinForm() {
     if (!value) {
       setEmailValidMsg("Email을 입력해주세요");
       setEmailValid(false);
-    } else if (!idRegex.test(value)) {
+    } else if (!emailRegex.test(value)) {
       setEmailValidMsg("Email 형식으로 입력해주세요");
       setEmailValid(false);
     } else {
@@ -105,7 +105,7 @@ export default function JoinForm() {
   // 이메일 중복확인
   const handleCheckEmail = async () => {
     const value = watch("email");
-    if (!value || !idRegex.test(value)) {
+    if (!value || !emailRegex.test(value)) {
       setEmailValidMsg("Email 형식으로 입력해주세요");
       setEmailValid(false);
       setEmailCheckMsg("");
@@ -114,7 +114,7 @@ export default function JoinForm() {
     try {
       const data = await apiCall.get(`/v1/checkemail/${value}`,);
       console.log(data);
-      if (data.idUse === "T") {
+      if (data.emailUse === "T") {
         setEmailCheckMsg(data.message);
         setEmailCheckOk(true);
       } else {
@@ -353,7 +353,7 @@ export default function JoinForm() {
               </button>
             </div>
             {!emailCheckMsg && emailValidMsg && (
-              <p style={idValid ? msgStyle.green : msgStyle.red}>
+              <p style={emailValid ? msgStyle.green : msgStyle.red}>
                 {emailValidMsg}
               </p>
             )}
