@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Login from '../../pages/users/Login';
 import Home from '../../pages/home/Home';
 import Join from '../../pages/users/Join';
-// import FindId from '../../pages/users/FindId';
+import FindId from '../../pages/users/FindId';
 import Sur from '../../pages/custom/Sur';
 // import MyPage from '../../pages/users/MyPage';
 
@@ -44,7 +44,7 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                     element={<Login onLoginSubmit={onLoginSubmit} />}
                 />
 
-                {/* <Route path="/v1/aut/findid" element={<FindId/>} /> */}
+                <Route path="/v1/auth/findid" element={<FindId/>} />
 
                 <Route
                     path="/v1/auth/join"

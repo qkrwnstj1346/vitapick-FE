@@ -37,80 +37,105 @@ export default function JoinForm() {
   const [idValid, setIdValid] = useState(false);
   const [idValidMsg, setIdValidMsg] = useState("");
 
+  // 이메일 상태
+  const [emailCheckMsg, setEmailCheckMsg] = useState("");
+  const [emailCheckOk, setEmailCheckOk] = useState(false);
+  const [emailValid, setEmailValid] = useState(false);
+  const [emailValidMsg, setEmailValidMsg] = useState("");
+
   // 아이디 blur
   const handleIdBlur = (e) => {
-
     const value = e.target.value;
-
     if (!value) {
-
       setIdValidMsg("아이디를 입력해주세요");
       setIdValid(false);
-
     } else if (!idRegex.test(value)) {
-
       setIdValidMsg("영문/숫자 4~20자로 입력해주세요");
       setIdValid(false);
-
     } else {
-
       setIdValidMsg("중복확인을 해주세요");
       setIdValid(true);
-
     }
-
     setIdCheckMsg("");
     setIdCheckOk(false);
-
   };
 
   // 아이디 중복확인
   const handleCheckId = async () => {
-
     const value = watch("loginId");
-
     if (!value || !idRegex.test(value)) {
-
       setIdValidMsg("영문/숫자 4~20자로 입력해주세요");
       setIdValid(false);
       setIdCheckMsg("");
-
       return;
-
     }
-
     try {
-
       const data = await apiCall.get(`/v1/checkid/${value}`,);
       console.log(data);
       if (data.idUse === "T") {
-
         setIdCheckMsg(data.message);
         setIdCheckOk(true);
-
       } else {
-
         setIdCheckMsg(data.message);
         setIdCheckOk(false);
-
       }
-
     } catch (err) {
-
       setIdCheckMsg("중복확인 중 오류가 발생했습니다");
       setIdCheckOk(false);
+    }
+  };
 
+   // 이메일 blur
+  const handleEmailBlur = (e) => {
+    const value = e.target.value;
+    if (!value) {
+      setEmailValidMsg("Email을 입력해주세요");
+      setEmailValid(false);
+    } else if (!idRegex.test(value)) {
+      setEmailValidMsg("Email 형식으로 입력해주세요");
+      setEmailValid(false);
+    } else {
+      setEmailValidMsg("중복확인을 해주세요");
+      setEmailValid(true);
+    }
+    setEmailCheckMsg("");
+    setEmailCheckOk(false);
+  };
+
+  // 이메일 중복확인
+  const handleCheckEmail = async () => {
+    const value = watch("email");
+    if (!value || !idRegex.test(value)) {
+      setEmailValidMsg("Email 형식으로 입력해주세요");
+      setEmailValid(false);
+      setEmailCheckMsg("");
+      return;
+    }
+    try {
+      const data = await apiCall.get(`/v1/checkemail/${value}`,);
+      console.log(data);
+      if (data.idUse === "T") {
+        setEmailCheckMsg(data.message);
+        setEmailCheckOk(true);
+      } else {
+        setEmailCheckMsg(data.message);
+        setEmailCheckOk(false);
+      }
+    } catch (err) {
+      setEmailCheckMsg("중복확인 중 오류가 발생했습니다");
+      setEmailCheckOk(false);
     }
   };
 
   // 회원가입 submit
   const onSubmit = async (data) => {
-
     if (!idCheckOk) {
-
       alert("아이디 중복확인을 해주세요");
       return;
-
+    }
+    if (!emailCheckOk){
+      alert("Email 중복확인을 해주세요");
+      return;
     }
 
     const requestData = {
@@ -124,26 +149,19 @@ export default function JoinForm() {
     };
 
     try {
-
       const result = await apiCall.post(
         "/v1/auth/join",
         requestData
       );
-
       alert(result);
-
       navigate("/");
-
     } catch (err) {
-
       alert("회원가입에 실패했습니다");
-
     }
   };
 
   // 유효성 실패 시 포커스 이동
   const onError = (errors) => {
-
     const fieldOrder = [
       "loginId",
       "pwd",
@@ -154,40 +172,25 @@ export default function JoinForm() {
       "genderCd",
       "birthYmd",
     ];
-
     for (const field of fieldOrder) {
-
       if (errors[field]) {
-
         setFocus(field);
         break;
-
       }
     }
   };
 
   return (
     <div className="join-wrap">
-
       <div className="join-card">
-
         <h2 className="join-title">
           회원가입
         </h2>
-
-        <form
-          className="join-form"
-          onSubmit={handleSubmit(onSubmit, onError)}
-          noValidate
-        >
-
+        <form className="join-form" onSubmit={handleSubmit(onSubmit, onError)} noValidate>
           {/* 아이디 */}
           <div className="join-group">
-
             <label>아이디</label>
-
             <div className="join-inline">
-
               <input
                 className="join-input"
                 type="text"
@@ -206,7 +209,6 @@ export default function JoinForm() {
                 })}
                 onBlur={handleIdBlur}
               />
-
               <button
                 className="join-check-btn"
                 type="button"
@@ -214,15 +216,12 @@ export default function JoinForm() {
               >
                 중복확인
               </button>
-
             </div>
-
             {!idCheckMsg && idValidMsg && (
               <p style={idValid ? msgStyle.green : msgStyle.red}>
                 {idValidMsg}
               </p>
             )}
-
             {idCheckMsg && (
               <p style={idCheckOk ? msgStyle.green : msgStyle.red}>
                 {idCheckMsg}
@@ -239,9 +238,7 @@ export default function JoinForm() {
 
           {/* 비밀번호 */}
           <div className="join-group">
-
             <label>비밀번호</label>
-
             <input
               className="join-input"
               type="password"
@@ -255,20 +252,16 @@ export default function JoinForm() {
                 },
               })}
             />
-
             {errors.pwd && (
               <p style={msgStyle.red}>
                 {errors.pwd.message}
               </p>
             )}
-
           </div>
 
           {/* 비밀번호 확인 */}
           <div className="join-group">
-
             <label>비밀번호 확인</label>
-
             <input
               className="join-input"
               type="password"
@@ -281,20 +274,16 @@ export default function JoinForm() {
                   "비밀번호가 일치하지 않습니다",
               })}
             />
-
             {errors.pwdConfirm && (
               <p style={msgStyle.red}>
                 {errors.pwdConfirm.message}
               </p>
             )}
-
           </div>
 
           {/* 이름 */}
           <div className="join-group">
-
             <label>이름</label>
-
             <input
               className="join-input"
               type="text"
@@ -304,20 +293,16 @@ export default function JoinForm() {
                 required: "이름을 입력해주세요",
               })}
             />
-
             {errors.userNm && (
               <p style={msgStyle.red}>
                 {errors.userNm.message}
               </p>
             )}
-
           </div>
 
           {/* 전화번호 */}
           <div className="join-group">
-
             <label>전화번호</label>
-
             <input
               className="join-input"
               type="tel"
@@ -330,39 +315,59 @@ export default function JoinForm() {
                   "숫자만 10~11자리로 입력해주세요",
               })}
             />
-
             {errors.tel && (
               <p style={msgStyle.red}>
                 {errors.tel.message}
               </p>
             )}
-
           </div>
 
           {/* 이메일 */}
           <div className="join-group">
-
             <label>이메일</label>
+            <div className="join-inline">
+              <input
+                className="join-input"
+                type="email"
+                autoComplete="email"
+                placeholder="예) example@email.com"
+                {...register("email", {
+                  required: "Email을 입력해주세요",
+                  pattern: {
+                    value: emailRegex,
+                    message: "Email 형식으로 입력해주세요!",
+                  },
+                  onChange: () => {
+                    setEmailCheckOk(false);
+                    setEmailCheckMsg("");
+                  },
+                })}
+                onBlur={handleEmailBlur}
+              />
+              <button
+                className="join-check-btn"
+                type="button"
+                onClick={handleCheckEmail}
+              >
+                중복확인
+              </button>
+            </div>
+            {!emailCheckMsg && emailValidMsg && (
+              <p style={idValid ? msgStyle.green : msgStyle.red}>
+                {emailValidMsg}
+              </p>
+            )}
+            {emailCheckMsg && (
+              <p style={emailCheckOk ? msgStyle.green : msgStyle.red}>
+                {emailCheckMsg}
+              </p>
+            )}
 
-            <input
-              className="join-input"
-              type="email"
-              autoComplete="email"
-              placeholder="example@email.com"
-              {...register("email", {
-                required: "이메일을 입력해주세요",
-                validate: (v) =>
-                  emailRegex.test(v) ||
-                  "이메일 형식이 올바르지 않습니다",
-              })}
-            />
-
-            {errors.email && (
+            {errors.email && !emailCheckMsg && !emailValidMsg && (
               <p style={msgStyle.red}>
                 {errors.email.message}
               </p>
             )}
-
           </div>
 
           {/* 성별 */}
