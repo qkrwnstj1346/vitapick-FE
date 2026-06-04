@@ -19,6 +19,7 @@ export const UsersApi={
         return result;
     },
 
+    //아이디 찾기
     findId: async (userNm, email)=>{
         const findIdData = {
             userNm: userNm,
