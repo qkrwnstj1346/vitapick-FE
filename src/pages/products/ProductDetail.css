@@ -321,8 +321,9 @@
 
 /* 리뷰 아이템 */
 .rvw_item {
-    padding: 20px 0;
-    border-bottom: 1px solid #E3EEE5;
+    position: relative;
+    padding: 16px 90px 16px 16px;
+    border-bottom: 1px solid #eee;
 }
 
 /* 별점 */
@@ -344,6 +345,30 @@
     font-size: 14px;
     color: #333;
     line-height: 1.6;
+}
+
+/* 리뷰 삭제 버튼 */
+.rvw_delete_btn {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    background-color: #fff;
+    color: #777;
+
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 리뷰 삭제 버튼 호버 */
+.rvw_delete_btn:hover {
+    border-color: #ff6b6b;
+    background-color: #fff5f5;
+    color: #ff4d4f;
 }
 
 /* 태블릿 */

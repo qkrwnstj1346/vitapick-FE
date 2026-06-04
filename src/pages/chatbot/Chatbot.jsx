@@ -53,7 +53,7 @@ const Chatbot = ({ onClose, userInfo }) => {
         try {
             const result = await apiCall.post(
                 '/api/v1/chatbot/message',
-                { userNum: userInfo.userNum, msgTxt: inputText }
+                { msgTxt: inputText }
             );
 
             // GPT 응답에서 상품ID로 이미지 가져오기
@@ -66,7 +66,15 @@ const Chatbot = ({ onClose, userInfo }) => {
             }]);
 
         } catch (err) {
-            setMessages(prev => [...prev, { senderCd: 'AI', msgTxt: '오류가 발생했습니다. 다시 시도해 주세요.' }]);
+            console.error('챗봇 요청 실패:', err);
+            console.error('상태코드:', err.response?.status);
+            console.error('응답데이터:', err.response?.data);
+
+            setMessages(prev => [
+                ...prev,
+                { senderCd: 'AI', msgTxt: '오류가 발생했습니다. 다시 시도해 주세요.' }
+            ]);
+
         } finally {
             setLoading(false);
         }
@@ -102,7 +110,7 @@ const Chatbot = ({ onClose, userInfo }) => {
 
                         {/* 텍스트 말풍선 */}
                         <div className='chatPopup_bubble'>
-                            {msg.msgTxt.split('\n').filter(line => !line.includes('상품ID:')).join('\n')}
+                            {msg.msgTxt.replace(/상품ID:\s*\d+\s*\/\s*/g, '')}
                         </div>
 
                         {/* 추천 상품 이미지 카드, 클릭 시 상세페이지로 이동 */}
