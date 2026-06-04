@@ -35,7 +35,7 @@ export function updateNotice(ntcId, data) {
 /* 관리자 */
 export function deleteNotice(ntcId) {
     return apiCall.delete(
-        `/cscenter//notices/${ntcId}`
+        `/cscenter/notices/${ntcId}`
     );
 }
 

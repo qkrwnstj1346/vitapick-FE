@@ -85,185 +85,166 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                     <ul>
 
-                        {/* 로그인 상태 */}
-                        {isLoggedIn ? (
+                        {
+                            isLoggedIn ? (
 
-                            <>
+                                <>
 
-                                {/* 마이페이지 */}
-                                <li className="menuItem">
+                                    {/* 마이페이지 */}
+                                    <li className="menuItem">
 
-                                    <Link to="/mypage">
+                                        <Link to="/mypage">
 
-                                        <div className="menuIcon">
+                                            <div className="menuIcon">
 
-                                            <UserRound
-                                                size={28}
-                                                strokeWidth={1.8}
-                                            />
+                                                <UserRound
+                                                    size={28}
+                                                    strokeWidth={1.8}
+                                                />
 
-                                        </div>
+                                            </div>
 
-                                        <p>
-                                            {userInfo?.userNm || '회원'}님
-                                        </p>
+                                            <p>
+                                                {userInfo?.userNm || '회원'}님
+                                            </p>
 
-                                    </Link>
+                                        </Link>
 
-                                </li>
+                                    </li>
 
-                                {/* 로그아웃 */}
-                                <li className="menuItem">
+                                    {/* 로그아웃 */}
+                                    <li className="menuItem">
 
-                                    <Link
-                                        to="/"
-                                        onClick={onLogout}
-                                    >
+                                        <Link
+                                            to="/"
+                                            onClick={onLogout}
+                                        >
 
-                                        <div className="menuIcon">
+                                            <div className="menuIcon">
 
-                                            <LogOut
-                                                size={28}
-                                                strokeWidth={1.8}
-                                            />
+                                                <LogOut
+                                                    size={28}
+                                                    strokeWidth={1.8}
+                                                />
 
-                                        </div>
+                                            </div>
 
-                                        <p>로그아웃</p>
+                                            <p>로그아웃</p>
 
-                                    </Link>
+                                        </Link>
 
-                                </li>
+                                    </li>
 
-                                {/* 장바구니 */}
-                                <li className="menuItem">
+                                    {/* 장바구니 */}
+                                    <li className="menuItem">
 
-                                    <Link to="/cart">
+                                        <Link to="/cart">
 
-                                        <div className="menuIcon">
+                                            <div className="menuIcon">
 
-                                            <ShoppingCart
-                                                size={28}
-                                                strokeWidth={1.8}
-                                            />
+                                                <ShoppingCart
+                                                    size={28}
+                                                    strokeWidth={1.8}
+                                                />
 
-                                        </div>
+                                            </div>
 
-                                        <p>장바구니</p>
+                                            <p>장바구니</p>
 
-                                    </Link>
+                                        </Link>
 
-                                </li>
+                                    </li>
 
-                                {/* 고객센터 */}
-                                <li className="menuItem">
+                                    {/* 고객센터 */}
+                                    <li className="menuItem">
 
-                                    <Link to="/cscenter">
+                                        <Link to="/cscenter">
 
-                                        <div className="menuIcon">
+                                            <div className="menuIcon">
 
-                                            <Headphones
-                                                size={28}
-                                                strokeWidth={1.8}
-                                            />
+                                                <Headphones
+                                                    size={28}
+                                                    strokeWidth={1.8}
+                                                />
 
-                                        </div>
+                                            </div>
 
-                                        <p>고객센터</p>
+                                            <p>고객센터</p>
 
-                                    </Link>
+                                        </Link>
 
-                                </li>
+                                    </li>
 
-                            </>
+                                </>
 
-                        ) : (
+                            ) : (
 
-                            <>
+                                <>
 
-                                {/* 로그인 */}
-                                <li className="menuItem">
+                                    {/* 로그인 */}
+                                    <li className="menuItem">
 
-                                    <Link to="/v1/auth/login">
+                                        <Link to="/v1/auth/login">
 
-                                        <div className="menuIcon">
+                                            <div className="menuIcon">
 
-                                            <UserRound
-                                                size={28}
-                                                strokeWidth={1.8}
-                                            />
+                                                <UserRound
+                                                    size={28}
+                                                    strokeWidth={1.8}
+                                                />
 
-                                        </div>
+                                            </div>
 
-                                        <p>로그인</p>
+                                            <p>로그인</p>
 
-                                    </Link>
+                                        </Link>
 
-                                </li>
+                                    </li>
 
-                                {/* 마이페이지 */}
-                                <li className="menuItem">
+                                    {/* 장바구니 */}
+                                    <li className="menuItem">
 
-                                    <Link to="/login">
+                                        <Link to="/v1/auth/login">
 
-                                        <div className="menuIcon">
+                                            <div className="menuIcon">
 
-                                            <Sparkles
-                                                size={28}
-                                                strokeWidth={1.8}
-                                            />
+                                                <ShoppingCart
+                                                    size={28}
+                                                    strokeWidth={1.8}
+                                                />
 
-                                        </div>
+                                            </div>
 
-                                        <p>마이페이지</p>
+                                            <p>장바구니</p>
 
-                                    </Link>
+                                        </Link>
 
-                                </li>
+                                    </li>
 
-                                {/* 장바구니 */}
-                                <li className="menuItem">
+                                    {/* 고객센터 */}
+                                    <li className="menuItem">
 
-                                    <Link to="/login">
+                                        <Link to="/cscenter">
 
-                                        <div className="menuIcon">
+                                            <div className="menuIcon">
 
-                                            <ShoppingCart
-                                                size={28}
-                                                strokeWidth={1.8}
-                                            />
+                                                <Headphones
+                                                    size={28}
+                                                    strokeWidth={1.8}
+                                                />
 
-                                        </div>
+                                            </div>
 
-                                        <p>장바구니</p>
+                                            <p>고객센터</p>
 
-                                    </Link>
+                                        </Link>
 
-                                </li>
+                                    </li>
 
-                                {/* 고객센터 */}
-                                <li className="menuItem">
+                                </>
 
-                                    <Link to="/cscenter">
-
-                                        <div className="menuIcon">
-
-                                            <Headphones
-                                                size={28}
-                                                strokeWidth={1.8}
-                                            />
-
-                                        </div>
-
-                                        <p>고객센터</p>
-
-                                    </Link>
-
-                                </li>
-
-                            </>
-
-                        )}
+                            )
+                        }
 
                     </ul>
 
@@ -368,17 +349,21 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
                     </li>
 
                     {/* 회원가입 */}
-                    <li>
+                    {
+                        !isLoggedIn && (
+                            <li>
 
-                        <Link to="/v1/auth/join">
+                                <Link to="/v1/auth/join">
 
-                            <Sparkles size={17} />
+                                    <Sparkles size={17} />
 
-                            join
+                                    join
 
-                        </Link>
+                                </Link>
 
-                    </li>
+                            </li>
+                        )
+                    }
 
                 </ul>
 
