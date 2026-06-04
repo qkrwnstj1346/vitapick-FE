@@ -23,7 +23,7 @@ const ProductList = () => {
                 const url = keyword
                     ? `/api/v1/product/search?keyword=${keyword}`
                     : `/api/v1/product/list/category/${catCd}`;
-                const data = (await apiCall.get(url)).data;
+                const data = await apiCall.get(url);
                 setPrdList(data);
             } catch (err) {
                 console.error('상품 목록 오류:', err);

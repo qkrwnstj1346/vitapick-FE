@@ -10,28 +10,29 @@ function Home({isLoggedIn}) {
     const [prdList, setPrdList] = useState([]);
 
     // 페이지 열릴 때 카테고리별 상품 1개씩 가져오기
-    // useEffect(() => {
-    //     const token = getToken();
+    useEffect(() => {
+    const categories = [
+        { catCd: 6, name: '종합영양' },
+        { catCd: 1, name: '유산균' },
+        { catCd: 2, name: '비타민' },
+        { catCd: 3, name: '오메가3' },
+        { catCd: 4, name: '미네랄' },
+    ];
 
-    //     const categories = [
-    //         { catCd: 6, name: '종합영양' },
-    //         { catCd: 1, name: '유산균' },
-    //         { catCd: 2, name: '비타민' },
-    //         { catCd: 3, name: '오메가3' },
-    //         { catCd: 4, name: '미네랄' },
-    //     ];
+    const fetchPrds = async () => {
+        const result = [];
+        for (const cat of categories) {
+            const data = await apiCall.get(`/api/v1/product/list/category/${cat.catCd}`);
+            console.log('data:', data);
+            if (data && data.length > 0) {
+                result.push({ ...data[0], catName: cat.name });
+            }
+        }
+        setPrdList(result);
+    };
 
-    //     const fetchPrds = async () => {
-    //         const result = [];
-    //         for (const cat of categories) {
-    //             const data = await apiCall(`/api/v1/product/list/category/${cat.catCd}`, 'GET', null, false);
-    //             result.push({ ...data[0], catName: cat.name });
-    //         }
-    //         setPrdList(result);
-    //     };
-
-    //     fetchPrds();
-    // }, []);
+    fetchPrds();
+    }, []);
 
     return (
         <main className="home">
