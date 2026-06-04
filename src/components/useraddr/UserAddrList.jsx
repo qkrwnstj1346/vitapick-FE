@@ -3,11 +3,11 @@ import {
     getAddrList,
     deleteAddr,
     updateBaseAddr
-} from '../../../service/address/addressApi';
+} from '../../service/useraddr/userAddrApi';
 
-import './AddressList.css';
+import './UserAddrList.css';
 
-function AddressList() {
+function UserAddrList() {
 
     const [addrList, setAddrList] = useState([]);
 
@@ -79,7 +79,7 @@ function AddressList() {
             {/* 목록 */}
             <div className="addrList">
                 {
-                    addrList.length === 0 ? (
+                    !addrList || addrList.length === 0 ? (
                         <div className="addrEmpty">
                             등록된 배송지가 없습니다.
                         </div>
@@ -134,13 +134,15 @@ function AddressList() {
                                         삭제
                                     </button>
                                 </div>
+
                             </div>
                         ))
                     )
                 }
             </div>
+
         </div>
     );
 }
 
-export default AddressList;
+export default UserAddrList;

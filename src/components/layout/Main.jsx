@@ -30,7 +30,9 @@ import ProductDetail from '../../pages/products/ProductDetail';
 
 import Cart from '../../pages/cart/Cart';
 
-function Main({onLoginSubmit, isLoggedIn }) {
+import UserAddrList from '../useraddr/UserAddrList';
+
+function Main({ onLoginSubmit, isLoggedIn }) {
 
     return (
         <main>
@@ -41,7 +43,7 @@ function Main({onLoginSubmit, isLoggedIn }) {
                     path="/v1/auth/login"
                     element={<Login onLoginSubmit={onLoginSubmit} />}
                 />
-                
+
                 {/* <Route path="/v1/aut/findid" element={<FindId/>} /> */}
 
                 <Route
@@ -98,6 +100,11 @@ function Main({onLoginSubmit, isLoggedIn }) {
 
                 {/* 장바구니 */}
                 <Route path="/cart" element={<Cart />} />
+
+                {/* 배송지 */}
+                <Route path="/address" element={<UserAddrList />} />
+
+
 
             </Routes>
         </main>
