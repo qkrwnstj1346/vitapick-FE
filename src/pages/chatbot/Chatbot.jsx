@@ -35,7 +35,7 @@ const Chatbot = ({ onClose, userInfo }) => {
     // 상품ID마다 상품 정보 가져오기
     const results = [];
         for (const id of prdIds) {
-            const data = (await apiCall.get(`/api/v1/product/detail/${id}`)).data;
+            const data = await apiCall.get(`/api/v1/product/detail/${id}`);
             if (data !== null) results.push(data);
     }
     return results;
@@ -51,10 +51,10 @@ const Chatbot = ({ onClose, userInfo }) => {
         setLoading(true);
 
         try {
-            const result = (await apiCall.post(
+            const result = await apiCall.post(
                 '/api/v1/chatbot/message',
                 { userNum: userInfo.userNum, msgTxt: inputText }
-            )).data;
+            );
 
             // GPT 응답에서 상품ID로 이미지 가져오기
             const matchedPrds = await findPrdImages(result.msgTxt);

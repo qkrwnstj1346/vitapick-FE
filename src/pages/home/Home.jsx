@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import { useState, useEffect } from 'react';
-import { apiCall, getToken } from '../../service/apiService';
+import { apiCall } from '../../service/apiService';
 
 function Home({isLoggedIn}) {
     const navigate = useNavigate();
