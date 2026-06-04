@@ -23,7 +23,7 @@ const ProductDetail = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const data = (await apiCall.get(`/api/v1/product/detail/${prdId}`)).data;
+                const data = await apiCall.get(`/api/v1/product/detail/${prdId}`);
                 setPrd(data);
             } catch (err) {
                 console.error('상품 상세 오류:', err);
@@ -38,7 +38,7 @@ const ProductDetail = () => {
     useEffect(() => {
         const fetchRvw = async () => {
             try {
-                const data = (await apiCall.get(`/api/v1/rvw/prd/${prdId}`)).data;
+                const data = await apiCall.get(`/api/v1/rvw/prd/${prdId}`);
                 setRvwList(data);
             } catch (err) {
                 console.error('리뷰 조회 오류:', err);
@@ -199,7 +199,7 @@ const ProductDetail = () => {
                             });
                             setRvwTxt('');
                             setShowRvwForm(false);
-                            const data = (await apiCall.get(`/api/v1/rvw/prd/${prdId}`)).data;
+                            const data = await apiCall.get(`/api/v1/rvw/prd/${prdId}`);
                             setRvwList(data);
                         }}>
                             작성 완료
