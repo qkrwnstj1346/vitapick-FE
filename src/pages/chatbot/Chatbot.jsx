@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiCall, getToken } from '../../service/apiService';
+import { apiCall } from '../../service/apiService';
 import './Chatbot.css';
 
 const Chatbot = ({ onClose, userInfo }) => {
@@ -33,10 +33,9 @@ const Chatbot = ({ onClose, userInfo }) => {
     }
 
     // 상품ID마다 상품 정보 가져오기
-    const token = getToken();
     const results = [];
         for (const id of prdIds) {
-            const data = await apiCall(`/api/v1/product/detail/${id}`, 'GET', null, token, false);
+            const data = (await apiCall.get(`/api/v1/product/detail/${id}`)).data;
             if (data !== null) results.push(data);
     }
     return results;
@@ -52,14 +51,10 @@ const Chatbot = ({ onClose, userInfo }) => {
         setLoading(true);
 
         try {
-            const token = getToken();
-            const result = await apiCall(
+            const result = (await apiCall.post(
                 '/api/v1/chatbot/message',
-                'POST',
-                { userNum: userInfo.userNum, msgTxt: inputText },
-                token,
-                false
-            );
+                { userNum: userInfo.userNum, msgTxt: inputText }
+            )).data;
 
             // GPT 응답에서 상품ID로 이미지 가져오기
             const matchedPrds = await findPrdImages(result.msgTxt);

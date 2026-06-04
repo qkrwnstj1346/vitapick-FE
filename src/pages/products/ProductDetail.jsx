@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { apiCall, getToken } from '../../service/apiService';
+import { apiCall } from '../../service/apiService';
 import './ProductDetail.css';
 
 
@@ -22,9 +22,8 @@ const ProductDetail = () => {
    
     useEffect(() => {
         const fetchProduct = async () => {
-            const token = getToken();
             try {
-                const data = await apiCall(`/api/v1/product/detail/${prdId}`, 'GET', null, token, false);
+                const data = (await apiCall.get(`/api/v1/product/detail/${prdId}`)).data;
                 setPrd(data);
             } catch (err) {
                 console.error('상품 상세 오류:', err);
@@ -38,9 +37,8 @@ const ProductDetail = () => {
     // 리뷰 목록 가져오기
     useEffect(() => {
         const fetchRvw = async () => {
-            const token = getToken();
             try {
-                const data = await apiCall(`/api/v1/rvw/prd/${prdId}`, 'GET', null, token, false);
+                const data = (await apiCall.get(`/api/v1/rvw/prd/${prdId}`)).data;
                 setRvwList(data);
             } catch (err) {
                 console.error('리뷰 조회 오류:', err);
@@ -75,13 +73,12 @@ const ProductDetail = () => {
 
                         {/* 장바구니 버튼 */}
                         <button className='detail_cart_btn' onClick={async () => {
-                            const token = getToken();
-                            await apiCall('/cart', 'POST', {
-                                userNum: 1,
+                            await apiCall.post('/cart', {
+                                userNum: sessionStorage.getItem("userNum"),
                                 prdId: Number(prdId),
                                 itQty: quantity,
                                 selectedYn: 'Y'
-                            }, token, false);
+                            });
                             // 장바구니 담기 후 이동 여부 확인
                             const go = window.confirm('장바구니에 담았습니다!\n장바구니로 이동하시겠습니까?');
                             if (go) navigate('/cart');
@@ -193,17 +190,16 @@ const ProductDetail = () => {
 
                         {/* 작성 완료 버튼 */}
                         <button className='rvw_submit_btn' onClick={async () => {
-                            const token = getToken();
-                            await apiCall('/api/v1/rvw', 'POST', {
-                                userNum: 1,
+                            await apiCall.post('/api/v1/rvw', {
+                                userNum: sessionStorage.getItem("userNum"),
                                 ordItId: 1,
                                 prdId: Number(prdId),
                                 rating: rating,
                                 cmt: rvwTxt
-                            }, token, false);
+                            });
                             setRvwTxt('');
                             setShowRvwForm(false);
-                            const data = await apiCall(`/api/v1/rvw/prd/${prdId}`, 'GET', null, token, false);
+                            const data = (await apiCall.get(`/api/v1/rvw/prd/${prdId}`)).data;
                             setRvwList(data);
                         }}>
                             작성 완료

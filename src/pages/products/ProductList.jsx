@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { apiCall, getToken } from '../../service/apiService';
+import { apiCall } from '../../service/apiService';
 import './ProductList.css';
 
 const ProductList = () => {
@@ -18,13 +18,12 @@ const ProductList = () => {
     useEffect(() => {
         const fetchList = async () => {
             setLoading(true);
-            const token = getToken();
             try {
                 // 검색어 있으면 검색 API, 없으면 카테고리 API 호출
                 const url = keyword
                     ? `/api/v1/product/search?keyword=${keyword}`
                     : `/api/v1/product/list/category/${catCd}`;
-                const data = await apiCall(url, 'GET', null, token, false);
+                const data = (await apiCall.get(url)).data;
                 setPrdList(data);
             } catch (err) {
                 console.error('상품 목록 오류:', err);
