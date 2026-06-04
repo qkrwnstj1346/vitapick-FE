@@ -7,6 +7,10 @@ import {
     updateBaseAddr
 } from '../../service/useraddr/userAddrApi';
 
+import {
+    getToken
+} from '../../service/apiService';
+
 import UserAddrForm from './UserAddrForm';
 
 import './UserAddrList.css';
@@ -28,23 +32,24 @@ function UserAddrList() {
     /* 선택된 배송지 */
     const [selectedAddr, setSelectedAddr] = useState(null);
 
-    /* 로그인 사용자 조회 */
-    const getLoginUser = () => {
-        return JSON.parse(localStorage.getItem('userInfo'));
-    };
-
     /* 로그인 확인 */
     const checkLogin = () => {
 
-        const loginUser = getLoginUser();
+        const accessToken = getToken();
 
-        if (!loginUser?.userNum) {
+        if (!accessToken) {
             alert('로그인 후 이용해주세요.');
             navigate('/v1/auth/login');
             return false;
         }
 
         return true;
+    };
+
+    /* 로그인 페이지 이동 */
+    const moveLogin = () => {
+        alert('로그인 후 이용해주세요.');
+        navigate('/v1/auth/login');
     };
 
     /* 배송지 목록 조회 */
@@ -62,8 +67,7 @@ function UserAddrList() {
                 console.log(err);
 
                 if (err.response?.status === 401) {
-                    alert('로그인 후 이용해주세요.');
-                    navigate('/v1/auth/login');
+                    moveLogin();
                     return;
                 }
 
@@ -130,8 +134,7 @@ function UserAddrList() {
                 console.log(err);
 
                 if (err.response?.status === 401) {
-                    alert('로그인 후 이용해주세요.');
-                    navigate('/v1/auth/login');
+                    moveLogin();
                     return;
                 }
 
@@ -155,8 +158,7 @@ function UserAddrList() {
                 console.log(err);
 
                 if (err.response?.status === 401) {
-                    alert('로그인 후 이용해주세요.');
-                    navigate('/v1/auth/login');
+                    moveLogin();
                     return;
                 }
 
