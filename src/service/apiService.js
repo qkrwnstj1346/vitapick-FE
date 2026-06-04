@@ -60,7 +60,7 @@ apiCall.interceptors.response.use(
                     requestQueue = [];
                     alert("세션이 만료되었습니다. 다시 로그인 하세요.");
                     sessionStorage.clear();
-                    window.location.replace("/v1/login");
+                    window.location.replace("/v1/auth/login");
                     //=> refreshToken 오류 또는 만료 인 경우 큐초기화, 세션스토리지 초기화, 로그인화면 이동
                     return new Promise(()=>{});
                     //   Promise를 영원히 pending 상태로 만들어 에러 전파를 막는 코드.
