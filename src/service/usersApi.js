@@ -29,6 +29,16 @@ export const UsersApi={
         return result;
     },
 
+    //비밀번호찾기(인증번호 발급)
+    sendOtpCode: async(loginId, userNm, email)=>{
+        const findPwdData = {
+            loginId: loginId,
+            userNm: userNm,
+            email: email,
+        };
+        const result = await apiCall.post(`/v1/auth/sendotpcode`)
+        return result;
+    },
 
     //Server Data 요청
     //=> userdetail, memberlist, boardlist 
