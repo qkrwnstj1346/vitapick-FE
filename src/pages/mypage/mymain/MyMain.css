@@ -1,0 +1,33 @@
+.myMain {
+    width: 100%;
+}
+
+.myMainCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 30px;
+
+    background: #F7FBF7;
+    border-radius: 20px;
+}
+
+.myMainText h2 {
+    margin-bottom: 10px;
+}
+
+.myMainCharacter img {
+    width: 180px;
+}
+
+.myMainBanner {
+    margin-top: 24px;
+
+    padding: 24px;
+
+    background: #fff;
+
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+}

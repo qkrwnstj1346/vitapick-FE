@@ -1,0 +1,91 @@
+/* 마이페이지 전체 */
+.mypageWrap {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+/* 사이드바 */
+.mypageSidebar {
+    width: 250px;
+    flex-shrink: 0;
+    padding: 24px;
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* 제목 */
+.mypageTitle {
+    margin: 0 0 24px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+}
+
+/* 메뉴 */
+.mypageMenu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 메뉴 항목 */
+.mypageMenu li {
+    padding: 14px 0;
+    font-size: 15px;
+    color: #555;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f3f3;
+    transition: 0.2s;
+    text-align: center;
+}
+
+/* 메뉴 호버 */
+.mypageMenu li:hover {
+    color: #7FAF8B;
+}
+
+/* 컨텐츠 */
+.mypageContent {
+    flex: 1;
+}
+
+/* 태블릿 */
+@media (max-width: 1024px) {
+    .mypageWrap {
+        flex-direction: column;
+    }
+
+    .mypageSidebar {
+        width: 100%;
+    }
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .mypageWrap {
+        margin: 30px auto;
+    }
+
+    .mypageTitle {
+        font-size: 22px;
+    }
+}
+
+/* 작은 모바일 */
+@media (max-width: 480px) {
+    .mypageSidebar {
+        padding: 18px;
+    }
+
+    .mypageMenu li {
+        font-size: 14px;
+    }
+}

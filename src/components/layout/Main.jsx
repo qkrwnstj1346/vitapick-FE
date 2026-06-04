@@ -5,7 +5,9 @@ import Home from '../../pages/home/Home';
 import Join from '../../pages/users/Join';
 import FindId from '../../pages/users/FindId';
 import Sur from '../../pages/custom/Sur';
-// import MyPage from '../../pages/users/MyPage';
+
+import MyPage from './Mypage';
+import MyMain from '../../pages/mypage/mymain/MyMain';
 
 import CsMain from '../../pages/cscenter/csmain/CsMain';
 import NoticeList from '../../pages/cscenter/ntc/NoticeList';
@@ -44,17 +46,18 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                     element={<Login onLoginSubmit={onLoginSubmit} />}
                 />
 
-                <Route path="/v1/auth/findid" element={<FindId/>} />
+                <Route path="/v1/auth/findid" element={<FindId />} />
 
                 <Route
                     path="/v1/auth/join"
                     element={<Join />}
                 />
 
-                {/* <Route
-                    path="/mypage"
-                    element={<MyPage token={token} />}
-                /> */}
+
+                {/* 마이페이지 */}
+                <Route path="/mypage" element={<MyPage />}>
+                    <Route index element={<MyMain />} />
+                </Route>
 
                 {/* 고객센터 메인 */}
                 <Route path="/cscenter" element={<CsMain />} />
