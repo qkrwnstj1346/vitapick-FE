@@ -5,7 +5,7 @@ import './ProductDetail.css';
 
 const ProductDetail = () => {
 
-    // URL 파라미터에서 상품 ID 가져오기
+    // URL에서 상품 ID 가져오기
     const { prdId } = useParams();
 
     // 페이지 이동 함수
@@ -14,10 +14,10 @@ const ProductDetail = () => {
     // 상품 상세 정보
     const [prd, setPrd] = useState(null);
 
-    // 상품 정보 로딩 상태
+    // 로딩 상태
     const [loading, setLoading] = useState(true);
 
-    // 현재 선택된 탭: desc = 상품설명, rvw = 상품평
+    // 현재 탭 상태: desc = 상품설명, rvw = 상품평
     const [activeTab, setActiveTab] = useState('desc');
 
     // 찜 여부
@@ -32,14 +32,23 @@ const ProductDetail = () => {
     // 리뷰 목록
     const [rvwList, setRvwList] = useState([]);
 
-    // 리뷰 입력 내용
+    // 새 리뷰 내용
     const [rvwTxt, setRvwTxt] = useState('');
 
-    // 별점
+    // 새 리뷰 별점
     const [rating, setRating] = useState(5);
 
     // 리뷰 작성 폼 열림 여부
     const [showRvwForm, setShowRvwForm] = useState(false);
+
+    // 지금 수정 중인 리뷰 ID
+    const [editRvwId, setEditRvwId] = useState(null);
+
+    // 수정할 리뷰 내용
+    const [editRvwTxt, setEditRvwTxt] = useState('');
+
+    // 수정할 별점
+    const [editRating, setEditRating] = useState(5);
 
     // 리뷰 목록 다시 가져오기
     const fetchRvwList = async () => {
@@ -57,8 +66,9 @@ const ProductDetail = () => {
                 cmt: rvwTxt
             });
 
-            // 작성 후 입력창 초기화
+            // 작성 후 입력값 초기화
             setRvwTxt('');
+            setRating(5);
 
             // 작성 폼 닫기
             setShowRvwForm(false);
@@ -67,7 +77,7 @@ const ProductDetail = () => {
             await fetchRvwList();
 
         } catch (err) {
-            console.error('리뷰 작성 실패 전체:', err);
+            console.error('리뷰 작성 실패:', err);
             console.error('상태코드:', err.response?.status);
             console.error('응답데이터:', err.response?.data);
             alert('리뷰 작성에 실패했습니다.');
@@ -76,15 +86,13 @@ const ProductDetail = () => {
 
     // 리뷰 삭제
     const handleDeleteRvw = async (rvwId) => {
-        // 사용자가 취소 누르면 삭제 중단
         if (!window.confirm('리뷰를 삭제하시겠습니까?')) return;
 
         try {
-            // 백엔드 리뷰 삭제 요청
-            // 실제 DB 삭제가 아니라 useYn = N으로 바꾸는 요청
+            // 백엔드에서 useYn = N 처리
             await apiCall.patch(`/api/v1/rvw/${rvwId}/cancel`);
 
-            // 삭제 후 리뷰 목록 새로고침
+            // 삭제 후 목록 다시 조회
             await fetchRvwList();
 
         } catch (err) {
@@ -92,6 +100,50 @@ const ProductDetail = () => {
             console.error('상태코드:', err.response?.status);
             console.error('응답데이터:', err.response?.data);
             alert('리뷰 삭제에 실패했습니다.');
+        }
+    };
+
+    // 수정 버튼 클릭 시 실행
+    const handleEditRvw = (rvw) => {
+        // 어떤 리뷰를 수정 중인지 저장
+        setEditRvwId(rvw.rvwId);
+
+        // 기존 리뷰 내용을 수정창에 넣기
+        setEditRvwTxt(rvw.cmt);
+
+        // 기존 별점을 수정 별점에 넣기
+        setEditRating(rvw.rating);
+    };
+
+    // 수정 취소
+    const handleCancelEdit = () => {
+        // 수정 상태 초기화
+        setEditRvwId(null);
+        setEditRvwTxt('');
+        setEditRating(5);
+    };
+
+    // 수정 완료 버튼 클릭 시 실행
+    const handleUpdateRvw = async (rvwId) => {
+        try {
+            await apiCall.patch(`/api/v1/rvw/${rvwId}`, {
+                rating: editRating,
+                cmt: editRvwTxt
+            });
+
+            // 수정 상태 초기화
+            setEditRvwId(null);
+            setEditRvwTxt('');
+            setEditRating(5);
+
+            // 수정 후 리뷰 목록 다시 조회
+            await fetchRvwList();
+
+        } catch (err) {
+            console.error('리뷰 수정 실패:', err);
+            console.error('상태코드:', err.response?.status);
+            console.error('응답데이터:', err.response?.data);
+            alert('리뷰 수정에 실패했습니다.');
         }
     };
 
@@ -111,18 +163,9 @@ const ProductDetail = () => {
         fetchProduct();
     }, [prdId]);
 
-    // 상품 리뷰 목록 가져오기
+    // 리뷰 목록 가져오기
     useEffect(() => {
-        const fetchRvw = async () => {
-            try {
-                const data = await apiCall.get(`/api/v1/rvw/prd/${prdId}`);
-                setRvwList(data);
-            } catch (err) {
-                console.error('리뷰 조회 오류:', err);
-            }
-        };
-
-        fetchRvw();
+        fetchRvwList();
     }, [prdId]);
 
     // 로딩 중 화면
@@ -134,10 +177,10 @@ const ProductDetail = () => {
     return (
         <div className='detail_container'>
 
-            {/* 상단 상품 정보 영역 */}
+            {/* 상단 상품 정보 */}
             <div className='detail_top'>
 
-                {/* 상품 대표 이미지 */}
+                {/* 상품 이미지 */}
                 <div className='detail_img_box'>
                     <img src={prd.thumbImgUrl} alt={prd.prdNm} />
                 </div>
@@ -150,7 +193,7 @@ const ProductDetail = () => {
 
                     <div className='detail_btns'>
 
-                        {/* 장바구니 담기 버튼 */}
+                        {/* 장바구니 버튼 */}
                         <button
                             className='detail_cart_btn'
                             onClick={async () => {
@@ -186,10 +229,9 @@ const ProductDetail = () => {
 
                     </div>
                 </div>
-
             </div>
 
-            {/* 상품설명 / 상품평 탭 */}
+            {/* 탭 버튼 */}
             <div className='detail_tabs'>
                 <button
                     className={activeTab === 'desc' ? 'tab_active' : ''}
@@ -206,7 +248,7 @@ const ProductDetail = () => {
                 </button>
             </div>
 
-            {/* 탭 내용 영역 */}
+            {/* 탭 내용 */}
             <div className='detail_tab_content'>
 
                 {/* 상품설명 탭 */}
@@ -216,7 +258,7 @@ const ProductDetail = () => {
                         {/* 상품 상세 이미지 */}
                         <img src={prd.detailImgUrl} alt='상품설명' />
 
-                        {/* 상품설명 더보기 / 접기 버튼 */}
+                        {/* 상품설명 더보기 / 접기 */}
                         {!descExpanded ? (
                             <div className='detail_desc_more'>
                                 <button onClick={() => setDescExpanded(true)}>
@@ -237,7 +279,7 @@ const ProductDetail = () => {
                 {activeTab === 'rvw' && (
                     <div className='detail_rvw'>
 
-                        {/* 평균 평점 및 리뷰 개수 */}
+                        {/* 평균 평점 */}
                         <div className='rvw_summary'>
                             <strong>
                                 ⭐ {rvwList.length > 0
@@ -247,7 +289,7 @@ const ProductDetail = () => {
                             <p>총 {rvwList.length}개의 리뷰</p>
                         </div>
 
-                        {/* 리뷰 작성 폼 열기 버튼 */}
+                        {/* 리뷰 작성 버튼 */}
                         <button
                             className='rvw_write_btn'
                             onClick={() => setShowRvwForm(prev => !prev)}
@@ -259,7 +301,7 @@ const ProductDetail = () => {
                         {showRvwForm && (
                             <div className='rvw_form'>
 
-                                {/* 별점 선택 */}
+                                {/* 새 리뷰 별점 선택 */}
                                 <div className='rvw_rating_select'>
                                     <p>별점 선택:</p>
 
@@ -278,7 +320,7 @@ const ProductDetail = () => {
                                     ))}
                                 </div>
 
-                                {/* 리뷰 내용 입력 */}
+                                {/* 새 리뷰 내용 */}
                                 <textarea
                                     className='rvw_textarea'
                                     value={rvwTxt}
@@ -287,18 +329,17 @@ const ProductDetail = () => {
                                     rows={4}
                                 />
 
-                                {/* 리뷰 작성 완료 버튼 */}
+                                {/* 리뷰 작성 완료 */}
                                 <button
                                     className='rvw_submit_btn'
                                     onClick={handleSubmitRvw}
                                 >
                                     작성 완료
                                 </button>
-
                             </div>
                         )}
 
-                        {/* 리뷰가 없을 때 */}
+                        {/* 리뷰 없을 때 */}
                         {rvwList.length === 0 && (
                             <p className='rvw_empty'>아직 작성된 리뷰가 없습니다.</p>
                         )}
@@ -307,28 +348,88 @@ const ProductDetail = () => {
                         {rvwList.map((rvw, idx) => (
                             <div key={idx} className='rvw_item'>
 
-                                {/* 별점 */}
-                                <span className='rvw_star'>
-                                    {'★'.repeat(rvw.rating)}
-                                    {'☆'.repeat(5 - rvw.rating)}
-                                </span>
+                                {/* 수정 중인 리뷰라면 수정 폼 보여주기 */}
+                                {editRvwId === rvw.rvwId ? (
+                                    <div className='rvw_edit_form'>
 
-                                {/* 작성일 */}
-                                <span className='rvw_date'>
-                                    {rvw.crtAt?.slice(0, 10)}
-                                </span>
+                                        {/* 수정 별점 선택 */}
+                                        <div className='rvw_rating_select'>
+                                            <p>별점 수정:</p>
 
-                                {/* 리뷰 내용 */}
-                                <p className='rvw_cmt'>{rvw.cmt}</p>
+                                            {[1, 2, 3, 4, 5].map(star => (
+                                                <span
+                                                    key={star}
+                                                    onClick={() => setEditRating(star)}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        color: star <= editRating ? '#FFD700' : '#ddd',
+                                                        fontSize: '24px'
+                                                    }}
+                                                >
+                                                    ★
+                                                </span>
+                                            ))}
+                                        </div>
 
-                                {/* 본인 리뷰일 때만 삭제 버튼 표시 */}
-                                {String(rvw.userNum) === sessionStorage.getItem('userNum') && (
-                                    <button
-                                        className='rvw_delete_btn'
-                                        onClick={() => handleDeleteRvw(rvw.rvwId)}
-                                    >
-                                        삭제
-                                    </button>
+                                        {/* 수정 리뷰 내용 */}
+                                        <textarea
+                                            className='rvw_textarea'
+                                            value={editRvwTxt}
+                                            onChange={(e) => setEditRvwTxt(e.target.value)}
+                                            rows={3}
+                                        />
+
+                                        {/* 수정 완료 버튼 */}
+                                        <button
+                                            className='rvw_submit_btn'
+                                            onClick={() => handleUpdateRvw(rvw.rvwId)}
+                                        >
+                                            수정 완료
+                                        </button>
+
+                                        {/* 수정 취소 버튼 */}
+                                        <button
+                                            className='rvw_cancel_btn'
+                                            onClick={handleCancelEdit}
+                                        >
+                                            취소
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {/* 기존 별점 표시 */}
+                                        <span className='rvw_star'>
+                                            {'★'.repeat(rvw.rating)}
+                                            {'☆'.repeat(5 - rvw.rating)}
+                                        </span>
+
+                                        {/* 작성일 */}
+                                        <span className='rvw_date'>
+                                            {rvw.crtAt?.slice(0, 10)}
+                                        </span>
+
+                                        {/* 리뷰 내용 */}
+                                        <p className='rvw_cmt'>{rvw.cmt}</p>
+
+                                        {/* 본인 리뷰일 때만 수정 / 삭제 버튼 표시 */}
+                                        {String(rvw.userNum) === sessionStorage.getItem('userNum') && (
+                                            <>
+                                                <button
+                                                    className='rvw_edit_btn'
+                                                    onClick={() => handleEditRvw(rvw)}
+                                                >
+                                                    수정
+                                                </button>
+
+                                                <button
+                                                    className='rvw_delete_btn'
+                                                    onClick={() => handleDeleteRvw(rvw.rvwId)}
+                                                >
+                                                    삭제
+                                                </button>
+                                            </>
+                                        )}
+                                    </>
                                 )}
 
                             </div>
@@ -338,7 +439,6 @@ const ProductDetail = () => {
                 )}
 
             </div>
-
         </div>
     );
 };
