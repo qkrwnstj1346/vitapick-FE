@@ -19,6 +19,38 @@ const ProductDetail = () => {
     const [rating, setRating] = useState(5);          // 별점
     const [showRvwForm, setShowRvwForm] = useState(false); // 작성폼 열림/닫힘
 
+    const fetchRvwList = async () => {
+        const data = await apiCall.get(`/api/v1/rvw/prd/${prdId}`);
+        setRvwList(data);
+    };
+
+    const handleSubmitRvw = async () => {
+        try {
+            await apiCall.post('/api/v1/rvw', {
+                userNum: Number(sessionStorage.getItem("userNum")),
+                ordItId: 1,
+                prdId: Number(prdId),
+                rating: rating,
+                cmt: rvwTxt
+            });
+            setRvwTxt('');
+            setShowRvwForm(false);
+            await fetchRvwList();
+        } catch {
+            alert('리뷰 작성에 실패했습니다.');
+        }
+    };
+
+    const handleDeleteRvw = async (rvwId) => {
+        if (!window.confirm('리뷰를 삭제하시겠습니까?')) return;
+        try {
+            await apiCall.patch(`/api/v1/rvw/${rvwId}/cancel`);
+            await fetchRvwList();
+        } catch {
+            alert('리뷰 삭제에 실패했습니다.');
+        }
+    };
+
    
     useEffect(() => {
         const fetchProduct = async () => {
@@ -189,19 +221,7 @@ const ProductDetail = () => {
                         />
 
                         {/* 작성 완료 버튼 */}
-                        <button className='rvw_submit_btn' onClick={async () => {
-                            await apiCall.post('/api/v1/rvw', {
-                                userNum: sessionStorage.getItem("userNum"),
-                                ordItId: 1,
-                                prdId: Number(prdId),
-                                rating: rating,
-                                cmt: rvwTxt
-                            });
-                            setRvwTxt('');
-                            setShowRvwForm(false);
-                            const data = await apiCall.get(`/api/v1/rvw/prd/${prdId}`);
-                            setRvwList(data);
-                        }}>
+                        <button className='rvw_submit_btn' onClick={handleSubmitRvw}>
                             작성 완료
                         </button>
 
@@ -217,6 +237,9 @@ const ProductDetail = () => {
                                 <span className='rvw_star'>{'★'.repeat(rvw.rating)}{'☆'.repeat(5 - rvw.rating)}</span>
                                 <span className='rvw_date'>{rvw.crtAt?.slice(0, 10)}</span>
                                 <p className='rvw_cmt'>{rvw.cmt}</p>
+                                {String(rvw.userNum) === sessionStorage.getItem("userNum") && (
+                                    <button className='rvw_delete_btn' onClick={() => handleDeleteRvw(rvw.rvwId)}>삭제</button>
+                                )}
                             </div>
                         ))}
 
