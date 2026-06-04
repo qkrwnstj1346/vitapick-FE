@@ -61,7 +61,8 @@ function UserAddrList() {
 
         getAddrList()
             .then(res => {
-                setAddrList(res.data);
+                console.log('배송지 목록 응답 => ', res);
+                setAddrList(res);
             })
             .catch(err => {
                 console.log(err);

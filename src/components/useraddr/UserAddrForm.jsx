@@ -44,7 +44,19 @@ function UserAddrForm({
                 addr2: addrData.addr2 || '',
                 baseYn: addrData.baseYn || 'N'
             });
+
+            return;
         }
+
+        setFormData({
+            addrNm: '',
+            rcvNm: '',
+            rcvTel: '',
+            zipCd: '',
+            addr1: '',
+            addr2: '',
+            baseYn: 'N'
+        });
 
     }, [addrData]);
 
@@ -204,6 +216,11 @@ function UserAddrForm({
                 console.log(err);
 
                 const errorMessage = err.response?.data;
+
+                if (err.response?.status === 401) {
+                    alert('로그인 후 이용해주세요.');
+                    return;
+                }
 
                 alert(
                     errorMessage ||

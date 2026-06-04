@@ -5,6 +5,11 @@ export function getAddrList() {
     return apiCall.get('/address');
 }
 
+/* 기본 배송지 조회 */
+export function getBaseAddr() {
+    return apiCall.get('/address/base');
+}
+
 /* 배송지 등록 */
 export function createAddr(data) {
     return apiCall.post('/address', data);
