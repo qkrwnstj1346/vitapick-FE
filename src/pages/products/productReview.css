@@ -91,6 +91,10 @@
     margin-top: 12px;
 }
 
+.rvw_submit_btn:hover {
+    background-color: #6FA17B;
+}
+
 /* 수정 취소 버튼 */
 .rvw_cancel_btn {
     width: 100%;
@@ -145,10 +149,10 @@
     line-height: 1.6;
 }
 
-/* 수정 버튼 */
-.rvw_edit_btn {
+/* 리뷰 수정 / 삭제 버튼 공통 */
+.rvw_edit_btn,
+.rvw_delete_btn {
     position: absolute;
-    right: 70px;
     top: 16px;
 
     padding: 6px 12px;
@@ -162,21 +166,12 @@
     cursor: pointer;
 }
 
-/* 삭제 버튼 */
+.rvw_edit_btn {
+    right: 70px;
+}
+
 .rvw_delete_btn {
-    position: absolute;
     right: 16px;
-    top: 16px;
-
-    padding: 6px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-
-    background-color: #fff;
-    color: #777;
-
-    font-size: 13px;
-    cursor: pointer;
 }
 
 /* 수정 버튼 hover */
@@ -203,12 +198,18 @@
     border-radius: 12px;
 }
 
-/* 관리자 답글 제목 */
 .rvw_reply_box strong {
     display: inline-block;
     font-size: 14px;
     color: #17251c;
     margin-right: 8px;
+}
+
+.rvw_reply_box p {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
 }
 
 /* 관리자 답글 날짜 */
@@ -217,64 +218,55 @@
     color: #999;
 }
 
-/* 관리자 답글 내용 */
-.rvw_reply_box p {
-    margin: 8px 0 0;
-    font-size: 14px;
-    color: #333;
-    line-height: 1.6;
-}
-
 /* 관리자 답글 버튼 영역 */
 .rvw_reply_admin_area {
-    margin-top: 12px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 /* 관리자 답글 입력 폼 */
 .rvw_reply_form {
+    width: 100%;
     margin-top: 12px;
+}
+
+/* 답글 버튼 공통 */
+.rvw_reply_btn,
+.rvw_reply_edit_btn,
+.rvw_reply_delete_btn {
+    min-width: 86px;
+    height: 34px;
+
+    padding: 0 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    background-color: #ffffff;
+    color: #777;
+
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 34px;
+    text-align: center;
+
+    cursor: pointer;
+    box-sizing: border-box;
 }
 
 /* 답글 등록 버튼 */
 .rvw_reply_btn {
-    margin-top: 10px;
-    padding: 6px 12px;
-    border: 1px solid #7FAF8B;
-    border-radius: 6px;
-    background-color: #ffffff;
-    color: #7FAF8B;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-/* 답글 수정 버튼 */
-.rvw_reply_edit_btn {
-    margin-top: 10px;
-    margin-right: 6px;
-    padding: 6px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #ffffff;
-    color: #777;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-/* 답글 삭제 버튼 */
-.rvw_reply_delete_btn {
-    margin-top: 10px;
-    padding: 6px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #ffffff;
-    color: #777;
-    font-size: 13px;
-    cursor: pointer;
+    border-color: #7FAF8B;
+    color: #5f9f6d;
 }
 
 /* 답글 등록 버튼 hover */
 .rvw_reply_btn:hover {
-    background-color: #F8FBF8;
+    background-color: #F1F8F3;
+    border-color: #5f9f6d;
+    color: #4b8f5b;
 }
 
 /* 답글 수정 버튼 hover */
@@ -309,6 +301,10 @@
         position: static;
         margin-top: 12px;
         margin-right: 6px;
+    }
+
+    .rvw_reply_admin_area {
+        margin-top: 12px;
     }
 
     .rvw_reply_btn,

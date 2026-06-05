@@ -42,13 +42,11 @@ const ProductReview = ({ prdId }) => {
     // 한 페이지에 보여줄 리뷰 개수
     const rvwPageSize = 5;
 
+    // 로그인 회원 번호
+    const loginUserNum = sessionStorage.getItem('userNum');
+
     // 관리자 여부
-    const isAdmin =
-        sessionStorage.getItem('role') === 'ADMIN' ||
-        sessionStorage.getItem('role') === 'ROLE_ADMIN' ||
-        sessionStorage.getItem('userRole') === 'ADMIN' ||
-        sessionStorage.getItem('userRole') === 'ROLE_ADMIN' ||
-        sessionStorage.getItem('auth') === 'ROLE_ADMIN';
+    const isAdmin = sessionStorage.getItem('roleCd') === 'ROLE_ADMIN';
 
     // 리뷰 목록 다시 가져오기
     const fetchRvwList = async () => {
@@ -63,8 +61,6 @@ const ProductReview = ({ prdId }) => {
     // 상품 ID가 바뀔 때 리뷰 목록 가져오기
     useEffect(() => {
         fetchRvwList();
-
-        // 다른 상품으로 이동하면 리뷰 페이지를 1페이지로 초기화
         setRvwPage(1);
     }, [prdId]);
 
@@ -78,17 +74,11 @@ const ProductReview = ({ prdId }) => {
                 cmt: rvwTxt
             });
 
-            // 작성 후 입력값 초기화
             setRvwTxt('');
             setRating(5);
-
-            // 작성 폼 닫기
             setShowRvwForm(false);
-
-            // 최신 리뷰가 보이도록 1페이지로 이동
             setRvwPage(1);
 
-            // 리뷰 목록 새로고침
             await fetchRvwList();
 
         } catch (err) {
@@ -104,13 +94,9 @@ const ProductReview = ({ prdId }) => {
         if (!window.confirm('리뷰를 삭제하시겠습니까?')) return;
 
         try {
-            // 실제 DB에서 리뷰 삭제
             await apiCall.delete(`/api/v1/rvw/${rvwId}`);
 
-            // 삭제 후 1페이지로 이동
             setRvwPage(1);
-
-            // 리뷰 목록 새로고침
             await fetchRvwList();
 
         } catch (err) {
@@ -121,21 +107,21 @@ const ProductReview = ({ prdId }) => {
         }
     };
 
-    // 수정 버튼 클릭 시 실행
+    // 리뷰 수정 버튼 클릭
     const handleEditRvw = (rvw) => {
         setEditRvwId(rvw.rvwId);
         setEditRvwTxt(rvw.cmt);
         setEditRating(rvw.rating);
     };
 
-    // 수정 취소
+    // 리뷰 수정 취소
     const handleCancelEdit = () => {
         setEditRvwId(null);
         setEditRvwTxt('');
         setEditRating(5);
     };
 
-    // 수정 완료
+    // 리뷰 수정 완료
     const handleUpdateRvw = async (rvwId) => {
         try {
             await apiCall.patch(`/api/v1/rvw/${rvwId}`, {
@@ -335,7 +321,7 @@ const ProductReview = ({ prdId }) => {
             {currentRvwList.map((rvw) => (
                 <div key={rvw.rvwId} className='rvw_item'>
 
-                    {/* 수정 중인 리뷰라면 수정 폼 보여주기 */}
+                    {/* 수정 중인 리뷰라면 수정 폼 표시 */}
                     {editRvwId === rvw.rvwId ? (
                         <div className='rvw_edit_form'>
 
@@ -398,8 +384,8 @@ const ProductReview = ({ prdId }) => {
                             {/* 리뷰 내용 */}
                             <p className='rvw_cmt'>{rvw.cmt}</p>
 
-                            {/* 본인 리뷰일 때만 수정 / 삭제 버튼 표시 */}
-                            {String(rvw.userNum) === sessionStorage.getItem('userNum') && (
+                            {/* 본인이 작성한 리뷰만 수정 / 삭제 가능 */}
+                            {String(rvw.userNum) === String(loginUserNum) && (
                                 <>
                                     <button
                                         className='rvw_edit_btn'
@@ -428,7 +414,7 @@ const ProductReview = ({ prdId }) => {
                                 </div>
                             )}
 
-                            {/* 관리자만 답글 등록 / 수정 / 삭제 가능 */}
+                            {/* 관리자는 모든 리뷰에 답글 등록 / 수정 / 삭제 가능 */}
                             {isAdmin && (
                                 <div className='rvw_reply_admin_area'>
 
