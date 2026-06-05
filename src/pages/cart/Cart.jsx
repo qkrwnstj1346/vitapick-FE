@@ -209,20 +209,16 @@ function Cart() {
         return (cartList || []).filter(item => item.cusId === null);
     }, [cartList]);
 
+
     /* 주문하기 */
     const handleOrder = () => {
+
         if (selectedCartList.length === 0) {
             alert('주문할 상품을 선택해주세요.');
             return;
         }
 
-        navigate('/order', {
-            state: {
-                orderItems: selectedCartList,
-                totalPrice,
-                finalPrice
-            }
-        });
+        navigate('/order');
     };
 
     return (
@@ -497,7 +493,7 @@ function Cart() {
                         <button
                             type="button"
                             className="orderBtn"
-                            onClick={handleOrder}
+                            onClick={() => navigate('/order')}
                         >
                             주문하기
                         </button>
