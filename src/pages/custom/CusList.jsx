@@ -98,7 +98,7 @@ export default function CusList() {
               <div
                 key={item.cusId}
                 className="cusl-card"
-                onClick={() => navigate(`/cus/result/${item.cusId}`)}
+                onClick={() => navigate(`v1/cus/result/${item.cusId}`)}
               >
                 <div className="cusl-card__left">
                   <div className="cusl-card__num">{idx + 1}</div>

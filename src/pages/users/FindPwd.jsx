@@ -4,10 +4,6 @@ import { useForm } from 'react-hook-form';
 import { UsersApi } from '../../service/usersApi';
 import './Login.css';
 
-const idRegex = /^[a-zA-Z0-9]{4,20}$/;
-const pwdRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,20}$/;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 function FindPwd() {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
