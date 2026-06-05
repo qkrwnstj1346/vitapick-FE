@@ -113,7 +113,7 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                 {/* 주문서 */}
                 <Route path="/order" element={<Order />} />
 
-                {/ 주문 완료 */}
+                {/* 주문 완료 */}
                 <Route path="/order/complete/:ordNo" element={<OrderComplete />} />
 
                 {/* 배송지 */}
