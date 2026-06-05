@@ -22,14 +22,15 @@ function App() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    
+
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const [isChatOpen, setIsChatOpen] = useState(false);
 
     const hideChatbotPaths = [
         '/cart',
-        '/order'
+        '/order',
+        '/address'
     ];
 
     const isHideChatbot = hideChatbotPaths.some(path =>
@@ -38,7 +39,7 @@ function App() {
 
     useEffect(() => {
         const accessToken = sessionStorage.getItem("accessToken");
-        
+
         if (accessToken !== null) {
             setIsLoggedIn(true);
             setUserInfo({
