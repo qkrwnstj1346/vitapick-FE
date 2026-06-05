@@ -189,7 +189,8 @@ function Cart() {
         return Object.entries(groupObj).map(([cusId, items]) => ({
             cusId,
             items,
-            cusReason: items[0]?.cusReason
+            cusReason: items[0]?.cusReason,
+            surTitle: items[0]?.surTitle
         }));
     }, [cartList]);
 
@@ -282,7 +283,7 @@ function Cart() {
                                                 </h4>
 
                                                 <p className="customGroupSub">
-                                                    커스텀 ID : {group.cusId}
+                                                    설문 Title : {group.surTitle}
                                                 </p>
                                             </div>
 
