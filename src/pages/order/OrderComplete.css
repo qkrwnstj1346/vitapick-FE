@@ -1,0 +1,90 @@
+/* 주문완료 전체 */
+.orderCompletePage {
+    min-height: 70vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px 20px;
+}
+
+/* 박스 */
+.orderCompleteBox {
+    width: 100%;
+    max-width: 500px;
+
+    padding: 50px 40px;
+
+    text-align: center;
+
+    background: #fff;
+
+    border: 1px solid #e8e8e8;
+    border-radius: 24px;
+
+    box-shadow: 0 6px 18px rgba(127, 175, 139, 0.08);
+
+    box-sizing: border-box;
+}
+
+/* 아이콘 */
+.completeIcon {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+/* 제목 */
+.completeTitle {
+    margin: 0 0 16px;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    color: #333;
+}
+
+/* 설명 */
+.completeText {
+    margin: 0 0 30px;
+
+    font-size: 16px;
+
+    color: #666;
+}
+
+/* 버튼 */
+.completeBtnBox {
+    display: flex;
+    gap: 12px;
+}
+
+.completeBtnBox button {
+    flex: 1;
+
+    height: 50px;
+
+    border: none;
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* 홈 버튼 */
+.homeBtn {
+    background: #f3f3f3;
+    color: #333;
+}
+
+/* 주문내역 버튼 */
+.orderBtn {
+    background: #7FAF8B;
+    color: #fff;
+}
+
+.orderBtn:hover {
+    background: #6c9d77;
+}
