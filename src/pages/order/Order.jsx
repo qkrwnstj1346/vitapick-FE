@@ -16,7 +16,13 @@ function Order() {
 
     /* 바로구매 상품 */
     const directOrderList = location.state?.prdList || [];
+
+    /* 장바구니 선택 상품 */
+    const cartOrderList = location.state?.cartOrderList || [];
+
+    /* 주문 타입 */
     const isDirectOrder = directOrderList.length > 0;
+    const isCartStateOrder = cartOrderList.length > 0;
 
     /* 주문상품 */
     const [orderItemList, setOrderItemList] = useState([]);
@@ -32,6 +38,7 @@ function Order() {
     const totalAmt = orderItemList.reduce((sum, item) => {
         const price = item.price || 0;
         const qty = item.itQty || item.it_qty || 1;
+
         return sum + price * qty;
     }, 0);
 
@@ -41,9 +48,15 @@ function Order() {
 
         if (isDirectOrder) {
             setOrderItemList(directOrderList);
-        } else {
-            fetchSelectedCartList();
+            return;
         }
+
+        if (isCartStateOrder) {
+            setOrderItemList(cartOrderList);
+            return;
+        }
+
+        fetchSelectedCartList();
     }, []);
 
     /* 배송지 목록 조회 */
@@ -51,6 +64,7 @@ function Order() {
         getOrderAddressList()
             .then(res => {
                 const list = res.data || [];
+
                 setAddrList(list);
 
                 const baseAddr = list.find(addr => addr.baseYn === 'Y');
@@ -100,14 +114,19 @@ function Order() {
             return;
         }
 
-        const prdList = orderItemList.map(item => ({
-            prdId: item.prdId,
-            cusId: item.cusId || null,
-            prdNm: item.prdNm,
-            itQty: item.itQty || item.it_qty || 1,
-            price: item.price,
-            itAmt: item.price * (item.itQty || item.it_qty || 1)
-        }));
+        const prdList = orderItemList.map(item => {
+            const qty = item.itQty || item.it_qty || 1;
+            const price = item.price || 0;
+
+            return {
+                prdId: item.prdId,
+                cusId: item.cusId || null,
+                prdNm: item.prdNm,
+                itQty: qty,
+                price,
+                itAmt: price * qty
+            };
+        });
 
         const orderData = {
             addrId: selectedAddrId,
@@ -141,10 +160,11 @@ function Order() {
                     <section className="orderSection">
                         <div className="orderSectionTop">
                             <h3>배송지</h3>
+
                             <button
                                 type="button"
                                 className="addrAddBtn"
-                                onClick={() => navigate('/mypage/address')}
+                                onClick={() => navigate('/address')}
                             >
                                 배송지 추가
                             </button>
@@ -153,9 +173,10 @@ function Order() {
                         {addrList.length === 0 ? (
                             <div className="emptyAddrBox">
                                 <p>등록된 배송지가 없습니다.</p>
+
                                 <button
                                     type="button"
-                                    onClick={() => navigate('/mypage/address')}
+                                    onClick={() => navigate('/address')}
                                 >
                                     배송지 추가하기
                                 </button>
@@ -177,6 +198,7 @@ function Order() {
                                         <div>
                                             <div className="addrNameRow">
                                                 <strong>{addr.addrNm}</strong>
+
                                                 {addr.baseYn === 'Y' && (
                                                     <span>기본 배송지</span>
                                                 )}
@@ -197,7 +219,8 @@ function Order() {
                         <div className="orderItemList">
                             {orderItemList.map((item, index) => {
                                 const qty = item.itQty || item.it_qty || 1;
-                                const itemAmt = item.price * qty;
+                                const price = item.price || 0;
+                                const itemAmt = price * qty;
 
                                 return (
                                     <div

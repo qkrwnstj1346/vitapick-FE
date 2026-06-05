@@ -210,6 +210,7 @@ function Cart() {
     }, [cartList]);
 
 
+
     /* 주문하기 */
     const handleOrder = () => {
 
@@ -218,7 +219,11 @@ function Cart() {
             return;
         }
 
-        navigate('/order');
+        navigate('/order', {
+            state: {
+                cartOrderList: selectedCartList
+            }
+        });
     };
 
     return (
@@ -493,7 +498,7 @@ function Cart() {
                         <button
                             type="button"
                             className="orderBtn"
-                            onClick={() => navigate('/order')}
+                            onClick={handleOrder}
                         >
                             주문하기
                         </button>
