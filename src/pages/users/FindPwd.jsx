@@ -59,7 +59,7 @@ function FindPwd() {
         try{
             setIsLoading(true);
             const response = await UsersApi.resetPwd(
-                data.loginId,
+                loginId,
                 data.inputOtpCode,
                 data.pwd
             );
@@ -179,9 +179,9 @@ function FindPwd() {
                         }
                     })}
                 />
-                {resetErrors.getOtpCode && (
+                {resetErrors.inputOtpCode && (
                     <p style={{ color: "red", fontSize: "13px" }}>
-                        {resetErrors.getOtpCode.message}
+                        {resetErrors.inputOtpCode.message}
                     </p>
                 )}
                 <br />
@@ -257,7 +257,7 @@ function FindPwd() {
             <div className="find-links">
                 <Link to="/v1/auth/login">로그인</Link>
                 <span className="divider">|</span>
-                <Link to="/v1/auth/find-id">아이디 찾기</Link>
+                <Link to="/v1/auth/findid">아이디 찾기</Link>
                 <span className="divider">|</span>
                 <Link to="/v1/auth/join">회원가입</Link>
             </div>
