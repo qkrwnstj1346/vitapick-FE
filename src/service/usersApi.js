@@ -39,6 +39,17 @@ export const UsersApi={
         const result = await apiCall.post(`/v1/auth/sendotpcode`)
         return result;
     },
+    //비밀번호찾기(비밀번호 재설정)
+    resetPwd: async(loginId, otpCode, pwd)=>{
+        const resetPwdData = {
+            loginId: loginId,
+            otpCode: otpCode,
+            pwd: pwd,
+        };
+        const result = await apiCall.post(`/v1/auth/resetpwd`)
+        return result;
+    },
+
 
     //Server Data 요청
     //=> userdetail, memberlist, boardlist 
