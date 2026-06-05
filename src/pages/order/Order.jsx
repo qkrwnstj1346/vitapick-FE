@@ -29,9 +29,11 @@ function Order() {
     /* 배송지 */
     const [addrList, setAddrList] = useState([]);
     const [selectedAddrId, setSelectedAddrId] = useState('');
-
-    /* 선택 배송지 */
     const [selectedAddr, setSelectedAddr] = useState(null);
+
+    /* 배송 요청사항 */
+    const [reqMsg, setReqMsg] = useState('');
+    const [customReqMsg, setCustomReqMsg] = useState('');
 
     /* 배송지 모달 */
     const [isAddrModalOpen, setIsAddrModalOpen] = useState(false);
@@ -115,6 +117,16 @@ function Order() {
             return;
         }
 
+        const finalReqMsg =
+            reqMsg === 'direct'
+                ? customReqMsg.trim()
+                : reqMsg;
+
+        if (reqMsg === 'direct' && finalReqMsg === '') {
+            alert('요청사항을 입력해주세요.');
+            return;
+        }
+
         const prdList = orderItemList.map(item => {
             const qty = item.itQty || item.it_qty || 1;
             const price = item.price || 0;
@@ -132,6 +144,7 @@ function Order() {
         const orderData = {
             addrId: Number(selectedAddrId),
             totalAmt,
+            reqMsg: finalReqMsg,
             payDto: {
                 payMthdCd
             },
@@ -141,7 +154,7 @@ function Order() {
         createOrder(orderData)
             .then(res => {
                 alert('주문이 완료되었습니다.');
-                navigate(`/order/complete/${res.data.ordNo}`);
+                navigate(`/order/complete/${res.ordNo}`);
             })
             .catch(err => {
                 console.log(err);
@@ -173,8 +186,6 @@ function Order() {
 
                         {selectedAddr ? (
                             <div className="selectedAddrBox">
-                                <h4>선택한 배송지</h4>
-
                                 <div className="addrNameRow">
                                     <strong>{selectedAddr.addrNm}</strong>
 
@@ -190,6 +201,32 @@ function Order() {
                             <div className="emptyAddrBox">
                                 <p>등록된 배송지가 없습니다.</p>
                             </div>
+                        )}
+                    </section>
+
+                    <section className="orderSection">
+                        <h3>주문 요청사항</h3>
+
+                        <select
+                            value={reqMsg}
+                            onChange={(e) => setReqMsg(e.target.value)}
+                            className="orderRequestSelect"
+                        >
+                            <option value="">요청사항을 선택해주세요</option>
+                            <option value="배송 전 연락주세요">배송 전 연락주세요</option>
+                            <option value="부재 시 문 앞에 놓아주세요">부재 시 문 앞에 놓아주세요</option>
+                            <option value="부재 시 경비실에 맡겨주세요">부재 시 경비실에 맡겨주세요</option>
+                            <option value="택배함에 보관해주세요">택배함에 보관해주세요</option>
+                            <option value="direct">직접 입력</option>
+                        </select>
+
+                        {reqMsg === 'direct' && (
+                            <textarea
+                                className="orderRequestTextarea"
+                                placeholder="요청사항을 입력해주세요."
+                                value={customReqMsg}
+                                onChange={(e) => setCustomReqMsg(e.target.value)}
+                            />
                         )}
                     </section>
 
@@ -272,7 +309,6 @@ function Order() {
                         주문하기
                     </button>
                 </aside>
-
             </div>
 
             {isAddrModalOpen && (
