@@ -36,17 +36,17 @@ export const UsersApi={
             userNm: userNm,
             email: email,
         };
-        const result = await apiCall.post(`/v1/auth/sendotpcode`)
+        const result = await apiCall.post(`/v1/auth/sendotpcode`, findPwdData)
         return result;
     },
     //비밀번호찾기(비밀번호 재설정)
-    resetPwd: async(loginId, otpCode, pwd)=>{
+    resetPwd: async(loginId, inputOtpCode, pwd)=>{
         const resetPwdData = {
             loginId: loginId,
-            otpCode: otpCode,
+            otpCode: inputOtpCode,
             pwd: pwd,
         };
-        const result = await apiCall.post(`/v1/auth/resetpwd`)
+        const result = await apiCall.post(`/v1/auth/resetpwd`, resetPwdData)
         return result;
     },
 

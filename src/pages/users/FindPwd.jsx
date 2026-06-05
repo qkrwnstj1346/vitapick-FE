@@ -25,7 +25,7 @@ function FindPwd() {
         register: resetRegister,
         handleSubmit: resetHandleSubmit,
         watch: resetWatch,
-        formState: {errors: restErrors},
+        formState: {errors: resetErrors},
     } = useForm({ mode: 'onBlur'});
 
     const pwd = resetWatch("pwd");
@@ -44,7 +44,7 @@ function FindPwd() {
             setLoginId(data.loginId);
             setStep(2);
         }catch(err){
-            console.log("비밀번호 찾기 에러:", err);
+            console.log("인증번호 발송 에러:", err);
             console.log("status:", err.response?.status);
             console.log("data:", err.response?.data);
             setServerError(err.message);
@@ -59,8 +59,8 @@ function FindPwd() {
         try{
             setIsLoading(true);
             const response = await UsersApi.resetPwd(
-                loginId,
-                data.getOtpCode,
+                data.loginId,
+                data.inputOtpCode,
                 data.pwd
             );
             console.log(`비밀번호 재설정 응답= ${response}`);
@@ -171,7 +171,7 @@ function FindPwd() {
                     placeholder="인증번호 6자리"
                     autoComplete='off'
                     size={20}
-                    {...register("getOtpCode", {
+                    {...resetRegister("inputOtpCode", {
                         required: "인증번호를 입력해주세요.",
                         pattern: {
                             value: /^[0-9]{6}$/,
@@ -192,7 +192,7 @@ function FindPwd() {
                     placeholder="새 비밀번호"
                     autoComplete='off'
                     size={20}
-                    {...register("pwd", {
+                    {...resetRegister("pwd", {
                         required: "새 비밀번호를 입력해주세요.",
                         pattern: {
                             value: /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,20}$/,
@@ -226,6 +226,15 @@ function FindPwd() {
                 {/* 이메일 입력 */}
 
                 <br /><br />
+
+                <input
+                    type="submit"
+                    className="loginBtn"
+                    value={isLoading ? "변경 중..." : "비밀번호 변경"}
+                    style={{ width: 175 }}
+                    disabled={isLoading}
+                />
+
                 <button
                     type="button"
                     className="loginBtn"
