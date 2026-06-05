@@ -37,7 +37,7 @@ const Login = ({ onLoginSubmit }) => {
                 <div className="find-links">
                     <Link to="/v1/auth/findid">아이디 찾기</Link>
                     <span className="divider">|</span>
-                    비밀번호 찾기
+                    <Link to="/v1/auth/sendotpcode">비밀번호 찾기</Link>
                 </div>
 
 

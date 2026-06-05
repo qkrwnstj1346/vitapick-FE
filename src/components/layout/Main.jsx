@@ -4,6 +4,7 @@ import Login from '../../pages/users/Login';
 import Home from '../../pages/home/Home';
 import Join from '../../pages/users/Join';
 import FindId from '../../pages/users/FindId';
+import FindPwd from '../../pages/users/FindPwd';
 import Sur from '../../pages/custom/Sur';
 
 import MyPage from './Mypage';
@@ -32,6 +33,10 @@ import ProductDetail from '../../pages/products/ProductDetail';
 
 import Cart from '../../pages/cart/Cart';
 
+import Order from '../../pages/order/Order';
+import OrderComplete from '../../pages/order/OrderComplete';
+
+
 import UserAddrList from '../useraddr/UserAddrList';
 
 function Main({ onLoginSubmit, isLoggedIn }) {
@@ -47,6 +52,7 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                 />
 
                 <Route path="/v1/auth/findid" element={<FindId />} />
+                <Route path="/v1/auth/sendotpcode" element={<FindPwd />} />
 
                 <Route
                     path="/v1/auth/join"
@@ -103,6 +109,12 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                 {/* 장바구니 */}
                 <Route path="/cart" element={<Cart />} />
+
+                {/* 주문서 /}
+                <Route path="/order" element={<Order />} />
+
+                {/ 주문 완료 */}
+                <Route path="/order/complete/:ordNo" element={<OrderComplete />} />
 
                 {/* 배송지 */}
                 <Route path="/address" element={<UserAddrList />} />
