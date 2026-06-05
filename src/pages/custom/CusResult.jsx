@@ -20,7 +20,7 @@ function CartBtn({ item, cusId, userNum}) {
       itQty: 1,
     };
 
-    apiCall.post("/cart/add", cartDTO)
+    apiCall.post("/cart", cartDTO)
       .then(() => {
         setStatus("done");
       })
@@ -89,7 +89,7 @@ export default function CusResult() {
     try {
       // 순차적으로 담기 (동시 요청 시 totalCheckQty 충돌 방지)
       for (const item of cusData.items) {
-        await apiCall.post("/cart/add", {
+        await apiCall.post("/cart", {
           userNum: userNum,
           prdId: item.prdId,
           cusId: Number(cusId),
@@ -134,6 +134,7 @@ export default function CusResult() {
       {/* ── 헤더 ── */}
       <div className="cus-header">
         <div className="cus-header__badge">🤖 AI 맞춤 추천</div>
+        <div className="cus-header__badge">{cusData.surTitle}</div>
         <h1 className="cus-header__title">나만의 영양제 처방전</h1>
         <p className="cus-header__date">
           {cusData?.crtAt
