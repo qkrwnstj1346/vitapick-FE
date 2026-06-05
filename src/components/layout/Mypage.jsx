@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 
 import './Mypage.css';
 
@@ -16,7 +16,11 @@ function Mypage() {
 
                 <ul className="mypageMenu">
 
-                    <li>회원정보 수정</li>
+                    <li>
+                        <NavLink to="/mypage/profile">
+                            회원정보 수정
+                        </NavLink>
+                    </li>
 
                     <li>주문 내역</li>
 

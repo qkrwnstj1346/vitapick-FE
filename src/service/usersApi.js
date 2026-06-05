@@ -50,6 +50,17 @@ export const UsersApi={
         return result;
     },
 
+    //내 회원정보 조회
+    getProfile: async()=>{
+        const result = await apiCall.get(`/v1/info`);
+        return result;
+    },
+
+    //내 회원정보 수정
+    updateProfile: async(updateData) => {
+        const result = await apiCall.put(`/v1/update`, updateData);
+        return result;
+    },
 
     //Server Data 요청
     //=> userdetail, memberlist, boardlist 

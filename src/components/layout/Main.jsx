@@ -9,6 +9,7 @@ import Sur from '../../pages/custom/Sur';
 
 import MyPage from './Mypage';
 import MyMain from '../../pages/mypage/mymain/MyMain';
+import MyProfile from '../../pages/mypage/myprofile/MyProfile';
 
 import CsMain from '../../pages/cscenter/csmain/CsMain';
 import NoticeList from '../../pages/cscenter/ntc/NoticeList';
@@ -46,23 +47,31 @@ function Main({ onLoginSubmit, isLoggedIn }) {
             <Routes>
                 <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
 
+                {/* 로그인 */}
                 <Route
                     path="/v1/auth/login"
                     element={<Login onLoginSubmit={onLoginSubmit} />}
                 />
 
+                {/* 아이디찾기, 비번찾기 */}
                 <Route path="/v1/auth/findid" element={<FindId />} />
                 <Route path="/v1/auth/sendotpcode" element={<FindPwd />} />
 
+                {/* 회원가입 */}
                 <Route
                     path="/v1/auth/join"
                     element={<Join />}
                 />
 
-
                 {/* 마이페이지 */}
                 <Route path="/mypage" element={<MyPage />}>
                     <Route index element={<MyMain />} />
+                </Route>
+
+                {/* 마이페이지-내정보 */}
+                <Route path="/mypage" element={<MyPage />}>
+                    <Route index element={<MyMain />} />
+                    <Route path="profile" element={<MyProfile />} />
                 </Route>
 
                 {/* 고객센터 메인 */}
@@ -118,8 +127,6 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                 {/* 배송지 */}
                 <Route path="/address" element={<UserAddrList />} />
-
-
 
             </Routes>
         </main>
