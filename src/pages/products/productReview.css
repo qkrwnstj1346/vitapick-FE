@@ -193,6 +193,104 @@
     color: #ff4d4f;
 }
 
+/* 관리자 답글 박스 */
+.rvw_reply_box {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background-color: #F8FBF8;
+    border: 1px solid #E3EEE5;
+    border-left: 4px solid #7FAF8B;
+    border-radius: 12px;
+}
+
+/* 관리자 답글 제목 */
+.rvw_reply_box strong {
+    display: inline-block;
+    font-size: 14px;
+    color: #17251c;
+    margin-right: 8px;
+}
+
+/* 관리자 답글 날짜 */
+.rvw_reply_date {
+    font-size: 12px;
+    color: #999;
+}
+
+/* 관리자 답글 내용 */
+.rvw_reply_box p {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 관리자 답글 버튼 영역 */
+.rvw_reply_admin_area {
+    margin-top: 12px;
+}
+
+/* 관리자 답글 입력 폼 */
+.rvw_reply_form {
+    margin-top: 12px;
+}
+
+/* 답글 등록 버튼 */
+.rvw_reply_btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    border: 1px solid #7FAF8B;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #7FAF8B;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 답글 수정 버튼 */
+.rvw_reply_edit_btn {
+    margin-top: 10px;
+    margin-right: 6px;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #777;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 답글 삭제 버튼 */
+.rvw_reply_delete_btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #777;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 답글 등록 버튼 hover */
+.rvw_reply_btn:hover {
+    background-color: #F8FBF8;
+}
+
+/* 답글 수정 버튼 hover */
+.rvw_reply_edit_btn:hover {
+    border-color: #4dabf7;
+    background-color: #f0f8ff;
+    color: #1c7ed6;
+}
+
+/* 답글 삭제 버튼 hover */
+.rvw_reply_delete_btn:hover {
+    border-color: #ff6b6b;
+    background-color: #fff5f5;
+    color: #ff4d4f;
+}
+
 /* 태블릿 */
 @media (max-width: 1024px) {
     .prd_list {
@@ -210,6 +308,13 @@
     .rvw_delete_btn {
         position: static;
         margin-top: 12px;
+        margin-right: 6px;
+    }
+
+    .rvw_reply_btn,
+    .rvw_reply_edit_btn,
+    .rvw_reply_delete_btn {
+        margin-top: 10px;
         margin-right: 6px;
     }
 }

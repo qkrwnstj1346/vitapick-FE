@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiCall } from '../../service/apiService';
 import ProductReview from './ProductReview';
+import ProductWish from './ProductWish';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -20,9 +21,6 @@ const ProductDetail = () => {
 
     // 현재 탭 상태: desc = 상품설명, rvw = 상품평
     const [activeTab, setActiveTab] = useState('desc');
-
-    // 찜 여부
-    const [wished, setWished] = useState(false);
 
     // 구매 수량
     const [quantity, setQuantity] = useState(1);
@@ -117,6 +115,7 @@ const ProductDetail = () => {
                         <button
                             className='quantity_btn'
                             onClick={handleIncreaseQuantity}
+                            disabled={quantity >= 10}
                         >
                             +
                         </button>
@@ -163,12 +162,7 @@ const ProductDetail = () => {
                         </button>
 
                         {/* 찜하기 버튼 */}
-                        <button
-                            className={`detail_wish_btn ${wished ? 'wished' : ''}`}
-                            onClick={() => setWished(prev => !prev)}
-                        >
-                            {wished ? '♥ 찜완료' : '♡ 찜하기'}
-                        </button>
+                        <ProductWish prdId={prdId} />
 
                     </div>
                 </div>

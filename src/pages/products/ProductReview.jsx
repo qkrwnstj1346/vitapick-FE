@@ -27,11 +27,28 @@ const ProductReview = ({ prdId }) => {
     // 수정할 별점
     const [editRating, setEditRating] = useState(5);
 
+    // 답글 작성/수정 중인 리뷰 ID
+    const [replyRvwId, setReplyRvwId] = useState(null);
+
+    // 답글 입력값
+    const [replyTxt, setReplyTxt] = useState('');
+
+    // 답글 수정 모드 여부
+    const [editReplyMode, setEditReplyMode] = useState(false);
+
     // 현재 리뷰 페이지
     const [rvwPage, setRvwPage] = useState(1);
 
     // 한 페이지에 보여줄 리뷰 개수
     const rvwPageSize = 5;
+
+    // 관리자 여부
+    const isAdmin =
+        sessionStorage.getItem('role') === 'ADMIN' ||
+        sessionStorage.getItem('role') === 'ROLE_ADMIN' ||
+        sessionStorage.getItem('userRole') === 'ADMIN' ||
+        sessionStorage.getItem('userRole') === 'ROLE_ADMIN' ||
+        sessionStorage.getItem('auth') === 'ROLE_ADMIN';
 
     // 리뷰 목록 다시 가져오기
     const fetchRvwList = async () => {
@@ -87,8 +104,8 @@ const ProductReview = ({ prdId }) => {
         if (!window.confirm('리뷰를 삭제하시겠습니까?')) return;
 
         try {
-            // 백엔드에서 useYn = N 처리
-            await apiCall.patch(`/api/v1/rvw/${rvwId}/cancel`);
+            // 실제 DB에서 리뷰 삭제
+            await apiCall.delete(`/api/v1/rvw/${rvwId}`);
 
             // 삭제 후 1페이지로 이동
             setRvwPage(1);
@@ -106,13 +123,8 @@ const ProductReview = ({ prdId }) => {
 
     // 수정 버튼 클릭 시 실행
     const handleEditRvw = (rvw) => {
-        // 어떤 리뷰를 수정 중인지 저장
         setEditRvwId(rvw.rvwId);
-
-        // 기존 리뷰 내용을 수정창에 넣기
         setEditRvwTxt(rvw.cmt);
-
-        // 기존 별점을 수정 별점에 넣기
         setEditRating(rvw.rating);
     };
 
@@ -131,12 +143,10 @@ const ProductReview = ({ prdId }) => {
                 cmt: editRvwTxt
             });
 
-            // 수정 상태 초기화
             setEditRvwId(null);
             setEditRvwTxt('');
             setEditRating(5);
 
-            // 리뷰 목록 새로고침
             await fetchRvwList();
 
         } catch (err) {
@@ -144,6 +154,100 @@ const ProductReview = ({ prdId }) => {
             console.error('상태코드:', err.response?.status);
             console.error('응답데이터:', err.response?.data);
             alert('리뷰 수정에 실패했습니다.');
+        }
+    };
+
+    // 관리자 답글 작성 버튼 클릭
+    const handleOpenCreateReply = (rvwId) => {
+        setReplyRvwId(rvwId);
+        setReplyTxt('');
+        setEditReplyMode(false);
+    };
+
+    // 관리자 답글 수정 버튼 클릭
+    const handleOpenUpdateReply = (rvw) => {
+        setReplyRvwId(rvw.rvwId);
+        setReplyTxt(rvw.replyTxt);
+        setEditReplyMode(true);
+    };
+
+    // 관리자 답글 입력 취소
+    const handleCancelReply = () => {
+        setReplyRvwId(null);
+        setReplyTxt('');
+        setEditReplyMode(false);
+    };
+
+    // 관리자 답글 등록
+    const handleCreateReply = async (rvwId) => {
+        if (!replyTxt.trim()) {
+            alert('답글 내용을 입력해주세요.');
+            return;
+        }
+
+        try {
+            await apiCall.post(`/api/v1/rvw/${rvwId}/reply`, {
+                replyTxt: replyTxt
+            });
+
+            setReplyRvwId(null);
+            setReplyTxt('');
+            setEditReplyMode(false);
+
+            await fetchRvwList();
+
+        } catch (err) {
+            console.error('답글 등록 실패:', err);
+            console.error('상태코드:', err.response?.status);
+            console.error('응답데이터:', err.response?.data);
+            alert('답글 등록에 실패했습니다.');
+        }
+    };
+
+    // 관리자 답글 수정
+    const handleUpdateReply = async (rvwId) => {
+        if (!replyTxt.trim()) {
+            alert('답글 내용을 입력해주세요.');
+            return;
+        }
+
+        try {
+            await apiCall.patch(`/api/v1/rvw/${rvwId}/reply`, {
+                replyTxt: replyTxt
+            });
+
+            setReplyRvwId(null);
+            setReplyTxt('');
+            setEditReplyMode(false);
+
+            await fetchRvwList();
+
+        } catch (err) {
+            console.error('답글 수정 실패:', err);
+            console.error('상태코드:', err.response?.status);
+            console.error('응답데이터:', err.response?.data);
+            alert('답글 수정에 실패했습니다.');
+        }
+    };
+
+    // 관리자 답글 삭제
+    const handleDeleteReply = async (rvwId) => {
+        if (!window.confirm('답글을 삭제하시겠습니까?')) return;
+
+        try {
+            await apiCall.delete(`/api/v1/rvw/${rvwId}/reply`);
+
+            setReplyRvwId(null);
+            setReplyTxt('');
+            setEditReplyMode(false);
+
+            await fetchRvwList();
+
+        } catch (err) {
+            console.error('답글 삭제 실패:', err);
+            console.error('상태코드:', err.response?.status);
+            console.error('응답데이터:', err.response?.data);
+            alert('답글 삭제에 실패했습니다.');
         }
     };
 
@@ -228,8 +332,8 @@ const ProductReview = ({ prdId }) => {
             )}
 
             {/* 현재 페이지 리뷰 목록 */}
-            {currentRvwList.map((rvw, idx) => (
-                <div key={idx} className='rvw_item'>
+            {currentRvwList.map((rvw) => (
+                <div key={rvw.rvwId} className='rvw_item'>
 
                     {/* 수정 중인 리뷰라면 수정 폼 보여주기 */}
                     {editRvwId === rvw.rvwId ? (
@@ -311,6 +415,88 @@ const ProductReview = ({ prdId }) => {
                                         삭제
                                     </button>
                                 </>
+                            )}
+
+                            {/* 관리자 답글 표시 */}
+                            {rvw.replyTxt && (
+                                <div className='rvw_reply_box'>
+                                    <strong>관리자 답글</strong>
+                                    <span className='rvw_reply_date'>
+                                        {rvw.replyAt?.slice(0, 10)}
+                                    </span>
+                                    <p>{rvw.replyTxt}</p>
+                                </div>
+                            )}
+
+                            {/* 관리자만 답글 등록 / 수정 / 삭제 가능 */}
+                            {isAdmin && (
+                                <div className='rvw_reply_admin_area'>
+
+                                    {/* 답글 입력 폼 */}
+                                    {replyRvwId === rvw.rvwId ? (
+                                        <div className='rvw_reply_form'>
+                                            <textarea
+                                                className='rvw_textarea'
+                                                value={replyTxt}
+                                                onChange={(e) => setReplyTxt(e.target.value)}
+                                                placeholder='관리자 답글을 입력해주세요'
+                                                rows={3}
+                                            />
+
+                                            {editReplyMode ? (
+                                                <button
+                                                    className='rvw_submit_btn'
+                                                    onClick={() => handleUpdateReply(rvw.rvwId)}
+                                                >
+                                                    답글 수정 완료
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className='rvw_submit_btn'
+                                                    onClick={() => handleCreateReply(rvw.rvwId)}
+                                                >
+                                                    답글 등록 완료
+                                                </button>
+                                            )}
+
+                                            <button
+                                                className='rvw_cancel_btn'
+                                                onClick={handleCancelReply}
+                                            >
+                                                취소
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {!rvw.replyTxt && (
+                                                <button
+                                                    className='rvw_reply_btn'
+                                                    onClick={() => handleOpenCreateReply(rvw.rvwId)}
+                                                >
+                                                    답글 등록
+                                                </button>
+                                            )}
+
+                                            {rvw.replyTxt && (
+                                                <>
+                                                    <button
+                                                        className='rvw_reply_edit_btn'
+                                                        onClick={() => handleOpenUpdateReply(rvw)}
+                                                    >
+                                                        답글 수정
+                                                    </button>
+
+                                                    <button
+                                                        className='rvw_reply_delete_btn'
+                                                        onClick={() => handleDeleteReply(rvw.rvwId)}
+                                                    >
+                                                        답글 삭제
+                                                    </button>
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
                             )}
                         </>
                     )}
