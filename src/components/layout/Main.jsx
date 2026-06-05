@@ -110,7 +110,7 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                 {/* 장바구니 */}
                 <Route path="/cart" element={<Cart />} />
 
-                {/* 주문서 /}
+                {/* 주문서 */}
                 <Route path="/order" element={<Order />} />
 
                 {/ 주문 완료 */}
