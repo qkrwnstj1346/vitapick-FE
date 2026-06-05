@@ -5,6 +5,7 @@ import {
     getCartList,
     updateCartQty,
     updateCartSelectedYn,
+    updateAllCartSelectedYn,
     deleteCart,
     deleteAllCart
 } from '../../service/cart/cartApi';
@@ -14,10 +15,6 @@ import './Cart.css';
 function Cart() {
 
     const navigate = useNavigate();
-
-    /* 로그인 회원 */
-    const loginUser = JSON.parse(localStorage.getItem('userInfo'));
-    const userNum = loginUser?.userNum;
 
     /* 장바구니 목록 */
     const [cartList, setCartList] = useState([]);
@@ -30,7 +27,7 @@ function Cart() {
     /* 장바구니 목록 조회 */
     const fetchCartList = async () => {
         try {
-            const res = await getCartList(userNum);
+            const res = await getCartList();
             console.log('장바구니 응답', res);
             setCartList(Array.isArray(res) ? res : []);
         } catch (err) {
@@ -97,7 +94,7 @@ function Cart() {
         }
 
         try {
-            await deleteAllCart(userNum);
+            await deleteAllCart();
             alert('전체 삭제되었습니다.');
             fetchCartList();
         } catch (err) {
@@ -138,8 +135,30 @@ function Cart() {
         const nextSelectedYn = isAllSelected ? 'N' : 'Y';
 
         try {
+            await updateAllCartSelectedYn({
+                selectedYn: nextSelectedYn
+            });
+
+            fetchCartList();
+
+        } catch (err) {
+            alert(err.response?.data || '전체 선택 상태 변경에 실패했습니다.');
+        }
+    };
+
+    /* 커스텀 묶음 전체 선택 여부 */
+    const isCustomGroupSelected = (items) => {
+        return items.length > 0 && items.every(item => item.selectedYn === 'Y');
+    };
+
+    /* 커스텀 묶음 전체 선택 */
+    const toggleCustomGroupSelectedYn = async (items) => {
+        const isSelected = isCustomGroupSelected(items);
+        const nextSelectedYn = isSelected ? 'N' : 'Y';
+
+        try {
             await Promise.all(
-                cartList.map(item =>
+                items.map(item =>
                     updateCartSelectedYn(item.cartId, {
                         selectedYn: nextSelectedYn
                     })
@@ -149,7 +168,7 @@ function Cart() {
             fetchCartList();
 
         } catch (err) {
-            alert(err.response?.data || '전체 선택 상태 변경에 실패했습니다.');
+            alert(err.response?.data || '묶음 선택 상태 변경에 실패했습니다.');
         }
     };
 
@@ -161,11 +180,8 @@ function Cart() {
         );
     }, [selectedCartList]);
 
-    /* 배송비 */
-    const deliveryFee = totalPrice >= 30000 || totalPrice === 0 ? 0 : 3000;
-
     /* 최종 결제 금액 */
-    const finalPrice = totalPrice + deliveryFee;
+    const finalPrice = totalPrice;
 
     /* 커스텀 비타민 그룹 */
     const customCartGroups = useMemo(() => {
@@ -183,7 +199,8 @@ function Cart() {
 
         return Object.entries(groupObj).map(([cusId, items]) => ({
             cusId,
-            items
+            items,
+            cusReason: items[0]?.cusReason
         }));
     }, [cartList]);
 
@@ -203,7 +220,6 @@ function Cart() {
             state: {
                 orderItems: selectedCartList,
                 totalPrice,
-                deliveryFee,
                 finalPrice
             }
         });
@@ -268,14 +284,37 @@ function Cart() {
                                     >
                                         {/* 커스텀 묶음 제목 */}
                                         <div className="customGroupTitleBox">
-                                            <h4 className="customGroupTitle">
-                                                커스텀 비타민 묶음 {index + 1}
-                                            </h4>
 
-                                            <p className="customGroupSub">
-                                                커스텀 ID : {group.cusId}
-                                            </p>
+                                            {/* 묶음 정보 */}
+                                            <div className="customGroupInfo">
+                                                <h4 className="customGroupTitle">
+                                                    커스텀 비타민 묶음 {index + 1}
+                                                </h4>
+
+                                                <p className="customGroupSub">
+                                                    커스텀 ID : {group.cusId}
+                                                </p>
+                                            </div>
+
+                                            {/* 묶음 선택 */}
+                                            <label className="customGroupCheckLabel">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isCustomGroupSelected(group.items)}
+                                                    onChange={() => toggleCustomGroupSelectedYn(group.items)}
+                                                />
+                                                묶음 전체 선택
+                                            </label>
                                         </div>
+
+                                        {/* 추천 사유 */}
+                                        {
+                                            group.cusReason && (
+                                                <p className="customReason">
+                                                    추천 사유 : {group.cusReason}
+                                                </p>
+                                            )
+                                        }
 
                                         {/* 커스텀 상품 목록 */}
                                         {
@@ -359,7 +398,6 @@ function Cart() {
                             일반 상품
                         </h3>
 
-                        {/* 일반 상품 영역 */}
                         <div className="normalGroup">
 
                             {
@@ -448,16 +486,6 @@ function Cart() {
 
                     {/* 결제 금액 */}
                     <div className="cartSummaryBox">
-                        <div className="summaryRow">
-                            <span>총 상품금액</span>
-                            <strong>{totalPrice.toLocaleString()}원</strong>
-                        </div>
-
-                        <div className="summaryRow">
-                            <span>배송비</span>
-                            <strong>{deliveryFee.toLocaleString()}원</strong>
-                        </div>
-
                         <div className="summaryRow final">
                             <span>최종 결제금액</span>
                             <strong>{finalPrice.toLocaleString()}원</strong>

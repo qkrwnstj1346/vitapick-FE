@@ -59,7 +59,8 @@
 }
 
 .allCheckLabel input,
-.cartCheckBox input {
+.cartCheckBox input,
+.customGroupCheckLabel input {
     appearance: none;
     -webkit-appearance: none;
     width: 21px;
@@ -73,19 +74,22 @@
 }
 
 .allCheckLabel input:hover,
-.cartCheckBox input:hover {
+.cartCheckBox input:hover,
+.customGroupCheckLabel input:hover {
     border-color: #7FAF8B;
     background: #F1F7F2;
 }
 
 .allCheckLabel input:checked,
-.cartCheckBox input:checked {
+.cartCheckBox input:checked,
+.customGroupCheckLabel input:checked {
     background: #7FAF8B;
     border-color: #7FAF8B;
 }
 
 .allCheckLabel input:checked::after,
-.cartCheckBox input:checked::after {
+.cartCheckBox input:checked::after,
+.customGroupCheckLabel input:checked::after {
     content: "";
     position: absolute;
     left: 6px;
@@ -155,8 +159,13 @@
 .customGroupTitleBox {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
+    gap: 16px;
     margin-bottom: 16px;
+}
+
+.customGroupInfo {
+    min-width: 0;
 }
 
 .customGroupTitle {
@@ -166,8 +175,34 @@
 }
 
 .customGroupSub {
+    margin-top: 8px;
     font-size: 13px;
     color: #888;
+}
+
+.customGroupCheckLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    color: #4f7a57;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.customReason {
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #e4eee5;
+    color: #4f7a57;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+    box-sizing: border-box;
 }
 
 /* 상품 */
@@ -319,9 +354,9 @@
 }
 
 .summaryRow.final {
-    margin-top: 12px;
-    padding-top: 20px;
-    border-top: 1px solid #dcebdd;
+    margin-top: 0;
+    padding: 16px 0;
+    border-top: none;
     font-size: 18px;
     font-weight: 700;
     color: #222;
@@ -358,7 +393,6 @@
 
 /* 태블릿 */
 @media screen and (max-width: 1024px) {
-
     .cartLayout {
         grid-template-columns: 1fr;
     }
@@ -379,7 +413,6 @@
 
 /* 모바일 */
 @media screen and (max-width: 768px) {
-
     .cartTop {
         flex-direction: column;
         align-items: flex-start;
@@ -399,7 +432,11 @@
     .customGroupTitleBox {
         flex-direction: column;
         align-items: flex-start;
-        gap: 6px;
+        gap: 10px;
+    }
+
+    .customGroupCheckLabel {
+        align-self: flex-start;
     }
 
     .cartItem {
@@ -424,7 +461,6 @@
 
 /* 작은 모바일 */
 @media screen and (max-width: 480px) {
-
     .cartPage {
         padding: 30px 14px 80px;
     }
