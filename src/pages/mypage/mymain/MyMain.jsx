@@ -2,7 +2,7 @@ import './MyMain.css';
 
 function MyMain() {
 
-    const userNm = "나눔";
+    const userNm = sessionStorage.getItem('userNm');
 
     return (
         <div className="myMain">
