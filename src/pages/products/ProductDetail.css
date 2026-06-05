@@ -364,11 +364,35 @@
     cursor: pointer;
 }
 
+/* 수정 버튼 */
+.rvw_edit_btn {
+    position: absolute;
+    right: 70px;
+    top: 16px;
+
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    background-color: #fff;
+    color: #777;
+
+    font-size: 13px;
+    cursor: pointer;
+}
+
 /* 리뷰 삭제 버튼 호버 */
 .rvw_delete_btn:hover {
     border-color: #ff6b6b;
     background-color: #fff5f5;
     color: #ff4d4f;
+}
+
+/* 수정 버튼 hover */
+.rvw_edit_btn:hover {
+    border-color: #4dabf7;
+    background-color: #f0f8ff;
+    color: #1c7ed6;
 }
 
 /* 태블릿 */
