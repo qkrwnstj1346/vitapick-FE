@@ -58,9 +58,8 @@
     margin: 0;
 }
 
-/* 배송지 추가 버튼 */
-.addrAddBtn,
-.emptyAddrBox button {
+/* 배송지 버튼 */
+.addAddrBtn {
     border: none;
     border-radius: 12px;
     background-color: #7FAF8B;
@@ -69,11 +68,34 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.2s;
 }
 
-.addrAddBtn:hover,
-.emptyAddrBox button:hover {
+.addAddrBtn:hover {
     background-color: #6c9d77;
+}
+
+/* 선택한 배송지 */
+.selectedAddrBox {
+    padding: 20px;
+    border: 1px solid #7FAF8B;
+    border-radius: 16px;
+    background-color: #F1F7F2;
+    box-sizing: border-box;
+}
+
+.selectedAddrBox h4 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #4f7a57;
+}
+
+.selectedAddrBox p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
 }
 
 /* 배송지 없음 */
@@ -85,46 +107,12 @@
 }
 
 .emptyAddrBox p {
-    margin: 0 0 16px;
+    margin: 0;
     font-size: 15px;
     color: #666;
 }
 
-/* 배송지 목록 */
-.addrList {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-/* 배송지 카드 */
-.addrCard {
-    display: flex;
-    gap: 14px;
-    padding: 20px;
-    border: 1px solid #e5e5e5;
-    border-radius: 16px;
-    background-color: #fff;
-    cursor: pointer;
-    transition: 0.2s;
-    box-sizing: border-box;
-}
-
-.addrCard:hover {
-    border-color: #AFCBB1;
-    background-color: #F7FBF7;
-}
-
-.addrCard.active {
-    border-color: #7FAF8B;
-    background-color: #F1F7F2;
-}
-
-.addrCard input {
-    margin-top: 4px;
-    accent-color: #7FAF8B;
-}
-
+/* 배송지 이름 줄 */
 .addrNameRow {
     display: flex;
     align-items: center;
@@ -146,13 +134,6 @@
     font-weight: 600;
 }
 
-.addrCard p {
-    margin: 4px 0 0;
-    font-size: 14px;
-    color: #555;
-    line-height: 1.5;
-}
-
 /* 주문 상품 */
 .orderItemList {
     display: flex;
@@ -162,14 +143,30 @@
 
 .orderItem {
     display: flex;
-    justify-content: space-between;
-    gap: 18px;
+    align-items: center;
+    gap: 16px;
     padding: 18px 0;
     border-bottom: 1px solid #f0f0f0;
 }
 
 .orderItem:last-child {
     border-bottom: none;
+}
+
+/* 상품 이미지 */
+.orderItemImg {
+    width: 82px;
+    height: 82px;
+    object-fit: cover;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    background-color: #f8f8f8;
+    flex-shrink: 0;
+}
+
+.orderItemInfo {
+    flex: 1;
+    min-width: 0;
 }
 
 .orderItemInfo strong {
@@ -255,19 +252,6 @@
     color: #333;
 }
 
-.summaryRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-    font-size: 15px;
-    color: #555;
-}
-
-.summaryRow strong {
-    color: #333;
-}
-
 .summaryTotal {
     display: flex;
     justify-content: space-between;
@@ -312,6 +296,108 @@
     cursor: not-allowed;
 }
 
+/* 배송지 모달 배경 */
+.addrModalBg {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* 배송지 모달 */
+.addrModalBox {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    box-sizing: border-box;
+}
+
+/* 모달 제목 */
+.addrModalTitle {
+    margin: 0 0 22px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 모달 닫기 */
+.addrModalCloseBtn {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    border: none;
+    background: transparent;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: #555;
+}
+
+/* 모달 배송지 목록 */
+.addrList {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* 모달 배송지 카드 */
+.addrCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    background-color: #fff;
+    transition: 0.2s;
+    box-sizing: border-box;
+}
+
+.addrCard:hover {
+    border-color: #AFCBB1;
+    background-color: #F7FBF7;
+}
+
+.addrCard.active {
+    border-color: #7FAF8B;
+    background-color: #F1F7F2;
+}
+
+.addrCard p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* 배송지 선택 버튼 */
+.selectAddrBtn {
+    flex-shrink: 0;
+    border: none;
+    border-radius: 10px;
+    background-color: #7FAF8B;
+    color: #fff;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.selectAddrBtn:hover {
+    background-color: #6c9d77;
+}
+
 /* 태블릿 */
 @media (max-width: 1024px) {
     .orderContent {
@@ -346,7 +432,7 @@
         gap: 12px;
     }
 
-    .addrAddBtn {
+    .addAddrBtn {
         width: 100%;
     }
 
@@ -355,12 +441,30 @@
     }
 
     .orderItem {
-        flex-direction: column;
-        gap: 10px;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .orderItemImg {
+        width: 74px;
+        height: 74px;
     }
 
     .orderItemPrice {
+        margin-left: auto;
         text-align: right;
+    }
+
+    .addrModalBox {
+        padding: 24px;
+    }
+
+    .addrCard {
+        flex-direction: column;
+    }
+
+    .selectAddrBtn {
+        width: 100%;
     }
 }
 
@@ -379,8 +483,18 @@
         font-size: 20px;
     }
 
-    .addrCard {
-        padding: 16px;
+    .orderItem {
+        gap: 10px;
+    }
+
+    .orderItemImg {
+        width: 66px;
+        height: 66px;
+        border-radius: 12px;
+    }
+
+    .addrNameRow {
+        flex-wrap: wrap;
     }
 
     .summaryTotal {
@@ -391,5 +505,18 @@
 
     .summaryTotal strong {
         font-size: 22px;
+    }
+
+    .addrModalBg {
+        padding: 12px;
+    }
+
+    .addrModalBox {
+        padding: 22px 18px;
+        border-radius: 18px;
+    }
+
+    .addrCard {
+        padding: 16px;
     }
 }

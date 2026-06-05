@@ -7,12 +7,17 @@ export function getOrderList() {
 
 /* 주문서 배송지 목록 조회 */
 export function getOrderAddressList() {
-    return apiCall.get('/order/address');
+    return apiCall.get('/address');
+}
+
+/* 주문서 기본 배송지 조회 */
+export function getOrderBaseAddress() {
+    return apiCall.get('/address/base');
 }
 
 /* 주문서 배송지 등록 */
 export function createOrderAddress(data) {
-    return apiCall.post('/order/address', data);
+    return apiCall.post('/address', data);
 }
 
 /* 주문 생성 */

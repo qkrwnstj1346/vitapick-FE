@@ -39,23 +39,7 @@ export function updateAllCartSelectedYn(data) {
     );
 }
 
-/* 장바구니 개별 삭제 */
-export function deleteCart(cartId) {
-    return apiCall.delete(`/cart/${cartId}`);
-}
-
-/* 선택 상품 조회 */
-/* 로그인한 본인 선택 상품만 */
-export function getSelectedCartList() {
-    return apiCall.get('/cart/selected');
-}
-
 /* 선택 상품 삭제 */
 export function deleteSelectedCart() {
     return apiCall.delete('/cart/selected');
-}
-
-/* 장바구니 전체 삭제 */
-export function deleteAllCart() {
-    return apiCall.delete('/cart/all');
 }

@@ -6,8 +6,7 @@ import {
     updateCartQty,
     updateCartSelectedYn,
     updateAllCartSelectedYn,
-    deleteCart,
-    deleteAllCart
+    deleteSelectedCart
 } from '../../service/cart/cartApi';
 
 import './Cart.css';
@@ -68,37 +67,27 @@ function Cart() {
         }
     };
 
-    /* 상품 삭제 */
-    const handleDelete = async (cartId) => {
-        const confirmDelete = window.confirm('상품을 삭제하시겠습니까?');
+
+    /* 삭제 */
+    const handleDeleteSelected = async () => {
+
+        if (selectedCartList.length === 0) {
+            alert('삭제할 상품을 선택해주세요.');
+            return;
+        }
+
+        const confirmDelete = window.confirm('선택한 상품을 삭제하시겠습니까?');
 
         if (!confirmDelete) {
             return;
         }
 
         try {
-            await deleteCart(cartId);
-            alert('상품이 삭제되었습니다.');
+            await deleteSelectedCart();
+            alert('선택한 상품이 삭제되었습니다.');
             fetchCartList();
         } catch (err) {
             alert(err.response?.data || '삭제 실패');
-        }
-    };
-
-    /* 전체 삭제 */
-    const handleDeleteAll = async () => {
-        const confirmDelete = window.confirm('장바구니를 전체 삭제하시겠습니까?');
-
-        if (!confirmDelete) {
-            return;
-        }
-
-        try {
-            await deleteAllCart();
-            alert('전체 삭제되었습니다.');
-            fetchCartList();
-        } catch (err) {
-            alert(err.response?.data || '전체 삭제 실패');
         }
     };
 
@@ -238,9 +227,9 @@ function Cart() {
                 <button
                     type="button"
                     className="deleteAllBtn"
-                    onClick={handleDeleteAll}
+                    onClick={handleDeleteSelected}
                 >
-                    전체 삭제
+                    삭제
                 </button>
             </div>
 
@@ -374,14 +363,6 @@ function Cart() {
                                                         >
                                                             +
                                                         </button>
-
-                                                        <button
-                                                            type="button"
-                                                            className="deleteBtn"
-                                                            onClick={() => handleDelete(item.cartId)}
-                                                        >
-                                                            삭제
-                                                        </button>
                                                     </div>
 
                                                 </div>
@@ -461,14 +442,6 @@ function Cart() {
                                                     onClick={() => plusQty(item.cartId, item.itQty)}
                                                 >
                                                     +
-                                                </button>
-
-                                                <button
-                                                    type="button"
-                                                    className="deleteBtn"
-                                                    onClick={() => handleDelete(item.cartId)}
-                                                >
-                                                    삭제
                                                 </button>
                                             </div>
 

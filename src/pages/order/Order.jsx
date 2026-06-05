@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
-import { getSelectedCartList } from '../../service/cart/cartApi';
 import {
     getOrderAddressList,
     createOrder
 } from '../../service/order/orderApi';
 
 import './Order.css';
+import UserAddrForm from '../../components/useraddr/UserAddrForm';
 
 function Order() {
 
@@ -31,6 +30,12 @@ function Order() {
     const [addrList, setAddrList] = useState([]);
     const [selectedAddrId, setSelectedAddrId] = useState('');
 
+    /* 선택 배송지 */
+    const [selectedAddr, setSelectedAddr] = useState(null);
+
+    /* 배송지 모달 */
+    const [isAddrModalOpen, setIsAddrModalOpen] = useState(false);
+
     /* 결제수단 */
     const [payMthdCd, setPayMthdCd] = useState('CARD');
 
@@ -44,35 +49,39 @@ function Order() {
 
     /* 초기 데이터 */
     useEffect(() => {
-        fetchAddressList();
 
         if (isDirectOrder) {
             setOrderItemList(directOrderList);
+            fetchAddressList();
             return;
         }
 
         if (isCartStateOrder) {
             setOrderItemList(cartOrderList);
+            fetchAddressList();
             return;
         }
 
-        fetchSelectedCartList();
+        alert('선택된 상품이 없습니다.');
+        navigate('/cart');
     }, []);
 
     /* 배송지 목록 조회 */
     const fetchAddressList = () => {
         getOrderAddressList()
             .then(res => {
-                const list = res.data || [];
+                const list = res || [];
 
                 setAddrList(list);
 
                 const baseAddr = list.find(addr => addr.baseYn === 'Y');
 
                 if (baseAddr) {
-                    setSelectedAddrId(baseAddr.addrId);
+                    setSelectedAddrId(String(baseAddr.addrId));
+                    setSelectedAddr(baseAddr);
                 } else if (list.length > 0) {
-                    setSelectedAddrId(list[0].addrId);
+                    setSelectedAddrId(String(list[0].addrId));
+                    setSelectedAddr(list[0]);
                 }
             })
             .catch(err => {
@@ -81,24 +90,16 @@ function Order() {
             });
     };
 
-    /* 선택 장바구니 조회 */
-    const fetchSelectedCartList = () => {
-        getSelectedCartList()
-            .then(res => {
-                const list = res.data || [];
+    /* 배송지 선택 */
+    const handleSelectAddr = (addr) => {
+        setSelectedAddrId(String(addr.addrId));
+        setSelectedAddr(addr);
+    };
 
-                if (list.length === 0) {
-                    alert('선택된 상품이 없습니다.');
-                    navigate('/cart');
-                    return;
-                }
-
-                setOrderItemList(list);
-            })
-            .catch(err => {
-                console.log(err);
-                alert('주문 상품 조회에 실패했습니다.');
-            });
+    /* 배송지 저장 성공 */
+    const handleAddrSuccess = () => {
+        setIsAddrModalOpen(false);
+        fetchAddressList();
     };
 
     /* 주문하기 */
@@ -129,12 +130,12 @@ function Order() {
         });
 
         const orderData = {
-            addrId: selectedAddrId,
+            addrId: Number(selectedAddrId),
             totalAmt,
             payDto: {
                 payMthdCd
             },
-            ...(isDirectOrder && { prdList })
+            prdList
         };
 
         createOrder(orderData)
@@ -163,52 +164,31 @@ function Order() {
 
                             <button
                                 type="button"
-                                className="addrAddBtn"
-                                onClick={() => navigate('/address')}
+                                className="addAddrBtn"
+                                onClick={() => setIsAddrModalOpen(true)}
                             >
-                                배송지 추가
+                                {addrList.length === 0 ? '배송지 추가' : '배송지 변경'}
                             </button>
                         </div>
 
-                        {addrList.length === 0 ? (
-                            <div className="emptyAddrBox">
-                                <p>등록된 배송지가 없습니다.</p>
+                        {selectedAddr ? (
+                            <div className="selectedAddrBox">
+                                <h4>선택한 배송지</h4>
 
-                                <button
-                                    type="button"
-                                    onClick={() => navigate('/address')}
-                                >
-                                    배송지 추가하기
-                                </button>
+                                <div className="addrNameRow">
+                                    <strong>{selectedAddr.addrNm}</strong>
+
+                                    {selectedAddr.baseYn === 'Y' && (
+                                        <span>기본 배송지</span>
+                                    )}
+                                </div>
+
+                                <p>{selectedAddr.rcvNm} / {selectedAddr.rcvTel}</p>
+                                <p>[{selectedAddr.zipCd}] {selectedAddr.addr1} {selectedAddr.addr2}</p>
                             </div>
                         ) : (
-                            <div className="addrList">
-                                {addrList.map(addr => (
-                                    <label
-                                        key={addr.addrId}
-                                        className={`addrCard ${selectedAddrId === addr.addrId ? 'active' : ''}`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="addr"
-                                            checked={selectedAddrId === addr.addrId}
-                                            onChange={() => setSelectedAddrId(addr.addrId)}
-                                        />
-
-                                        <div>
-                                            <div className="addrNameRow">
-                                                <strong>{addr.addrNm}</strong>
-
-                                                {addr.baseYn === 'Y' && (
-                                                    <span>기본 배송지</span>
-                                                )}
-                                            </div>
-
-                                            <p>{addr.rcvNm} / {addr.rcvTel}</p>
-                                            <p>[{addr.zipCd}] {addr.addr1} {addr.addr2}</p>
-                                        </div>
-                                    </label>
-                                ))}
+                            <div className="emptyAddrBox">
+                                <p>등록된 배송지가 없습니다.</p>
                             </div>
                         )}
                     </section>
@@ -227,6 +207,12 @@ function Order() {
                                         className="orderItem"
                                         key={item.cartId || item.prdId || index}
                                     >
+                                        <img
+                                            src={item.thumbImgUrl}
+                                            alt={item.prdNm}
+                                            className="orderItemImg"
+                                        />
+
                                         <div className="orderItemInfo">
                                             <strong>{item.prdNm}</strong>
                                             <p>{item.brand}</p>
@@ -272,16 +258,6 @@ function Order() {
                 <aside className="orderSummary">
                     <h3>결제금액</h3>
 
-                    <div className="summaryRow">
-                        <span>상품금액</span>
-                        <strong>{totalAmt.toLocaleString()}원</strong>
-                    </div>
-
-                    <div className="summaryRow">
-                        <span>배송비</span>
-                        <strong>0원</strong>
-                    </div>
-
                     <div className="summaryTotal">
                         <span>총 결제금액</span>
                         <strong>{totalAmt.toLocaleString()}원</strong>
@@ -298,6 +274,64 @@ function Order() {
                 </aside>
 
             </div>
+
+            {isAddrModalOpen && (
+                <div className="addrModalBg">
+                    <div className="addrModalBox">
+                        <button
+                            type="button"
+                            className="addrModalCloseBtn"
+                            onClick={() => setIsAddrModalOpen(false)}
+                        >
+                            ×
+                        </button>
+
+                        {addrList.length === 0 ? (
+                            <UserAddrForm
+                                onSuccess={handleAddrSuccess}
+                                onClose={() => setIsAddrModalOpen(false)}
+                            />
+                        ) : (
+                            <>
+                                <h3 className="addrModalTitle">배송지 변경</h3>
+
+                                <div className="addrList">
+                                    {addrList.map(addr => (
+                                        <div
+                                            key={addr.addrId}
+                                            className={`addrCard ${selectedAddrId === String(addr.addrId) ? 'active' : ''}`}
+                                        >
+                                            <div>
+                                                <div className="addrNameRow">
+                                                    <strong>{addr.addrNm}</strong>
+
+                                                    {addr.baseYn === 'Y' && (
+                                                        <span>기본 배송지</span>
+                                                    )}
+                                                </div>
+
+                                                <p>{addr.rcvNm} / {addr.rcvTel}</p>
+                                                <p>[{addr.zipCd}] {addr.addr1} {addr.addr2}</p>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                className="selectAddrBtn"
+                                                onClick={() => {
+                                                    handleSelectAddr(addr);
+                                                    setIsAddrModalOpen(false);
+                                                }}
+                                            >
+                                                선택
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
