@@ -108,6 +108,7 @@ function Cart() {
     /* 선택 상품 */
     const selectedCartList = useMemo(() => {
         return cartList.filter(item => item.selectedYn === 'Y');
+        // 오류나니까 다시 파일 올려보는 용 주석 
     }, [cartList]);
 
     /* 전체 선택 여부 */
