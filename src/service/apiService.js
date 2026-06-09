@@ -37,6 +37,7 @@ apiCall.interceptors.response.use(
         console.log("응답 status:", error.response?.status);
 
         const originalRequest = error.config; //=> error.config: 에러난 객체의 내부설정 정보(그러므로 커스텀속성 "_retry" 추가 가능)
+        //=> error.config는 첫 요청의 config와 내용이 동일함. 그러므로 retry 속성추가, headers의 authorization에 새토큰만 넣어서 다시 요청가능
         if(error.response?.status == 401 && !originalRequest._retry){
             console.log(`401발생 111:`);
             originalRequest._retry = true;
