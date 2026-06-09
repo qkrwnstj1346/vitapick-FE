@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { apiCall } from '../../service/apiService';
 import './Chatbot.css';
 
+
 const Chatbot = ({ onClose, userInfo }) => {
 
     // 페이지 이동 함수
@@ -22,23 +23,23 @@ const Chatbot = ({ onClose, userInfo }) => {
     // GPT 응답에서 상품ID 뽑아서 상품 정보 가져오기
     const findPrdImages = async (msgTxt) => {
 
-    // 텍스트를 줄 단위로 쪼개서 상품ID 찾기
-    const prdIds = [];
-    const lines = msgTxt.split('\n');
-    for (const line of lines) {
-        if (line.includes('상품ID:')) {
-            const id = line.split('상품ID:')[1].split('/')[0].trim();
-            if (id) prdIds.push(id);
+        // 텍스트를 줄 단위로 쪼개서 상품ID 찾기
+        const prdIds = [];
+        const lines = msgTxt.split('\n');
+        for (const line of lines) {
+            if (line.includes('상품ID:')) {
+                const id = line.split('상품ID:')[1].split('/')[0].trim();
+                if (id) prdIds.push(id);
+            }
         }
-    }
 
-    // 상품ID마다 상품 정보 가져오기
-    const results = [];
+        // 상품ID마다 상품 정보 가져오기
+        const results = [];
         for (const id of prdIds) {
             const data = await apiCall.get(`/api/v1/product/detail/${id}`);
             if (data !== null) results.push(data);
-    }
-    return results;
+        }
+        return results;
     };
 
     // 전송 버튼 눌렀을 때
@@ -118,8 +119,8 @@ const Chatbot = ({ onClose, userInfo }) => {
                             <div className='chatPopup_prd_list'>
                                 {msg.products.map((prd, pIdx) => (
                                     <div
-                                        key={pIdx} 
-                                        className='chatPopup_prd_card' 
+                                        key={pIdx}
+                                        className='chatPopup_prd_card'
                                         onClick={() => goProductDetail(prd.prdId)}
                                     >
                                         <img src={prd.thumbImgUrl} alt={prd.prdNm} />

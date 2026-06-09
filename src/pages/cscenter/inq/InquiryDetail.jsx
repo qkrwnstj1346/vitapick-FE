@@ -205,7 +205,7 @@ function InquiryDetail() {
             )}
 
             {/* 관리자 답변 등록 */}
-            {isAdmin && (
+            {isAdmin && inquiry?.inqStCd !== 'ANSWERED' && (
 
                 <div className="inq-comment-form">
 
@@ -235,6 +235,7 @@ function InquiryDetail() {
                 </div>
 
             )}
+
 
             {/* 하단 버튼 */}
             <div className="inq-detail-bottom">

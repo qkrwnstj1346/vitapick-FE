@@ -322,14 +322,14 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                     </li>
 
-                    {/* AI 설문 */}
+                    {/* 건강정보 */}
                     <li>
 
-                        <Link to="/survey">
+                        <Link to="/healthinfo">
 
                             <Bot size={17} />
 
-                            AI 설문
+                            건강정보
 
                         </Link>
 
