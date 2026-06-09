@@ -187,13 +187,16 @@ function Cart() {
                 groupObj[item.cusId].push(item);
             });
 
-        return Object.entries(groupObj).map(([cusId, items]) => ({
-            cusId,
-            items,
-            cusReason: items[0]?.cusReason,
-            surTitle: items[0]?.surTitle
-        }));
+        return Object.entries(groupObj)
+            .map(([cusId, items]) => ({
+                cusId: Number(cusId),
+                items,
+                cusReason: items[0]?.cusReason,
+                surTitle: items[0]?.surTitle
+            }))
+            .sort((a, b) => b.cusId - a.cusId);
     }, [cartList]);
+
 
     /* 일반 상품 목록 */
     const normalCartList = useMemo(() => {
