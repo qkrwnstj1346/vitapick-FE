@@ -46,7 +46,7 @@ const ProductReview = ({ prdId }) => {
     const loginUserNum = sessionStorage.getItem('userNum');
 
     // 관리자 여부
-    const isAdmin = sessionStorage.getItem('roleCd') === 'ROLE_ADMIN';
+    const isAdmin = sessionStorage.getItem('roleCd') === 'ROLE_ADMIN' || sessionStorage.getItem('roleCd') === 'ADMIN';
 
     // 리뷰 목록 다시 가져오기
     const fetchRvwList = async () => {
