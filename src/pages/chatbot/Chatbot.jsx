@@ -20,25 +20,25 @@ const Chatbot = ({ onClose, userInfo }) => {
     // 로딩 상태
     const [loading, setLoading] = useState(false);
 
-    // GPT 응답에서 상품ID 뽑아서 상품 정보 가져오기
+    // GPT 응답에서 상품ID 추출 후 상품 정보 가져오기
     const findPrdImages = async (msgTxt) => {
 
-        // 텍스트를 줄 단위로 쪼개서 상품ID 찾기
-        const prdIds = [];
-        const lines = msgTxt.split('\n');
-        for (const line of lines) {
-            if (line.includes('상품ID:')) {
-                const id = line.split('상품ID:')[1].split('/')[0].trim();
-                if (id) prdIds.push(id);
+    // GPT 응답 JSON 문자열을 객체로 바꿈
+    const json = JSON.parse(msgTxt);
+
+    // products 배열에서 상품 ID만 꺼냄
+    const prdIds = json.products.map(item => item.prd_id);
+
+    // 상품ID마다 상품 정보 가져오기
+    const results = [];
+
+        for (const id of prdIds) {
+            const data = await apiCall.get(`/api/v1/product/detail/${id}`);
+            if (data !== null) {
+                results.push(data);
             }
         }
 
-        // 상품ID마다 상품 정보 가져오기
-        const results = [];
-        for (const id of prdIds) {
-            const data = await apiCall.get(`/api/v1/product/detail/${id}`);
-            if (data !== null) results.push(data);
-        }
         return results;
     };
 
@@ -60,9 +60,16 @@ const Chatbot = ({ onClose, userInfo }) => {
             // GPT 응답에서 상품ID로 이미지 가져오기
             const matchedPrds = await findPrdImages(result.msgTxt);
 
+            const json = JSON.parse(result.msgTxt);
+
+            const displayText =
+                json.reason + '\n\n' +
+                '조합이유: ' + json.comboReason + '\n\n' +
+                '주의사항: ' + json.caution;
+
             setMessages(prev => [...prev, {
                 senderCd: 'AI',
-                msgTxt: result.msgTxt,
+                msgTxt: displayText,
                 products: matchedPrds
             }]);
 
