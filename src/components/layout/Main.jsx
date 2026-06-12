@@ -10,6 +10,8 @@ import Sur from '../../pages/custom/Sur';
 import MyPage from './Mypage';
 import MyMain from '../../pages/mypage/mymain/MyMain';
 import MyProfile from '../../pages/mypage/myprofile/MyProfile';
+import MyReviewList from '../../pages/mypage/myreview/MyReviewList';
+import MyReviewDetail from '../../pages/mypage/myreview/MyReviewDetail';
 
 import CsMain from '../../pages/cscenter/csmain/CsMain';
 import NoticeList from '../../pages/cscenter/ntc/NoticeList';
@@ -73,6 +75,18 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                 <Route path="/mypage" element={<MyPage />}>
                     <Route index element={<MyMain />} />
                     <Route path="profile" element={<MyProfile />} />
+                </Route>
+
+                {/* 마이페이지-내정보 */}
+                <Route path="/mypage" element={<MyPage />}>
+                    <Route index element={<MyMain />} />
+                    <Route path="profile" element={<MyProfile />} />
+
+                    {/* 내가 쓴 리뷰 목록 */}
+                    <Route path="myreview" element={<MyReviewList />} />
+
+                    {/* 내가 쓴 리뷰 상세 */}
+                    <Route path="myreview/:rvwId" element={<MyReviewDetail />} />
                 </Route>
 
                 {/* 고객센터 메인 */}
