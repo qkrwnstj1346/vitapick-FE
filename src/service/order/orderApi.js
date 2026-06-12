@@ -39,3 +39,9 @@ export function getOrderItems(ordId) {
 export function getOrderPay(ordId) {
     return apiCall.get(`/order/pay/order/${ordId}`);
 }
+
+// 상품별 판매량 TOP5 조회
+export const getTopProducts = async () => {
+    const response = await axios.get('/order/top-products');
+    return response.data;
+};

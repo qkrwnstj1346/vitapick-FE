@@ -3,39 +3,39 @@ import './Home.css';
 import { useState, useEffect } from 'react';
 import { apiCall } from '../../service/apiService';
 
-function Home({isLoggedIn}) {
+function Home({ isLoggedIn }) {
+
     const navigate = useNavigate();
 
-    // 홈에 보여줄 상품 목록
+    // 인기상품 TOP5 목록
     const [prdList, setPrdList] = useState([]);
 
-    // 페이지 열릴 때 카테고리별 상품 1개씩 가져오기
+    // 페이지 열릴 때 상품별 판매량 TOP5 가져오기
     useEffect(() => {
-    const categories = [
-        { catCd: 6, name: '종합영양' },
-        { catCd: 1, name: '유산균' },
-        { catCd: 2, name: '비타민' },
-        { catCd: 3, name: '오메가3' },
-        { catCd: 4, name: '미네랄' },
-    ];
 
-    const fetchPrds = async () => {
-        const result = [];
-        for (const cat of categories) {
-            const data = await apiCall.get(`/api/v1/product/list/category/${cat.catCd}`);
-            console.log('data:', data);
-            if (data && data.length > 0) {
-                result.push({ ...data[0], catName: cat.name });
+        const fetchTopProducts = async () => {
+
+            try {
+
+                const data = await apiCall.get('/order/top-products');
+
+                console.log('인기상품 TOP5:', data);
+
+                setPrdList(data);
+
+            } catch (error) {
+
+                console.log(error);
             }
-        }
-        setPrdList(result);
-    };
+        };
 
-    fetchPrds();
+        fetchTopProducts();
+
     }, []);
 
     return (
         <main className="home">
+
             {/* 메인 배너 영역 */}
             <section className="mainBanner">
                 <img
@@ -62,17 +62,19 @@ function Home({isLoggedIn}) {
                         간단한 설문으로 내 건강 상태에 맞는 영양제를 추천받아보세요.
                     </p>
 
-                    <button className="heroButton" onClick={()=>{
-                        if(!isLoggedIn){
-                            navigate('/v1/auth/login');
-                        }else{
-                            navigate('/v1/sur/save');
-                        }
-                    }}>
+                    <button
+                        className="heroButton"
+                        onClick={() => {
+                            if (!isLoggedIn) {
+                                navigate('/v1/auth/login');
+                            } else {
+                                navigate('/v1/sur/save');
+                            }
+                        }}
+                    >
                         설문 시작하기
                     </button>
 
-                    
                 </div>
 
                 <div className="heroImage">
@@ -86,45 +88,51 @@ function Home({isLoggedIn}) {
 
             {/* 추천상품 영역 */}
             <section className="productSection">
+
                 <div className="sectionTitleBox">
-                    <p className="sectionBadge">VitaPick 추천상품</p>
-                    <h2>지금 가장 인기있는 영양제</h2>
-                    <p>상품 데이터 연결 전까지 임시 상품 카드로 영역을 잡아둡니다.</p>
+                    <p className="sectionBadge">VitaPick 인기상품</p>
+                    <h2>가장 주목받는 VitaPick!</h2>
                 </div>
 
                 <div className="productList">
-                    {/* 카테고리별 대표 상품 1개씩 보여주기 */}
-                    {prdList.map((prd) => (
-                        // 상품 카드 - 클릭하면 상품 상세 페이지로 이동
+
+                    {prdList.map((prd, index) => (
+
                         <div
-                            key={prd.prdId}
+                            key={prd[0]}
                             className="productCard"
-                            onClick={() => navigate(`/products/detail/${prd.prdId}`)}
+                            onClick={() => navigate(`/products/detail/${prd[0]}`)}
                         >
-                    {/* 상품 썸네일 이미지 */}
-                    <img src={prd.thumbImgUrl} alt={prd.prdNm} className="productImage" />
+                            {/* 상품 썸네일 이미지 */}
+                            <img
+                                src={prd[2]}
+                                alt={prd[1]}
+                                className="productImage"
+                            />
 
-                    {/* 카테고리 이름 */}
-                    <p className="productCategory">{prd.catName}</p>
+                            {/* 순위 */}
+                            <p className="productCategory">
+                                BEST {index + 1}
+                            </p>
 
-                    {/* 상품명 */}
-                    <h3>{prd.prdNm}</h3>
+                            {/* 상품명 */}
+                            <h3>{prd[1]}</h3>
 
-                    {/* 상품 설명 */}
-                    <p className="productDesc">{prd.descTxt}</p>
+                            {/* 판매량 */}
+                            <p className="productDesc">
+                                {prd[3]}명이 선택한 인기 상품
+                            </p>
 
-                    {/* 가격 */}
-                    <strong>{prd.price.toLocaleString()}원</strong>
+                        </div>
+
+                    ))}
+
                 </div>
-            ))}
-        </div>
-            </section>
 
-            
+            </section>
 
         </main>
     );
-
 }
 
 export default Home;

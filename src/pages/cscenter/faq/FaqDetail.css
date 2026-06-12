@@ -1,45 +1,48 @@
 /* FAQ 상세 전체 영역 */
 .cs-faq-detail-container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 50px 20px;
+    padding: 50px 20px 80px;
     box-sizing: border-box;
 }
 
 /* FAQ 상세 제목 */
 .cs-faq-detail-title {
-    font-size: 32px;
+    margin: 0 0 18px;
+    color: #222;
+    font-size: 30px;
     font-weight: 700;
-    color: #333;
-    margin-bottom: 25px;
 }
 
 /* FAQ 상세 정보 영역 */
 .cs-faq-detail-info {
     display: flex;
-    gap: 20px;
-    padding-bottom: 20px;
-    margin-bottom: 30px;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
-    color: #777;
+    gap: 18px;
+    margin-bottom: 24px;
+    color: #6f7f73;
+    font-size: 13px;
 }
 
 /* FAQ 상세 정보 텍스트 */
 .cs-faq-detail-info span {
-    font-size: 14px;
-    color: #777;
+    color: #6f7f73;
+    font-size: 13px;
 }
 
 /* FAQ 상세 내용 영역 */
 .cs-faq-detail-content {
-    min-height: 300px;
-    padding: 20px 10px 60px;
+    min-height: 280px;
+    padding: 28px;
+    border: 1px solid #dfe9e1;
+    border-radius: 14px;
+    background-color: #fff;
+    box-shadow: 0 8px 22px rgba(127, 175, 139, 0.07);
+    color: #333;
     font-size: 15px;
     line-height: 1.8;
-    color: #444;
     white-space: pre-wrap;
+    box-sizing: border-box;
 }
 
 /* 버튼 영역 */
@@ -47,20 +50,21 @@
     display: flex;
     justify-content: center;
     gap: 12px;
-    margin-top: 40px;
+    margin-top: 34px;
 }
 
 /* 공통 버튼 */
 .cs-faq-detail-btn,
 .cs-faq-edit-btn,
 .cs-faq-delete-btn {
-    padding: 12px 30px;
+    min-width: 88px;
+    height: 46px;
+    padding: 0 20px;
     border: none;
-    border-radius: 8px;
-    font-size: 14px;
+    border-radius: 10px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
 }
 
 /* 목록 버튼 */
@@ -77,26 +81,24 @@
 
 /* 삭제 버튼 */
 .cs-faq-delete-btn {
-    background-color: #E8F3EA;
-    color: #5E7D66;
+    background-color: #EEF6F0;
+    color: #5f7f66;
 }
 
-/* 목록/수정 hover */
+/* hover */
 .cs-faq-detail-btn:hover,
 .cs-faq-edit-btn:hover {
-    background-color: #6A9875;
+    background-color: #6d9d79;
 }
 
-/* 삭제 hover */
 .cs-faq-delete-btn:hover {
-    background-color: #D6E8DA;
+    background-color: #dfece2;
 }
 
 /* 태블릿 */
 @media (max-width: 1024px) {
-
     .cs-faq-detail-container {
-        padding: 40px 20px;
+        padding: 40px 16px;
     }
 
     .cs-faq-detail-title {
@@ -106,9 +108,8 @@
 
 /* 모바일 */
 @media (max-width: 768px) {
-
     .cs-faq-detail-container {
-        padding: 30px 16px;
+        padding: 32px 12px;
     }
 
     .cs-faq-detail-title {
@@ -128,38 +129,34 @@
 
     .cs-faq-detail-content {
         min-height: 220px;
-        padding: 10px 0 40px;
+        padding: 18px;
         font-size: 14px;
         line-height: 1.7;
     }
 
     .cs-faq-detail-btn-wrap {
         flex-direction: column;
-        align-items: center;
-        margin-top: 30px;
     }
 
     .cs-faq-detail-btn,
     .cs-faq-edit-btn,
     .cs-faq-delete-btn {
         width: 100%;
-        max-width: 220px;
-        height: 46px;
-        padding: 0;
-        font-size: 14px;
     }
 }
 
 /* 작은 모바일 */
 @media (max-width: 480px) {
+    .cs-faq-detail-container {
+        padding: 28px 10px;
+    }
 
     .cs-faq-detail-title {
         font-size: 22px;
     }
 
-    .cs-faq-detail-btn,
-    .cs-faq-edit-btn,
-    .cs-faq-delete-btn {
-        max-width: 100%;
+    .cs-faq-detail-content {
+        padding: 14px;
+        font-size: 13px;
     }
 }

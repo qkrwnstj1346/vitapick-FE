@@ -173,19 +173,20 @@ function InquiryDetail() {
 
                     </tr>
 
-                    <tr>
-
-                        <th>문의 내용</th>
-
-                        <td className="inq-detail-content">
-                            {inquiry.inqTxt}
-                        </td>
-
-                    </tr>
-
                 </tbody>
 
             </table>
+
+            {/* 문의 내역 */}
+            <div className="inq-content-box">
+                <div className="inq-content-header">
+                    문의 내용
+                </div>
+
+                <div className="inq-content-body">
+                    {inquiry.inqTxt}
+                </div>
+            </div>
 
             {/* 관리자 답변 조회 */}
             {inquiry.ansTxt && (

@@ -5,12 +5,29 @@
     font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
 }
 
-/* 메인 배너 전체 영역 */
+/* 메인 배너 영역 */
+.mainBanner {
+    max-width: 1200px;
+    width: calc(100% - 48px);
+    height: 300px;
+    margin: 28px auto 36px;
+    overflow: hidden;
+    border-radius: 28px;
+}
+
+/* 메인 배너 이미지 */
+.mainBanner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 메인 소개 영역 */
 .heroSection {
     max-width: 1200px;
     width: calc(100% - 48px);
     height: 430px;
-    margin: 24px auto 60px auto;
+    margin: 24px auto 70px;
     padding: 50px 80px;
     box-sizing: border-box;
     display: flex;
@@ -21,18 +38,18 @@
     overflow: hidden;
 }
 
-/* 왼쪽 텍스트 영역 */
+/* 메인 텍스트 영역 */
 .heroText {
     width: 52%;
     text-align: left;
 }
 
-/* 작은 라벨 */
+/* 메인 뱃지 */
 .heroBadge {
     display: inline-block;
-    margin: 0 0 18px 0;
+    margin: 0 0 18px;
     padding: 8px 18px;
-    background-color: #ffffff;
+    background-color: #fff;
     border: 1px solid #AFCBB1;
     border-radius: 999px;
     color: #4CAF50;
@@ -42,7 +59,7 @@
 
 /* 메인 제목 */
 .heroText h1 {
-    margin: 0 0 18px 0;
+    margin: 0 0 18px;
     color: #243428;
     font-size: 44px;
     font-weight: 800;
@@ -50,37 +67,37 @@
     letter-spacing: -1px;
 }
 
-/* 설명 글 */
+/* 메인 설명 */
 .heroDesc {
     width: 430px;
-    margin: 0 0 28px 0;
+    margin: 0 0 28px;
     color: #5f7464;
     font-size: 16px;
     font-weight: 500;
     line-height: 1.6;
 }
 
-/* 설문 시작 버튼 */
+/* 설문 버튼 */
 .heroButton {
     width: 180px;
     height: 52px;
     border: none;
     border-radius: 16px;
     background-color: #7FAF8B;
-    color: #ffffff;
+    color: #fff;
     font-size: 17px;
     font-weight: 800;
     cursor: pointer;
     transition: all 0.25s;
 }
 
-/* 버튼 hover */
+/* 설문 버튼 hover */
 .heroButton:hover {
     background-color: #6FA57C;
     transform: translateY(-2px);
 }
 
-/* 오른쪽 이미지 영역 */
+/* 챗봇 이미지 영역 */
 .heroImage {
     width: 360px;
     height: 360px;
@@ -101,7 +118,6 @@
 
 /* 챗봇 둥둥 애니메이션 */
 @keyframes floatChatbot {
-
     0% {
         transform: translateY(0);
     }
@@ -115,37 +131,20 @@
     }
 }
 
-/* 메인 배너 영역 */
-.mainBanner {
-    max-width: 1200px;
-    width: calc(100% - 48px);
-    height: 300px;
-    margin: 28px auto 36px;
-    overflow: hidden;
-    border-radius: 28px;
-}
-
-/* 메인 배너 이미지 */
-.mainBanner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* 추천상품 영역 */
+/* 인기상품 영역 */
 .productSection {
     max-width: 1200px;
     width: calc(100% - 48px);
-    margin: 0 auto 80px;
+    margin: 0 auto 90px;
 }
 
-/* 추천상품 제목 영역 */
+/* 인기상품 제목 영역 */
 .sectionTitleBox {
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 30px;
 }
 
-/* 추천상품 뱃지 */
+/* 인기상품 뱃지 */
 .sectionBadge {
     display: inline-block;
     margin: 0 0 12px;
@@ -155,103 +154,90 @@
     color: #4CAF50;
     font-size: 14px;
     font-weight: 700;
+    background-color: #F7FBF7;
 }
 
-/* 추천상품 제목 */
+/* 인기상품 제목 */
 .sectionTitleBox h2 {
-    margin: 0 0 10px;
+    margin: 0;
     color: #17251c;
     font-size: 30px;
     font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
-/* 추천상품 설명 */
-.sectionTitleBox p:last-child {
-    margin: 0;
-    color: #66736a;
-    font-size: 15px;
-}
-
-/* 추천상품 목록 */
+/* 인기상품 목록 */
 .productList {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 18px;
+    gap: 20px;
 }
 
-/* 추천상품 카드 */
+/* 인기상품 카드 */
 .productCard {
-    min-height: 310px;
-    padding: 18px;
+    min-height: 280px;
     background-color: #ffffff;
-    border: 1px solid #e6f0e8;
-    border-radius: 24px;
-    box-shadow: 0 10px 24px rgba(127, 175, 139, 0.12);
-    box-sizing: border-box;
+    border: 1px solid #E3EEE5;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    cursor: pointer;
 }
 
-/* 가격을 카드 맨 아래에 고정 */
-.productCard strong {
-    margin-top: auto;
-    color: #17251c;
-    font-size: 18px;
-    font-weight: 800;
+/* 인기상품 카드 hover */
+.productCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(127, 175, 139, 0.2);
 }
 
-/* 추천상품 이미지 임시 영역 */
+/* 상품 이미지 */
 .productImage {
-    height: 145px;
-    margin-bottom: 16px;
-    background-color: #F1F7F2;
-    border-radius: 18px;
-    color: #7FAF8B;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
+    width: 100%;
+    height: 180px;
+    padding: 12px;
+    background-color: #F7FBF7;
+    object-fit: contain;
+    display: block;
+    box-sizing: border-box;
 }
 
-/* 추천상품 카테고리 */
+/* BEST */
 .productCategory {
-    margin: 0 0 8px;
+    margin: 0 0 6px;
+    padding: 14px 14px 0;
     color: #7FAF8B;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
 }
 
-/* 추천상품 이름 */
+/* 상품명 */
 .productCard h3 {
-    margin: 0 0 8px;
+    margin: 0 0 10px;
+    padding: 0 14px;
     color: #17251c;
-    font-size: 18px;
-    font-weight: 800;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* 추천상품 설명 */
+/* 상품 설명 */
 .productDesc {
-    min-height: 42px;
-    margin: 0 0 14px;
+    margin: auto 0 0;
+    padding: 0 14px 14px;
     color: #66736a;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5;
 }
 
-/* 추천상품 가격 */
-.productCard strong {
-    color: #17251c;
-    font-size: 18px;
-    font-weight: 800;
-}
-
-
-
-/* 태블릿 화면 */
+/* 태블릿 */
 @media (max-width: 1024px) {
-
-    /* 메인 배너 */
     .heroSection {
         height: auto;
         padding: 44px 40px;
@@ -260,84 +246,33 @@
         gap: 32px;
     }
 
-    /* 텍스트 영역 */
     .heroText {
         width: 100%;
         text-align: center;
     }
 
-    /* 설명 글 */
     .heroDesc {
         width: 100%;
         max-width: 520px;
         margin: 0 auto 28px;
     }
 
-    /* 챗봇 이미지 */
     .heroImage {
         width: 280px;
         height: 280px;
     }
 
-    /* 추천상품 목록 */
     .productList {
         grid-template-columns: repeat(3, 1fr);
     }
-
-
 }
 
-/* 모바일 화면 */
+/* 모바일 */
 @media (max-width: 768px) {
-
-    /* 홈 전체 */
     .home {
         padding-bottom: 40px;
     }
 
-    /* 메인 배너 */
-    .heroSection {
-        width: calc(100% - 32px);
-        margin: 18px auto 40px;
-        padding: 36px 22px;
-        border-radius: 24px;
-    }
-
-    /* 메인 뱃지 */
-    .heroBadge {
-        margin-bottom: 14px;
-        padding: 7px 14px;
-        font-size: 13px;
-    }
-
-    /* 메인 제목 */
-    .heroText h1 {
-        font-size: 30px;
-        line-height: 1.35;
-        letter-spacing: -0.5px;
-    }
-
-    /* 메인 설명 */
-    .heroDesc {
-        font-size: 15px;
-        line-height: 1.6;
-    }
-
-    /* 메인 버튼 */
-    .heroButton {
-        width: 100%;
-        max-width: 220px;
-        height: 48px;
-        font-size: 16px;
-    }
-
-    /* 챗봇 이미지 */
-    .heroImage {
-        width: 220px;
-        height: 220px;
-    }
-
-    /* 메인 배너 이미지 */
     .mainBanner {
         width: calc(100% - 32px);
         height: 180px;
@@ -345,89 +280,98 @@
         border-radius: 22px;
     }
 
-    /* 추천상품 영역 */
+    .heroSection {
+        width: calc(100% - 32px);
+        margin: 18px auto 40px;
+        padding: 36px 22px;
+        border-radius: 24px;
+    }
+
+    .heroBadge {
+        margin-bottom: 14px;
+        padding: 7px 14px;
+        font-size: 13px;
+    }
+
+    .heroText h1 {
+        font-size: 30px;
+        line-height: 1.35;
+        letter-spacing: -0.5px;
+    }
+
+    .heroDesc {
+        font-size: 15px;
+    }
+
+    .heroButton {
+        width: 100%;
+        max-width: 220px;
+        height: 48px;
+        font-size: 16px;
+    }
+
+    .heroImage {
+        width: 220px;
+        height: 220px;
+    }
+
     .productSection {
         width: calc(100% - 32px);
         margin: 0 auto 50px;
     }
 
-    /* 추천상품 제목 영역 */
     .sectionTitleBox {
         margin-bottom: 24px;
     }
 
-    /* 추천상품 뱃지 */
     .sectionBadge {
         font-size: 13px;
         padding: 7px 14px;
     }
 
-    /* 추천상품 제목 */
     .sectionTitleBox h2 {
         font-size: 24px;
     }
 
-    /* 추천상품 설명 */
-    .sectionTitleBox p:last-child {
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
-    /* 추천상품 목록 */
     .productList {
         grid-template-columns: repeat(2, 1fr);
         gap: 14px;
     }
 
-    /* 추천상품 카드 */
     .productCard {
-        min-height: auto;
-        padding: 14px;
-        border-radius: 20px;
-    }
-
-    /* 추천상품 이미지 */
-    .productImage {
-        height: 120px;
-        margin-bottom: 12px;
+        min-height: 250px;
         border-radius: 16px;
     }
 
-    /* 추천상품 이름 */
+    .productImage {
+        height: 160px;
+        padding: 10px;
+    }
+
     .productCard h3 {
-        font-size: 16px;
+        font-size: 14px;
     }
 
-    /* 추천상품 설명 */
     .productDesc {
-        font-size: 13px;
+        font-size: 12px;
     }
-
-    /* 추천상품 가격 */
-    .productCard strong {
-        font-size: 16px;
-    }
-
-
-
 }
 
-/* 작은 모바일 화면 */
+/* 작은 모바일 */
 @media (max-width: 480px) {
-
-    /* 메인 제목 */
     .heroText h1 {
         font-size: 26px;
     }
 
-    /* 추천상품 목록 */
-    .productList {
-        grid-template-columns: 1fr;
-    }
-
-    /* 메인 배너 높이 */
     .mainBanner {
         height: 150px;
     }
 
+    .productList {
+        grid-template-columns: 1fr;
+    }
+
+    .productImage {
+        height: 180px;
+    }
 }
