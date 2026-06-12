@@ -10,6 +10,7 @@ import Sur from '../../pages/custom/Sur';
 import MyPage from './Mypage';
 import MyMain from '../../pages/mypage/mymain/MyMain';
 import MyProfile from '../../pages/mypage/myprofile/MyProfile';
+import MyCustomList from '../../pages/mypage/mycustom/MyCustomList';
 import MyReviewList from '../../pages/mypage/myreview/MyReviewList';
 import MyReviewDetail from '../../pages/mypage/myreview/MyReviewDetail';
 import MyWishList from '../../pages/mypage/mywishlist/MyWishList';
@@ -67,21 +68,12 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                     element={<Join />}
                 />
 
-                {/* 마이페이지 */}
-                <Route path="/mypage" element={<MyPage />}>
-                    <Route index element={<MyMain />} />
-                </Route>
-
                 {/* 마이페이지-내정보 */}
                 <Route path="/mypage" element={<MyPage />}>
                     <Route index element={<MyMain />} />
-                    <Route path="profile" element={<MyProfile />} />
-                </Route>
 
-                {/* 마이페이지-내정보 */}
-                <Route path="/mypage" element={<MyPage />}>
-                    <Route index element={<MyMain />} />
-                    <Route path="profile" element={<MyProfile />} />
+                    {/* 내 정보보기, 수정 */}
+                    <Route path="myprofile" element={<MyProfile />} />
 
                     {/* 내가 쓴 리뷰 목록 */}
                     <Route path="myreview" element={<MyReviewList />} />
@@ -91,6 +83,9 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                     {/* 내가 찜한 상품 목록 */}
                     <Route path="mywishlist" element={<MyWishList />} />
+
+                    {/* 내가 찜한 상품 목록 */}
+                    <Route path="mycustom" element={<MyCustomList />} />
                 </Route>
 
                 {/* 고객센터 메인 */}

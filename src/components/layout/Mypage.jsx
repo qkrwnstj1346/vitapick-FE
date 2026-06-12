@@ -30,7 +30,12 @@ function Mypage() {
                         </NavLink>
                     </li>
 
-                    <li>내 비타민 추천</li>
+                    <li>
+                        <NavLink to="/mypage/mycustom">
+                        내 비타민 추천
+                        </NavLink>
+                    </li>
+
 
                     <li>AI 챗봇</li>
 
