@@ -2,6 +2,10 @@ import { useState } from 'react';
 import AdminSidebar from './AdminSidebar';
 import './Admin.css';
 
+const today = new Date();
+const todayText = formatDate(today);
+const monthText = formatMonth(today);
+
 const pageInfo = {
     members: {
         title: '회원 관리',
@@ -36,10 +40,14 @@ const dashboardPlaceholderData = {
         description: '결제 완료 주문 기준 매출 통계가 표시될 예정입니다.',
         status: 'API 연결 후 표시',
         metrics: [
-            { label: '오늘 매출', value: '연동 예정' },
-            { label: '이번 달 매출', value: '연동 예정' },
-            { label: '주문 건수', value: '연동 예정' },
-            { label: '평균 주문 금액', value: '연동 예정' }
+            { label: '오늘 매출', value: '연동 예정', basis: `기준: ${todayText}` },
+            { label: '이번 달 매출', value: '연동 예정', basis: `기준: ${monthText}` },
+            { label: '오늘 결제완료 주문 수', value: 'API 연결 후 표시', basis: `기준: ${todayText}` },
+            {
+                label: '인기 영양제 카테고리',
+                value: 'API 연결 후 표시',
+                basis: '기준: 이번 달 결제완료 주문 / 카테고리별 매출 합계'
+            }
         ]
     },
     members: {
@@ -66,15 +74,17 @@ const dashboardPlaceholderData = {
             { label: '문의 처리율', value: '-' }
         ]
     },
-    reviews: {
-        title: '리뷰 현황',
-        description: '리뷰 데이터 연동 예정',
-        metrics: [
-            { label: '미답변 리뷰', value: '-' },
-            { label: '답변 완료 리뷰', value: '-' },
-            { label: '평균 평점', value: '-' },
-            { label: '오늘 등록 리뷰', value: '-' }
-        ]
+    productSalesTop5: {
+        title: '상품별 매출 TOP 5',
+        description: '결제 완료 주문 기준으로 매출 상위 상품이 표시될 예정입니다.',
+        columns: ['순위', '상품명', '카테고리', '결제완료 수량', '매출액'],
+        rows: Array.from({ length: 5 }, (_, index) => ({
+            rank: `${index + 1}`,
+            productName: 'API 연결 후 표시',
+            category: '연동 예정',
+            paidQuantity: '-',
+            salesAmount: '-'
+        }))
     }
 };
 
@@ -98,7 +108,7 @@ function AdminPage() {
     }
 
     const renderDashboard = () => {
-        const { sales, members, orders, inquiries, reviews } = dashboardPlaceholderData;
+        const { sales, members, orders, inquiries, productSalesTop5 } = dashboardPlaceholderData;
 
         return (
             <div className="adminDashboard">
@@ -121,7 +131,12 @@ function AdminPage() {
                     </div>
                     <div className="adminMetricGrid">
                         {sales.metrics.map((item) => (
-                            <MetricCard key={item.label} label={item.label} value={item.value} />
+                            <MetricCard
+                                key={item.label}
+                                label={item.label}
+                                value={item.value}
+                                basis={item.basis}
+                            />
                         ))}
                     </div>
                 </section>
@@ -178,18 +193,14 @@ function AdminPage() {
                         </div>
                     </section>
 
-                    <section className="adminOpsSection">
+                    <section className="adminOpsSection adminTopProductsSection">
                         <div className="adminPanelHeader">
                             <div>
-                                <h3>{reviews.title}</h3>
-                                <p>{reviews.description}</p>
+                                <h3>{productSalesTop5.title}</h3>
+                                <p>{productSalesTop5.description}</p>
                             </div>
                         </div>
-                        <div className="adminMetricGrid twoCol">
-                            {reviews.metrics.map((item) => (
-                                <MetricCard key={item.label} label={item.label} value={item.value} />
-                            ))}
-                        </div>
+                        <TopProductsTable data={productSalesTop5} />
                     </section>
                 </div>
             </div>
@@ -279,7 +290,6 @@ function AdminPage() {
                         <p>{currentInfo.description}</p>
                     </div>
                     <div className="adminHeaderActions">
-                        <button type="button" disabled>날짜 선택</button>
                         <button type="button" disabled>데이터 다운로드</button>
                     </div>
                 </header>
@@ -290,11 +300,12 @@ function AdminPage() {
     );
 }
 
-function MetricCard({ label, value }) {
+function MetricCard({ label, value, basis }) {
     return (
         <article className="adminMetricCard">
             <span>{label}</span>
             <strong>{value}</strong>
+            {basis && <em>{basis}</em>}
             <p>API 연결 후 표시</p>
         </article>
     );
@@ -308,6 +319,29 @@ function FeatureCard({ title, text }) {
             <p>{text}</p>
             <strong>추후 구현 예정</strong>
         </article>
+    );
+}
+
+function TopProductsTable({ data }) {
+    return (
+        <div className="adminTopProductsTable">
+            <div className="adminTopProductsHead">
+                {data.columns.map((column) => (
+                    <span key={column}>{column}</span>
+                ))}
+            </div>
+            <div className="adminTopProductsBody">
+                {data.rows.map((row) => (
+                    <div className="adminTopProductsRow" key={row.rank}>
+                        <span>{row.rank}</span>
+                        <span>{row.productName}</span>
+                        <span>{row.category}</span>
+                        <span>{row.paidQuantity}</span>
+                        <span>{row.salesAmount}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
     );
 }
 
@@ -344,6 +378,19 @@ function EmptyState({ text }) {
             <p>이번 단계에서는 화면 구조만 준비했으며 실제 기능은 연결하지 않았습니다.</p>
         </section>
     );
+}
+
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}.${month}.${day}`;
+}
+
+function formatMonth(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${year}.${month}`;
 }
 
 export default AdminPage;
