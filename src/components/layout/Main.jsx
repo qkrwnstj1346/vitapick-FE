@@ -12,6 +12,7 @@ import MyMain from '../../pages/mypage/mymain/MyMain';
 import MyProfile from '../../pages/mypage/myprofile/MyProfile';
 import MyReviewList from '../../pages/mypage/myreview/MyReviewList';
 import MyReviewDetail from '../../pages/mypage/myreview/MyReviewDetail';
+import MyWishList from '../../pages/mypage/mywishlist/MyWishList';
 
 import CsMain from '../../pages/cscenter/csmain/CsMain';
 import NoticeList from '../../pages/cscenter/ntc/NoticeList';
@@ -87,6 +88,9 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                     {/* 내가 쓴 리뷰 상세 */}
                     <Route path="myreview/:rvwId" element={<MyReviewDetail />} />
+
+                    {/* 내가 찜한 상품 목록 */}
+                    <Route path="mywishlist" element={<MyWishList />} />
                 </Route>
 
                 {/* 고객센터 메인 */}

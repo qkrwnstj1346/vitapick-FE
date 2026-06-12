@@ -24,7 +24,11 @@ function Mypage() {
 
                     <li>주문 내역</li>
 
-                    <li>찜한 상품</li>
+                    <li>
+                        <NavLink to="/mypage/mywishlist">
+                            찜한 상품
+                        </NavLink>
+                    </li>
 
                     <li>내 비타민 추천</li>
 
