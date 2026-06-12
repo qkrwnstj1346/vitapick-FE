@@ -32,7 +32,11 @@ function Mypage() {
 
                     <li>배송지 관리</li>
 
-                    <li>리뷰 관리</li>
+                    <li>
+                        <NavLink to="/mypage/myreview">
+                            리뷰 관리
+                        </NavLink>
+                    </li>
 
                     <li>1:1 문의 관리</li>
 
