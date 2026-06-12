@@ -19,6 +19,8 @@
     border-radius: 20px;
     box-sizing: border-box;
     text-align: center;
+    position: sticky;
+    top: 120px;
 }
 
 /* 제목 */
