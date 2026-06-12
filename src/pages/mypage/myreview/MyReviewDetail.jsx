@@ -25,7 +25,18 @@ export default function MyReviewDetail() {
         const fetchReviewDetail = async () => {
             try {
                 const data = await apiCall.get(`/api/v1/rvw/${rvwId}`);
-                setRvw(data);
+
+        // 리뷰의 prdId로 상품 정보 추가 조회
+        const prd = await apiCall.get(`/api/v1/product/detail/${data.prdId}`);
+
+        // 리뷰 정보 + 상품 정보를 합쳐서 저장
+        setRvw({
+            ...data,
+            prdNm: prd.prdNm,
+            brand: prd.brand,
+            price: prd.price,
+            thumbImgUrl: prd.thumbImgUrl
+        });
             } catch (err) {
                 console.error('리뷰 상세 오류:', err);
                 setError('리뷰를 불러오지 못했습니다.');
@@ -58,6 +69,26 @@ export default function MyReviewDetail() {
 
             {/* 리뷰 내용 */}
             <div className='rvw-detail-card'>
+                
+                {/* 상품 정보 */}
+                <div className='rvw-detail-product'>
+                    <img
+                        className='rvw-detail-img'
+                        src={rvw.thumbImgUrl || '/images/no-image.png'}
+                        alt={rvw.prdNm}
+                        onError={(e) => {
+                            e.target.src = '/images/no-image.png';
+                        }}
+                    />
+
+                    <div className='rvw-detail-prd-info'>
+                        <p className='rvw-detail-brand'>{rvw.brand}</p>
+                        <h3 className='rvw-detail-prdNm'>{rvw.prdNm}</h3>
+                        <strong className='rvw-detail-price'>
+                            {rvw.price?.toLocaleString()}원
+                        </strong>
+                    </div>
+                </div>
 
                 {/* 별점 */}
                 <div className='rvw-detail-star'>

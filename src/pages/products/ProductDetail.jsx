@@ -44,14 +44,20 @@ const ProductDetail = () => {
         }
     };
 
-    // 바로 구매
+    // 바로 구매 버튼 클릭 시 주문 페이지로 이동
     const handleBuyNow = () => {
         navigate('/order', {
             state: {
-                prd: prd,
-                prdId: Number(prdId),
-                quantity: quantity,
-                totalPrice: prd.price * quantity
+                prdList: [
+                    {
+                        prdId: Number(prdId),
+                        prdNm: prd.prdNm,
+                        brand: prd.brand,
+                        price: prd.price,
+                        thumbImgUrl: prd.thumbImgUrl,
+                        itQty: quantity
+                    }
+                ]
             }
         });
     };

@@ -90,3 +90,52 @@
     background-color: #7FAF8B;
     color: #ffffff;
 }
+
+/* 리뷰 상세 상품 정보 */
+.rvw-detail-product {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #E3EEE5;
+}
+
+/* 상품 이미지 */
+.rvw-detail-img {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    border-radius: 14px;
+    background-color: #F7FBF7;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 상품 정보 텍스트 */
+.rvw-detail-prd-info {
+    flex: 1;
+}
+
+/* 브랜드 */
+.rvw-detail-brand {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: #7FAF8B;
+    font-weight: 700;
+}
+
+/* 상품명 */
+.rvw-detail-prdNm {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: #17251c;
+    font-weight: 800;
+}
+
+/* 가격 */
+.rvw-detail-price {
+    font-size: 15px;
+    color: #333;
+    font-weight: 700;
+}
