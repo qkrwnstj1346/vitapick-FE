@@ -11,6 +11,7 @@
 /* 사이드바 */
 .mypageSidebar {
     width: 250px;
+    height: 560px;
     flex-shrink: 0;
     padding: 24px;
     background-color: #fff;
