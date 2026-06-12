@@ -308,6 +308,15 @@
     font-size: 24px;
 }
 
+.adminMetricCard em {
+    display: block;
+    margin-top: 10px;
+    color: #5f756a;
+    font-size: 12px;
+    font-style: normal;
+    line-height: 1.5;
+}
+
 .adminSummaryCard p,
 .adminFeatureCard p,
 .adminMetricCard p {
@@ -545,6 +554,46 @@
     height: 8px;
     border-radius: 50%;
     background-color: #69aa7c;
+}
+
+.adminTopProductsSection {
+    min-width: 0;
+}
+
+.adminTopProductsTable {
+    overflow-x: auto;
+    margin-top: 18px;
+    border: 1px solid #e0ece5;
+    border-radius: 16px;
+}
+
+.adminTopProductsHead,
+.adminTopProductsRow {
+    display: grid;
+    grid-template-columns: 80px minmax(160px, 1.4fr) minmax(120px, 1fr) minmax(120px, 1fr) minmax(120px, 1fr);
+    min-width: 720px;
+}
+
+.adminTopProductsHead {
+    background-color: #f3faf5;
+    color: #4f665b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminTopProductsHead span,
+.adminTopProductsRow span {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5efe9;
+}
+
+.adminTopProductsRow {
+    color: #53665d;
+    font-size: 14px;
+}
+
+.adminTopProductsBody .adminTopProductsRow:last-child span {
+    border-bottom: 0;
 }
 
 .adminAccessDenied {
