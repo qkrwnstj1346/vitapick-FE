@@ -39,6 +39,7 @@ import OrderComplete from '../../pages/order/OrderComplete';
 
 
 import UserAddrList from '../useraddr/UserAddrList';
+import AdminPage from '../../pages/admin/AdminPage';
 
 function Main({ onLoginSubmit, isLoggedIn }) {
 
@@ -127,6 +128,8 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                 {/* 배송지 */}
                 <Route path="/address" element={<UserAddrList />} />
+
+                <Route path="/admin" element={<AdminPage />} />
 
             </Routes>
         </main>
