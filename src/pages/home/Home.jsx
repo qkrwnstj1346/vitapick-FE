@@ -21,7 +21,7 @@ function Home({ isLoggedIn }) {
 
                 console.log('인기상품 TOP5:', data);
 
-                setPrdList(data);
+                setPrdList(Array.isArray(data) ? data : data.data || []);
 
             } catch (error) {
 
