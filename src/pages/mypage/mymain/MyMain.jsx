@@ -18,7 +18,7 @@ function MyMain() {
 
                 <div className="myMainCharacter">
                     <img
-                        src="/images/mypage-character.png"
+                        src="/images/VitaPick.png"
                         alt="캐릭터"
                     />
                 </div>

@@ -34,6 +34,8 @@ function Mypage() {
 
                     <li>리뷰 관리</li>
 
+                    <li>1:1 문의 관리</li>
+
                     <li>회원 탈퇴</li>
 
                 </ul>
