@@ -37,6 +37,9 @@ function App() {
         location.pathname.startsWith(path)
     );
 
+    const isAdminPath = location.pathname.startsWith('/admin');
+    const showChatbot = !isAdminPath && !isHideChatbot;
+
     useEffect(() => {
         const accessToken = sessionStorage.getItem("accessToken");
 
@@ -105,11 +108,13 @@ function App() {
 
         <div className="App">
 
-            <Header
-                userInfo={userInfo}
-                isLoggedIn={isLoggedIn}
-                onLogout={onLogout}
-            />
+            {!isAdminPath && (
+                <Header
+                    userInfo={userInfo}
+                    isLoggedIn={isLoggedIn}
+                    onLogout={onLogout}
+                />
+            )}
 
             <Main
                 token={getToken()}
@@ -117,9 +122,9 @@ function App() {
                 isLoggedIn={isLoggedIn}
             />
 
-            <Footer />
+            {!isAdminPath && <Footer />}
 
-            {!isHideChatbot && (
+            {showChatbot && (
                 <div
                     className="chatbotFloatingBtn"
                     onClick={() => {
@@ -143,7 +148,7 @@ function App() {
                 </div>
             )}
 
-            {!isHideChatbot && isChatOpen && (
+            {showChatbot && isChatOpen && (
                 <Chatbot
                     onClose={() => setIsChatOpen(false)}
                     userInfo={userInfo}

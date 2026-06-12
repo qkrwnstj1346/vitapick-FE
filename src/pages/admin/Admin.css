@@ -1,0 +1,649 @@
+.adminPage {
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #f3fbf6 0%, #fbfdf9 48%, #eef8f1 100%);
+    color: #26342f;
+    text-align: left;
+}
+
+.adminSidebar {
+    display: flex;
+    flex-direction: column;
+    width: 270px;
+    flex-shrink: 0;
+    min-height: 100vh;
+    padding: 32px 22px;
+    box-sizing: border-box;
+    border-right: 1px solid #dcebe2;
+    background: rgba(246, 253, 248, 0.92);
+}
+
+.adminBrand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 6px 30px;
+}
+
+.adminBrandIcon,
+.adminProfileAvatar,
+.adminHeroBubble,
+.adminEmptyIcon,
+.adminFeatureIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #dff4e7, #ffffff);
+    color: #4f9a6a;
+    font-weight: 800;
+}
+
+.adminBrandIcon {
+    width: 46px;
+    height: 46px;
+    box-shadow: 0 10px 24px rgba(93, 151, 111, 0.16);
+}
+
+.adminBrand h2 {
+    margin: 0;
+    color: #73b989;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.adminBrand p {
+    margin: 4px 0 0;
+    color: #7b8f86;
+    font-size: 13px;
+}
+
+.adminMenu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.adminMenuBtn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    border: 0;
+    border-radius: 14px;
+    background-color: transparent;
+    color: #4d5f57;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+
+.adminMenuBtn:hover,
+.adminMenuBtn.active {
+    background-color: #dff2e5;
+    color: #2f8350;
+}
+
+.adminMenuMark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+    border: 1px solid #cfe5d6;
+    color: #5fa876;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.adminMenuBtn.active .adminMenuMark {
+    border-color: #87c79b;
+    background-color: #ffffff;
+}
+
+.adminProfileCard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    padding: 16px;
+    border: 1px solid #d7eadf;
+    border-radius: 18px;
+    background-color: #ffffff;
+    box-shadow: 0 14px 34px rgba(99, 139, 113, 0.12);
+}
+
+.adminProfileAvatar {
+    width: 42px;
+    height: 42px;
+    font-size: 13px;
+}
+
+.adminProfileCard strong {
+    display: block;
+    color: #2f5f40;
+    font-size: 14px;
+}
+
+.adminProfileCard p {
+    margin: 4px 0 0;
+    color: #83928b;
+    font-size: 13px;
+}
+
+.adminContent {
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+    padding: 42px 48px;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.52);
+}
+
+.adminPageHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.adminPageHeader h1 {
+    margin: 0 0 10px;
+    color: #202c27;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.adminPageHeader p {
+    margin: 0;
+    color: #718179;
+    font-size: 15px;
+}
+
+.adminHeaderActions {
+    display: flex;
+    gap: 12px;
+}
+
+.adminHeaderActions button,
+.adminPrimaryBtn {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid #cfe1d5;
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #53665d;
+    font-weight: 700;
+}
+
+.adminPrimaryBtn {
+    border-color: #6eaf80;
+    background-color: #6eaf80;
+    color: #ffffff;
+}
+
+.adminHeroCard,
+.adminPanel,
+.adminOpsSection,
+.adminFilterCard,
+.adminEmptyCard,
+.adminFeatureCard,
+.adminSummaryCard,
+.adminStatusCard,
+.adminMetricCard,
+.adminChartCard {
+    border: 1px solid #dbe9e0;
+    border-radius: 22px;
+    background-color: #ffffff;
+    box-shadow: 0 16px 36px rgba(84, 118, 96, 0.1);
+    box-sizing: border-box;
+}
+
+.adminHeroCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    min-height: 190px;
+    padding: 34px 42px;
+    background:
+        radial-gradient(circle at 88% 18%, rgba(157, 210, 174, 0.32), transparent 28%),
+        linear-gradient(135deg, #eef9f1 0%, #ffffff 100%);
+}
+
+.adminHeroBadge {
+    display: inline-flex;
+    margin-bottom: 12px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background-color: #dff2e7;
+    color: #3f915b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminHeroCard h2 {
+    max-width: 720px;
+    margin: 0;
+    color: #24322c;
+    font-size: 30px;
+    line-height: 1.35;
+}
+
+.adminHeroCard p {
+    margin: 14px 0 0;
+    color: #6f8178;
+    font-size: 15px;
+}
+
+.adminHeroBubble {
+    width: 116px;
+    height: 116px;
+    font-size: 30px;
+    box-shadow: 0 18px 40px rgba(94, 151, 111, 0.2);
+}
+
+.adminSummaryGrid,
+.adminFeatureGrid,
+.adminStatusGrid,
+.adminMetricGrid,
+.adminDashboardGrid {
+    display: grid;
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.adminSummaryGrid,
+.adminMetricGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.adminSummaryGrid.compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.adminFeatureGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.adminStatusGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.adminDashboardGrid,
+.adminMetricGrid.twoCol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.adminSummaryCard,
+.adminStatusCard,
+.adminFeatureCard,
+.adminMetricCard {
+    padding: 24px;
+}
+
+.adminCardLabel,
+.adminStatusCard span,
+.adminMetricCard span {
+    display: block;
+    color: #77877f;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.adminSummaryCard strong,
+.adminStatusCard strong,
+.adminMetricCard strong {
+    display: block;
+    margin-top: 10px;
+    color: #26342f;
+    font-size: 24px;
+}
+
+.adminSummaryCard p,
+.adminFeatureCard p,
+.adminMetricCard p {
+    margin: 12px 0 0;
+    color: #788982;
+    line-height: 1.6;
+}
+
+.adminPanel,
+.adminOpsSection,
+.adminFilterCard,
+.adminEmptyCard {
+    margin-top: 24px;
+    padding: 26px;
+}
+
+.adminPanelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.adminPanelHeader h3,
+.adminFeatureCard h3,
+.adminEmptyCard h3 {
+    margin: 0;
+    color: #25332d;
+    font-size: 20px;
+}
+
+.adminPanelHeader p {
+    margin: 8px 0 0;
+    color: #7b8b83;
+    font-size: 14px;
+}
+
+.adminPanelHeader span,
+.adminFeatureCard strong {
+    display: inline-flex;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background-color: #e6f5eb;
+    color: #4c9b64;
+    font-size: 13px;
+}
+
+.adminGuideList {
+    display: grid;
+    gap: 12px;
+}
+
+.adminGuideItem {
+    padding: 16px 18px;
+    border-radius: 14px;
+    background-color: #f5fbf7;
+    color: #53665e;
+}
+
+.adminFilterCard {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.4fr auto;
+    align-items: end;
+    gap: 16px;
+}
+
+.adminField label {
+    display: block;
+    margin-bottom: 8px;
+    color: #51645b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminField input,
+.adminField select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid #d9e6de;
+    border-radius: 10px;
+    background-color: #fbfdfb;
+    color: #7b8b83;
+    box-sizing: border-box;
+}
+
+.adminEmptyCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 260px;
+    text-align: center;
+}
+
+.adminEmptyIcon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 18px;
+}
+
+.adminEmptyCard p {
+    max-width: 520px;
+    margin: 12px 0 0;
+    color: #788982;
+}
+
+.adminFeatureIcon {
+    width: 54px;
+    height: 54px;
+    margin-bottom: 18px;
+}
+
+.adminDashboard {
+    display: grid;
+    gap: 0;
+}
+
+.adminMiniMetricList {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.adminMiniMetricList .adminMetricCard {
+    padding: 18px;
+}
+
+.adminMiniMetricList .adminMetricCard strong {
+    font-size: 20px;
+}
+
+.adminChartCard {
+    position: relative;
+    min-height: 190px;
+    padding: 20px;
+    overflow: hidden;
+    background:
+        linear-gradient(180deg, rgba(246, 252, 248, 0.8), rgba(255, 255, 255, 0.98)),
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 38px,
+            rgba(203, 224, 211, 0.52) 39px,
+            transparent 40px
+        );
+}
+
+.adminChartCard > span {
+    position: absolute;
+    right: 18px;
+    bottom: 16px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background-color: #e8f6ed;
+    color: #4c9b64;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.adminLineChart {
+    width: 100%;
+    height: 150px;
+}
+
+.adminLineChart polyline {
+    fill: none;
+    stroke: #69aa7c;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adminLineChart line {
+    stroke: #d5e5db;
+    stroke-width: 2;
+}
+
+.adminBarChart {
+    display: flex;
+    align-items: end;
+    gap: 14px;
+    height: 150px;
+    padding: 12px 8px 0;
+}
+
+.adminBarChart span {
+    flex: 1;
+    min-width: 18px;
+    border-radius: 12px 12px 4px 4px;
+    background: linear-gradient(180deg, #6fb682 0%, #d8efdf 100%);
+}
+
+.adminDonutWrap {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 22px;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.adminDonutChart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, #ffffff 0 42%, transparent 43%),
+        conic-gradient(#69aa7c 0 28%, #a9d8b6 28% 52%, #d6eadb 52% 76%, #eef6f0 76% 100%);
+    color: #4c9b64;
+    font-weight: 900;
+}
+
+.adminDonutLegend {
+    display: grid;
+    gap: 10px;
+}
+
+.adminDonutLegend span {
+    position: relative;
+    padding-left: 18px;
+    color: #687970;
+    font-size: 14px;
+}
+
+.adminDonutLegend span::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #69aa7c;
+}
+
+.adminAccessDenied {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100vw;
+    padding: 32px;
+    box-sizing: border-box;
+    background: linear-gradient(135deg, #f3fbf6 0%, #ffffff 100%);
+}
+
+.adminAccessCard {
+    max-width: 520px;
+    padding: 42px;
+    border: 1px solid #dbe9e0;
+    border-radius: 22px;
+    background-color: #ffffff;
+    text-align: center;
+    box-shadow: 0 16px 36px rgba(84, 118, 96, 0.1);
+}
+
+.adminAccessCard h1 {
+    margin: 0 0 12px;
+    color: #25332d;
+    font-size: 28px;
+}
+
+.adminAccessCard p {
+    margin: 0;
+    color: #788982;
+}
+
+@media (max-width: 1100px) {
+    .adminSummaryGrid,
+    .adminFeatureGrid,
+    .adminStatusGrid,
+    .adminMetricGrid,
+    .adminDashboardGrid,
+    .adminSummaryGrid.compact,
+    .adminMetricGrid.twoCol,
+    .adminMiniMetricList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .adminFilterCard {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .adminPage {
+        flex-direction: column;
+    }
+
+    .adminSidebar {
+        width: auto;
+        min-height: auto;
+    }
+
+    .adminProfileCard {
+        margin-top: 24px;
+    }
+
+    .adminContent {
+        min-height: auto;
+        padding: 24px;
+    }
+
+    .adminPageHeader,
+    .adminHeroCard {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .adminHeaderActions,
+    .adminFilterCard,
+    .adminSummaryGrid,
+    .adminFeatureGrid,
+    .adminStatusGrid,
+    .adminMetricGrid,
+    .adminDashboardGrid,
+    .adminSummaryGrid.compact,
+    .adminMetricGrid.twoCol,
+    .adminMiniMetricList {
+        grid-template-columns: 1fr;
+    }
+
+    .adminHeaderActions {
+        display: grid;
+        width: 100%;
+    }
+
+    .adminHeroCard h2 {
+        font-size: 24px;
+    }
+
+    .adminDonutWrap {
+        grid-template-columns: 1fr;
+    }
+}
