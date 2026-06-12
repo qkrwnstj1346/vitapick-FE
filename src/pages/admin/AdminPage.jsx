@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AdminSidebar from './AdminSidebar';
+import { getAdminDashboardSummary } from '../../service/admin/adminDashboardApi';
 import './Admin.css';
 
 const today = new Date();
@@ -94,7 +95,42 @@ const placeholderBarHeights = ['42%', '66%', '54%', '78%', '48%', '72%'];
 
 function AdminPage() {
     const [activeTab, setActiveTab] = useState('dashboard');
+    const [dashboardData, setDashboardData] = useState(dashboardPlaceholderData);
+    const [dashboardLoading, setDashboardLoading] = useState(false);
+    const [dashboardError, setDashboardError] = useState('');
     const isAdmin = sessionStorage.getItem('roleCd') === 'ADMIN';
+
+    useEffect(() => {
+        if (!isAdmin) return;
+
+        let isMounted = true;
+
+        const fetchDashboardSummary = async () => {
+            setDashboardLoading(true);
+            setDashboardError('');
+
+            try {
+                const summary = await getAdminDashboardSummary();
+                if (!isMounted) return;
+                setDashboardData(createDashboardData(summary));
+            } catch (error) {
+                console.error('관리자 대시보드 summary 조회 실패:', error);
+                if (!isMounted) return;
+                setDashboardData(dashboardPlaceholderData);
+                setDashboardError('대시보드 데이터를 불러오지 못해 기본 안내값을 표시합니다.');
+            } finally {
+                if (isMounted) {
+                    setDashboardLoading(false);
+                }
+            }
+        };
+
+        fetchDashboardSummary();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [isAdmin]);
 
     if (!isAdmin) {
         return (
@@ -108,10 +144,15 @@ function AdminPage() {
     }
 
     const renderDashboard = () => {
-        const { sales, members, orders, inquiries, productSalesTop5 } = dashboardPlaceholderData;
+        const { sales, members, orders, inquiries, productSalesTop5 } = dashboardData;
 
         return (
             <div className="adminDashboard">
+                {(dashboardLoading || dashboardError) && (
+                    <div className="adminDashboardNotice">
+                        {dashboardLoading ? '대시보드 데이터를 불러오는 중입니다.' : dashboardError}
+                    </div>
+                )}
                 <section className="adminHeroCard">
                     <div>
                         <span className="adminHeroBadge">VitaPick Admin</span>
@@ -136,6 +177,7 @@ function AdminPage() {
                                 label={item.label}
                                 value={item.value}
                                 basis={item.basis}
+                                note={item.note}
                             />
                         ))}
                     </div>
@@ -152,7 +194,7 @@ function AdminPage() {
                         <LineChartMock />
                         <div className="adminMiniMetricList">
                             {members.metrics.map((item) => (
-                                <MetricCard key={item.label} label={item.label} value={item.value} />
+                                <MetricCard key={item.label} label={item.label} value={item.value} note={item.note} />
                             ))}
                         </div>
                     </section>
@@ -188,7 +230,7 @@ function AdminPage() {
                         </div>
                         <div className="adminMetricGrid twoCol">
                             {inquiries.metrics.map((item) => (
-                                <MetricCard key={item.label} label={item.label} value={item.value} />
+                                <MetricCard key={item.label} label={item.label} value={item.value} note={item.note} />
                             ))}
                         </div>
                     </section>
@@ -300,13 +342,13 @@ function AdminPage() {
     );
 }
 
-function MetricCard({ label, value, basis }) {
+function MetricCard({ label, value, basis, note = 'API 연결 후 표시' }) {
     return (
         <article className="adminMetricCard">
             <span>{label}</span>
             <strong>{value}</strong>
             {basis && <em>{basis}</em>}
-            <p>API 연결 후 표시</p>
+            <p>{note}</p>
         </article>
     );
 }
@@ -378,6 +420,138 @@ function EmptyState({ text }) {
             <p>이번 단계에서는 화면 구조만 준비했으며 실제 기능은 연결하지 않았습니다.</p>
         </section>
     );
+}
+
+function createDashboardData(summary) {
+    if (!summary) {
+        return dashboardPlaceholderData;
+    }
+
+    return {
+        ...dashboardPlaceholderData,
+        sales: {
+            ...dashboardPlaceholderData.sales,
+            status: 'summary API 반영',
+            metrics: [
+                {
+                    ...dashboardPlaceholderData.sales.metrics[0],
+                    value: formatCurrency(summary.todaySalesAmt, dashboardPlaceholderData.sales.metrics[0].value),
+                    note: 'summary API 기준'
+                },
+                {
+                    ...dashboardPlaceholderData.sales.metrics[1],
+                    value: formatCurrency(summary.monthSalesAmt, dashboardPlaceholderData.sales.metrics[1].value),
+                    note: 'summary API 기준'
+                },
+                {
+                    ...dashboardPlaceholderData.sales.metrics[2],
+                    value: formatCount(summary.todayPaidOrderCount, dashboardPlaceholderData.sales.metrics[2].value),
+                    note: 'summary API 기준'
+                },
+                {
+                    ...dashboardPlaceholderData.sales.metrics[3],
+                    value: summary.popularCategory?.catNm || dashboardPlaceholderData.sales.metrics[3].value,
+                    note: 'summary API 기준'
+                }
+            ]
+        },
+        members: {
+            ...dashboardPlaceholderData.members,
+            metrics: [
+                {
+                    ...dashboardPlaceholderData.members.metrics[0],
+                    value: formatCount(summary.memberStats?.totalCount, dashboardPlaceholderData.members.metrics[0].value, '명'),
+                    note: 'summary API 기준'
+                },
+                {
+                    ...dashboardPlaceholderData.members.metrics[1],
+                    value: formatCount(summary.memberStats?.activeCount, dashboardPlaceholderData.members.metrics[1].value, '명'),
+                    note: 'summary API 기준'
+                },
+                {
+                    ...dashboardPlaceholderData.members.metrics[2],
+                    value: formatCount(summary.memberStats?.withdrawnCount, dashboardPlaceholderData.members.metrics[2].value, '명'),
+                    note: 'summary API 기준'
+                }
+            ]
+        },
+        inquiries: {
+            ...dashboardPlaceholderData.inquiries,
+            metrics: [
+                {
+                    ...dashboardPlaceholderData.inquiries.metrics[0],
+                    value: formatCount(summary.inquiryStats?.waitingCount, dashboardPlaceholderData.inquiries.metrics[0].value),
+                    note: 'summary API 기준'
+                },
+                {
+                    ...dashboardPlaceholderData.inquiries.metrics[1],
+                    value: formatCount(summary.inquiryStats?.answeredCount, dashboardPlaceholderData.inquiries.metrics[1].value),
+                    note: 'summary API 기준'
+                },
+                {
+                    ...dashboardPlaceholderData.inquiries.metrics[2],
+                    value: formatCount(summary.inquiryStats?.todayNewCount, dashboardPlaceholderData.inquiries.metrics[2].value),
+                    note: 'summary API 기준'
+                },
+                {
+                    ...dashboardPlaceholderData.inquiries.metrics[3],
+                    value: formatRate(summary.inquiryStats?.answerRate, dashboardPlaceholderData.inquiries.metrics[3].value),
+                    note: 'summary API 기준'
+                }
+            ]
+        },
+        productSalesTop5: {
+            ...dashboardPlaceholderData.productSalesTop5,
+            rows: Array.isArray(summary.productSalesTop5)
+                ? summary.productSalesTop5.map((item, index) => ({
+                    rank: `${index + 1}`,
+                    productName: item.prdNm || '-',
+                    category: item.catNm || '-',
+                    paidQuantity: formatCount(item.paidQty, '-', '개'),
+                    salesAmount: formatCurrency(item.salesAmt, '-')
+                }))
+                : dashboardPlaceholderData.productSalesTop5.rows
+        }
+    };
+}
+
+function formatCurrency(value, fallback = '-') {
+    if (value === null || value === undefined || value === '') {
+        return fallback;
+    }
+
+    const numberValue = Number(value);
+    if (Number.isNaN(numberValue)) {
+        return fallback;
+    }
+
+    return `${numberValue.toLocaleString()}원`;
+}
+
+function formatCount(value, fallback = '-', unit = '건') {
+    if (value === null || value === undefined || value === '') {
+        return fallback;
+    }
+
+    const numberValue = Number(value);
+    if (Number.isNaN(numberValue)) {
+        return fallback;
+    }
+
+    return `${numberValue.toLocaleString()}${unit}`;
+}
+
+function formatRate(value, fallback = '-') {
+    if (value === null || value === undefined || value === '') {
+        return fallback;
+    }
+
+    const numberValue = Number(value);
+    if (Number.isNaN(numberValue)) {
+        return fallback;
+    }
+
+    return `${numberValue}%`;
 }
 
 function formatDate(date) {
