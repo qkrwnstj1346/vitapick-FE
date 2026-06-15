@@ -89,16 +89,24 @@ function MyorderDetail() {
                 ) : (
                     orderItems.map((item) => (
                         <div className="myOrderItem" key={item.ordItId}>
-                            <div>
+
+                            <img
+                                src={item.thumbImgUrl}
+                                alt={item.prdNm}
+                                className="myOrderItemImg"
+                            />
+
+                            <div className="myOrderItemInfo">
                                 <strong>{item.prdNm}</strong>
                                 <p>
-                                    수량 {item.itQty}개 · {item.price?.toLocaleString()}원
+                                    수량 {item.itQty}개 · {Number(item.price || 0).toLocaleString()}원
                                 </p>
                             </div>
 
-                            <span>
-                                {item.itAmt?.toLocaleString()}원
+                            <span className="myOrderItemPrice">
+                                {Number(item.itAmt || 0).toLocaleString()}원
                             </span>
+
                         </div>
                     ))
                 )}

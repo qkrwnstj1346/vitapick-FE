@@ -12,7 +12,8 @@ import {
     Sparkles,
     Trophy,
     Bot,
-    Gift
+    Gift,
+    Leaf
 } from 'lucide-react';
 
 import { Link } from 'react-router-dom';
@@ -296,14 +297,14 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                     </li>
 
-                    {/* 오늘의 추천 */}
+                    {/* 이번주 신상 */}
                     <li>
 
                         <Link to="/recommend">
 
-                            <Sparkles size={17} />
+                            <Leaf size={17} />
 
-                            오늘의 추천
+                            이번 주 신상
 
                         </Link>
 

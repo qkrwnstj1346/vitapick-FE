@@ -58,43 +58,85 @@
     border: 1px solid #e8e8e8;
     border-radius: 20px;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .myOrderItemBox h3 {
     margin: 0 0 18px;
     font-size: 20px;
+    font-weight: 700;
     color: #24382a;
 }
 
+.myOrderItemEmpty {
+    margin: 0;
+    padding: 24px 0;
+    font-size: 15px;
+    color: #777;
+    text-align: center;
+}
+
+/* 상품 한 줄 */
 .myOrderItem {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    padding: 18px 0;
-    border-bottom: 1px solid #f1f1f1;
+    gap: 14px;
+    width: 100%;
+    min-height: 92px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f0f0;
+    box-sizing: border-box;
 }
 
 .myOrderItem:last-child {
     border-bottom: none;
 }
 
-.myOrderItem strong {
-    font-size: 16px;
-    color: #333;
+/* 상품 이미지 */
+.myOrderItemImg {
+    width: 64px !important;
+    height: 64px !important;
+    min-width: 64px;
+    max-width: 64px;
+    display: block;
+    object-fit: cover;
+    border: 1px solid #eeeeee;
+    border-radius: 14px;
+    background-color: #f8f8f8;
+    flex: 0 0 64px;
 }
 
-.myOrderItem p {
-    margin: 8px 0 0;
-    font-size: 14px;
-    color: #777;
+/* 상품 정보 */
+.myOrderItemInfo {
+    flex: 1;
+    min-width: 0;
 }
 
-.myOrderItem span {
-    flex-shrink: 0;
+.myOrderItemInfo strong {
+    display: block;
+    margin-bottom: 6px;
     font-size: 15px;
     font-weight: 700;
     color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.myOrderItemInfo p {
+    margin: 0;
+    font-size: 13px;
+    color: #777;
+}
+
+/* 상품 가격 */
+.myOrderItemPrice {
+    flex-shrink: 0;
+    min-width: 90px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    text-align: right;
 }
 
 /* 버튼 */
@@ -128,8 +170,22 @@
     }
 
     .myOrderItem {
-        align-items: flex-start;
-        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .myOrderItemImg {
+        width: 58px !important;
+        height: 58px !important;
+        min-width: 58px;
+        max-width: 58px;
+        flex-basis: 58px;
+        border-radius: 12px;
+    }
+
+    .myOrderItemPrice {
+        min-width: 80px;
+        font-size: 14px;
     }
 
     .myOrderDetailButtons button {
@@ -146,5 +202,26 @@
 
     .myOrderDetailHeader h2 {
         font-size: 22px;
+    }
+
+    .myOrderDetailHeader p {
+        font-size: 14px;
+    }
+
+    .myOrderItemImg {
+        width: 54px !important;
+        height: 54px !important;
+        min-width: 54px;
+        max-width: 54px;
+        flex-basis: 54px;
+    }
+
+    .myOrderItemInfo strong {
+        font-size: 14px;
+    }
+
+    .myOrderItemInfo p,
+    .myOrderItemPrice {
+        font-size: 13px;
     }
 }
