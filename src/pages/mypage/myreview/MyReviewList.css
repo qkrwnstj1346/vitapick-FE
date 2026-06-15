@@ -193,7 +193,7 @@
     font-weight: 700;
 }
 
-/* 버튼 영역: 오른쪽 가로 정렬 */
+/* 버튼 영역 */
 .rvw-item__btns {
     display: flex;
     justify-content: flex-end;
@@ -204,8 +204,7 @@
 
 /* 버튼 공통 */
 .rvw-item__prd-btn,
-.rvw-item__edit-btn,
-.rvw-item__delete-btn {
+.rvw-item__detail-btn {
     padding: 8px 14px;
     border-radius: 999px;
     background: #ffffff;
@@ -226,99 +225,15 @@
     color: #ffffff;
 }
 
-/* 수정 버튼 */
-.rvw-item__edit-btn {
-    border: 1px solid #4dabf7;
-    color: #1c7ed6;
+/* 상세보기 버튼 */
+.rvw-item__detail-btn {
+    border: 1px solid #17251c;
+    color: #17251c;
 }
 
-.rvw-item__edit-btn:hover {
-    background-color: #f0f8ff;
-}
-
-/* 삭제 버튼 */
-.rvw-item__delete-btn {
-    border: 1px solid #ff6b6b;
-    color: #ff4d4f;
-}
-
-.rvw-item__delete-btn:hover {
-    background-color: #fff5f5;
-}
-
-/* 수정 폼 영역 */
-.rvw-edit-box {
-    margin-top: 16px;
-}
-
-/* 수정 별점 */
-.rvw-edit-star {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 12px;
-}
-
-/* 수정 별점 ON */
-.rvw-edit-star-on {
-    color: #FFD700;
-    font-size: 22px;
-    cursor: pointer;
-}
-
-/* 수정 별점 OFF */
-.rvw-edit-star-off {
-    color: #ddd;
-    font-size: 22px;
-    cursor: pointer;
-}
-
-/* 수정 textarea */
-.rvw-edit-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #D7E6DA;
-    border-radius: 12px;
-    font-size: 14px;
-    resize: none;
-    outline: none;
-    box-sizing: border-box;
-    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-}
-
-/* 수정 폼 버튼 영역 */
-.rvw-edit-btns {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-/* 수정 완료 버튼 */
-.rvw-edit-submit {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 999px;
-    background-color: #7FAF8B;
+.rvw-item__detail-btn:hover {
+    background-color: #17251c;
     color: #ffffff;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-/* 취소 버튼 */
-.rvw-edit-cancel {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    border-radius: 999px;
-    background-color: #ffffff;
-    color: #666;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.rvw-edit-cancel:hover {
-    background-color: #f5f5f5;
 }
 
 /* 모바일 */
@@ -357,8 +272,7 @@
     }
 
     .rvw-item__prd-btn,
-    .rvw-item__edit-btn,
-    .rvw-item__delete-btn {
+    .rvw-item__detail-btn {
         padding: 7px 12px;
         font-size: 12px;
     }

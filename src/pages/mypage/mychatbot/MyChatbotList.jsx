@@ -24,6 +24,22 @@ function MyChatbotList() {
         navigate(`/mypage/mychatbot/${chatId}`);
     }
 
+    async function deleteChatRoom(e, chatId) {
+        e.stopPropagation();
+
+        const ok = window.confirm("이 상담 내역을 삭제하시겠습니까?");
+        if (!ok) return;
+
+        try {
+            await apiCall.delete(`/api/v1/chatbot/rooms/${chatId}`);
+
+            setRoomList(roomList.filter((room) => room.chatId !== chatId));
+        } catch (err) {
+            console.error("AI 챗봇 상담 삭제 오류", err);
+            alert("상담 내역 삭제에 실패했습니다.");
+        }
+    }
+
     return (
         <div className="mychat-wrap">
             <h2>AI 챗봇 상담 내역</h2>
@@ -42,15 +58,26 @@ function MyChatbotList() {
                             <p>생성일시: {room.crtAt}</p>
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                goDetail(room.chatId);
-                            }}
-                        >
-                            상세보기
-                        </button>
+                        <div className="mychat-btns">
+                            <button
+                                type="button"
+                                className="mychat-detail-btn"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    goDetail(room.chatId);
+                                }}
+                            >
+                                상세보기
+                            </button>
+
+                            <button
+                                type="button"
+                                className="mychat-delete-btn"
+                                onClick={(e) => deleteChatRoom(e, room.chatId)}
+                            >
+                                삭제
+                            </button>
+                        </div>
                     </div>
                 ))
             )}
