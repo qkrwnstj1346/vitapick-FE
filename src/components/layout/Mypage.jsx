@@ -17,7 +17,7 @@ function Mypage() {
                 <ul className="mypageMenu">
 
                     <li>
-                        <NavLink to="/mypage/profile">
+                        <NavLink to="/mypage/myprofile">
                             회원정보 수정
                         </NavLink>
                     </li>
@@ -47,8 +47,12 @@ function Mypage() {
                         </NavLink>
                     </li>
 
-                    <li>1:1 문의 관리</li>
-
+                    <li>
+                        <NavLink to="/mypage/myinquiry">
+                            1:1 문의 관리
+                        </NavLink>
+                    </li>
+                    
                     <li>회원 탈퇴</li>
 
                 </ul>
