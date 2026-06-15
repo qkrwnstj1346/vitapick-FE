@@ -14,6 +14,7 @@ import MyCustomList from '../../pages/mypage/mycustom/MyCustomList';
 import MyReviewList from '../../pages/mypage/myreview/MyReviewList';
 import MyReviewDetail from '../../pages/mypage/myreview/MyReviewDetail';
 import MyWishList from '../../pages/mypage/mywishlist/MyWishList';
+import MyInquiryList from '../../pages/mypage/myinquiry/MyInquiryList'
 
 import CsMain from '../../pages/cscenter/csmain/CsMain';
 import NoticeList from '../../pages/cscenter/ntc/NoticeList';
@@ -86,6 +87,9 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                     {/* 내가 찜한 상품 목록 */}
                     <Route path="mycustom" element={<MyCustomList />} />
+
+                    {/* 1대1 문의 목록 */}  
+                    <Route path="myinquiry" element={<MyInquiryList />}/>
                 </Route>
 
                 {/* 고객센터 메인 */}
