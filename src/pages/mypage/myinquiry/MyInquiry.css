@@ -1,9 +1,11 @@
+/* 문의 목록 전체 */
 .my-inq-wrap {
     width: 100%;
     padding: 10px 0 40px;
     box-sizing: border-box;
 }
 
+/* 상단 영역 */
 .my-inq-top {
     display: flex;
     justify-content: space-between;
@@ -11,6 +13,7 @@
     margin-bottom: 24px;
 }
 
+/* 페이지 제목 */
 .my-inq-title {
     font-size: 26px;
     font-weight: 700;
@@ -18,6 +21,7 @@
     margin: 0;
 }
 
+/* 문의 작성 버튼 */
 .my-inq-write-btn {
     min-width: 110px;
     height: 42px;
@@ -35,12 +39,14 @@
     background-color: #6d9d79;
 }
 
+/* 문의 목록 테이블 */
 .my-inq-table {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
 }
 
+/* 테이블 헤더 */
 .my-inq-table thead {
     border-top: 2px solid #7FAF8B;
     border-bottom: 1px solid #dcdcdc;
@@ -55,6 +61,7 @@
     text-align: center;
 }
 
+/* 테이블 본문 */
 .my-inq-table tbody tr {
     border-bottom: 1px solid #eeeeee;
     cursor: pointer;
@@ -73,12 +80,14 @@
     vertical-align: middle;
 }
 
+/* 문의 제목 */
 .my-inq-ttl {
     text-align: left;
     font-weight: 500;
     color: #333;
 }
 
+/* 문의 내역 없음 */
 .my-inq-empty {
     height: 120px;
     text-align: center;
@@ -88,43 +97,54 @@
 
 /* 태블릿 */
 @media screen and (max-width: 1024px) {
+
+    /* 페이지 제목 */
     .my-inq-title {
         font-size: 24px;
     }
 
+    /* 문의 작성 버튼 */
     .my-inq-write-btn {
         min-width: 100px;
         height: 40px;
         font-size: 13px;
     }
 
+    /* 테이블 */
     .my-inq-table th,
     .my-inq-table td {
         font-size: 13px;
     }
+
 }
 
 /* 모바일 */
 @media screen and (max-width: 768px) {
+
+    /* 문의 목록 전체 */
     .my-inq-wrap {
         padding: 4px 0 32px;
     }
 
+    /* 상단 영역 */
     .my-inq-top {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
     }
 
+    /* 페이지 제목 */
     .my-inq-title {
         font-size: 22px;
     }
 
+    /* 문의 작성 버튼 */
     .my-inq-write-btn {
         width: 100%;
         height: 42px;
     }
 
+    /* 테이블 */
     .my-inq-table th,
     .my-inq-table td {
         height: 50px;
@@ -132,25 +152,31 @@
         font-size: 12px;
     }
 
+    /* 문의 제목 */
     .my-inq-ttl {
         max-width: 160px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+
 }
 
 /* 작은 모바일 */
 @media screen and (max-width: 480px) {
+
+    /* 페이지 제목 */
     .my-inq-title {
         font-size: 21px;
     }
 
+    /* 작성자 컬럼 숨김 */
     .my-inq-table th:nth-child(2),
     .my-inq-table td:nth-child(2) {
         display: none;
     }
 
+    /* 테이블 */
     .my-inq-table th,
     .my-inq-table td {
         height: 48px;
@@ -158,7 +184,9 @@
         font-size: 11px;
     }
 
+    /* 문의 제목 */
     .my-inq-ttl {
         max-width: 120px;
     }
+
 }
