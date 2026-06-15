@@ -1,0 +1,99 @@
+.mychat-wrap {
+    max-width: 900px;
+    width: calc(100% - 48px);
+    margin: 40px auto 80px;
+}
+
+/* 제목 */
+.mychat-wrap h2 {
+    margin: 0 0 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #17251c;
+    font-size: 24px;
+    font-weight: 800;
+    color: #17251c;
+}
+
+/* 상담 내역 없음 */
+.mychat-empty {
+    text-align: center;
+    padding: 80px;
+    color: #999;
+    font-size: 15px;
+    background-color: #F7FBF7;
+    border-radius: 16px;
+}
+
+/* 상담 카드 */
+.mychat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 22px 24px;
+    margin-bottom: 16px;
+
+    background-color: #ffffff;
+    border: 1px solid #E3EEE5;
+    border-radius: 16px;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.mychat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(127, 175, 139, 0.15);
+}
+
+/* 상담 제목 */
+.mychat-item h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #17251c;
+}
+
+/* 생성일시 */
+.mychat-item p {
+    margin: 0;
+    font-size: 13px;
+    color: #999;
+}
+
+/* 상세보기 버튼 */
+.mychat-item button {
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid #7FAF8B;
+    background-color: #ffffff;
+    color: #7FAF8B;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.mychat-item button:hover {
+    background-color: #7FAF8B;
+    color: #ffffff;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .mychat-wrap {
+        width: calc(100% - 32px);
+    }
+
+    .mychat-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .mychat-item button {
+        align-self: flex-end;
+    }
+}
