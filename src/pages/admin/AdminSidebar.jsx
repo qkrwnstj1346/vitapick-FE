@@ -6,9 +6,9 @@ function AdminSidebar({ activeTab, onChangeTab }) {
     const menuItems = [
         { id: 'dashboard', label: '대시보드', mark: 'H', path: '/admin' },
         { id: 'users', label: '회원 관리', mark: 'M', path: '/admin/users' },
-        { id: 'prd', label: '상품 관리', mark: 'P', path: '/admin/prd' },
-        { id: 'ord', label: '주문 관리', mark: 'O', path: '/admin/ord' },
-        { id: 'rvw', label: '리뷰 관리', mark: 'R', path: '/admin/rvw' },
+        { id: 'prd', label: '상품 관리', mark: 'P', path: '/admin/products' },
+        { id: 'ord', label: '주문 관리', mark: 'O', path: '/admin/orders' },
+        { id: 'rvw', label: '리뷰 관리', mark: 'R', path: '/admin/reviews' },
         { id: 'cscenter', label: '고객센터 관리', mark: 'C', path: '/admin/cscenter' }
     ];
 

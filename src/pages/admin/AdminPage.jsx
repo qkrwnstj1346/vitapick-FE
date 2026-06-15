@@ -65,9 +65,9 @@ const roleCdOptions = [
 const adminTabPaths = {
     dashboard: '/admin',
     users: '/admin/users',
-    prd: '/admin/prd',
-    ord: '/admin/ord',
-    rvw: '/admin/rvw',
+    prd: '/admin/products',
+    ord: '/admin/orders',
+    rvw: '/admin/reviews',
     cscenter: '/admin/cscenter'
 };
 
