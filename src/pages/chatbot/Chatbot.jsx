@@ -3,34 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { apiCall } from '../../service/apiService';
 import './Chatbot.css';
 
-
 const Chatbot = ({ onClose, userInfo }) => {
 
-    // 페이지 이동 함수
     const navigate = useNavigate();
 
-    // 메시지 목록
     const [messages, setMessages] = useState([
         { senderCd: 'AI', msgTxt: '안녕하세요! 💊 VitaPick AI입니다.\n증상이나 건강 고민을 말씀해 주시면 맞춤 영양제를 추천해 드릴게요!' }
     ]);
 
-    // 입력창 텍스트
     const [inputText, setInputText] = useState('');
-
-    // 로딩 상태
     const [loading, setLoading] = useState(false);
 
-    // GPT 응답에서 상품ID 추출 후 상품 정보 가져오기
+    // 현재 상담방 ID
+    const [chatId, setChatId] = useState(null);
+
     const findPrdImages = async (msgTxt) => {
+        const json = JSON.parse(msgTxt);
+        const prdIds = json.products.map(item => item.prd_id);
 
-    // GPT 응답 JSON 문자열을 객체로 바꿈
-    const json = JSON.parse(msgTxt);
-
-    // products 배열에서 상품 ID만 꺼냄
-    const prdIds = json.products.map(item => item.prd_id);
-
-    // 상품ID마다 상품 정보 가져오기
-    const results = [];
+        const results = [];
 
         for (const id of prdIds) {
             const data = await apiCall.get(`/api/v1/product/detail/${id}`);
@@ -42,22 +33,30 @@ const Chatbot = ({ onClose, userInfo }) => {
         return results;
     };
 
-    // 전송 버튼 눌렀을 때
     const handleSend = async () => {
 
         if (!inputText.trim()) return;
 
-        setMessages(prev => [...prev, { senderCd: 'USER', msgTxt: inputText }]);
+        const sendText = inputText;
+
+        setMessages(prev => [...prev, { senderCd: 'USER', msgTxt: sendText }]);
         setInputText('');
         setLoading(true);
 
         try {
             const result = await apiCall.post(
                 '/api/v1/chatbot/message',
-                { msgTxt: inputText }
+                {
+                    chatId: chatId,
+                    msgTxt: sendText
+                }
             );
 
-            // GPT 응답에서 상품ID로 이미지 가져오기
+            // 백엔드 응답에서 chatId 저장
+            if (result.chatId) {
+                setChatId(result.chatId);
+            }
+
             const matchedPrds = await findPrdImages(result.msgTxt);
 
             const json = JSON.parse(result.msgTxt);
@@ -88,12 +87,27 @@ const Chatbot = ({ onClose, userInfo }) => {
         }
     };
 
-    // 상품 상세페이지로 이동
+    // X 버튼 눌렀을 때 현재 상담방 종료
+    const handleClose = async () => {
+        try {
+            if (chatId) {
+                await apiCall.patch(`/api/v1/chatbot/rooms/${chatId}/close`);
+            }
+
+            setChatId(null);
+            onClose();
+
+        } catch (err) {
+            console.error('챗봇방 닫기 오류:', err);
+            setChatId(null);
+            onClose();
+        }
+    };
+
     const goProductDetail = (prdId) => {
         navigate(`/products/detail/${prdId}`);
     };
 
-    // 엔터 키 전송
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -104,24 +118,20 @@ const Chatbot = ({ onClose, userInfo }) => {
     return (
         <div className='chatPopup_container'>
 
-            {/* 헤더 */}
             <div className='chatPopup_header'>
                 <img src='/images/VitaPick_ChatBot_Logo.png' alt='챗봇' className='chatPopup_logo' />
                 <h3>VitaPick AI 챗봇</h3>
-                <button className='chatPopup_close' onClick={onClose}>✕</button>
+                <button className='chatPopup_close' onClick={handleClose}>✕</button>
             </div>
 
-            {/* 메시지 목록 */}
             <div className='chatPopup_messages'>
                 {messages.map((msg, idx) => (
                     <div key={idx} className={msg.senderCd === 'USER' ? 'chatPopup_msg_user' : 'chatPopup_msg_ai'}>
 
-                        {/* 텍스트 말풍선 */}
                         <div className='chatPopup_bubble'>
                             {msg.msgTxt.replace(/상품ID:\s*\d+\s*\/\s*/g, '')}
                         </div>
 
-                        {/* 추천 상품 이미지 카드, 클릭 시 상세페이지로 이동 */}
                         {msg.products && msg.products.length > 0 && (
                             <div className='chatPopup_prd_list'>
                                 {msg.products.map((prd, pIdx) => (
@@ -140,6 +150,7 @@ const Chatbot = ({ onClose, userInfo }) => {
 
                     </div>
                 ))}
+
                 {loading && (
                     <div className='chatPopup_msg_ai'>
                         <div className='chatPopup_bubble'>
@@ -149,7 +160,6 @@ const Chatbot = ({ onClose, userInfo }) => {
                 )}
             </div>
 
-            {/* 입력창 */}
             <div className='chatPopup_input'>
                 <textarea
                     className='chatPopup_textarea'
