@@ -383,6 +383,10 @@
     gap: 16px;
 }
 
+.adminOrderFilterCard {
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+}
+
 .adminField label {
     display: block;
     margin-bottom: 8px;
@@ -605,6 +609,230 @@
 
 .adminTopProductsBody .adminTopProductsRow:last-child span {
     border-bottom: 0;
+}
+
+.adminUsersTable {
+    overflow-x: auto;
+    border: 1px solid #e0ece5;
+    border-radius: 16px;
+}
+
+.adminUsersHead,
+.adminUsersRow {
+    display: grid;
+    grid-template-columns: 90px minmax(120px, 1fr) minmax(100px, 1fr) minmax(140px, 1fr) 90px 90px minmax(140px, 1fr) minmax(140px, 1fr) minmax(140px, 1fr);
+    min-width: 1060px;
+}
+
+.adminUsersHead {
+    background-color: #f3faf5;
+    color: #4f665b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminUsersHead span,
+.adminUsersRow span {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5efe9;
+}
+
+.adminUsersRow {
+    color: #53665d;
+    font-size: 14px;
+}
+
+.adminUsersBody .adminUsersRow:last-child span {
+    border-bottom: 0;
+}
+
+.adminProductsTable {
+    overflow-x: auto;
+    border: 1px solid #e0ece5;
+    border-radius: 16px;
+}
+
+.adminProductsHead,
+.adminProductsRow {
+    display: grid;
+    grid-template-columns: 96px 90px minmax(180px, 1.4fr) minmax(120px, 1fr) minmax(130px, 1fr) minmax(110px, 1fr) 90px minmax(140px, 1fr) minmax(140px, 1fr) minmax(140px, 1fr);
+    min-width: 1240px;
+}
+
+.adminProductsHead {
+    background-color: #f3faf5;
+    color: #4f665b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminProductsHead span,
+.adminProductsRow span {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5efe9;
+}
+
+.adminProductsRow {
+    color: #53665d;
+    font-size: 14px;
+}
+
+.adminProductsBody .adminProductsRow:last-child span {
+    border-bottom: 0;
+}
+
+.adminOrdersTable {
+    overflow-x: auto;
+    border: 1px solid #e0ece5;
+    border-radius: 16px;
+}
+
+.adminOrdersHead,
+.adminOrdersRow {
+    display: grid;
+    grid-template-columns: minmax(160px, 1.2fr) minmax(180px, 1.3fr) minmax(120px, 1fr) minmax(110px, 1fr) minmax(120px, 1fr) 100px minmax(140px, 1fr) minmax(140px, 1fr);
+    min-width: 1080px;
+}
+
+.adminOrdersHead {
+    background-color: #f3faf5;
+    color: #4f665b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminOrdersHead span,
+.adminOrdersRow span {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5efe9;
+}
+
+.adminOrdersRow {
+    color: #53665d;
+    font-size: 14px;
+}
+
+.adminOrdersBody .adminOrdersRow:last-child span {
+    border-bottom: 0;
+}
+
+.adminReviewFilterCard {
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+}
+
+.adminReviewsTable {
+    overflow-x: auto;
+    border: 1px solid #e0ece5;
+    border-radius: 16px;
+}
+
+.adminReviewsHead,
+.adminReviewsRow {
+    display: grid;
+    grid-template-columns: 90px 90px minmax(160px, 1.2fr) minmax(120px, 1fr) minmax(110px, 1fr) 80px minmax(220px, 1.6fr) 90px minmax(140px, 1fr) minmax(140px, 1fr);
+    min-width: 1240px;
+}
+
+.adminReviewsHead {
+    background-color: #f3faf5;
+    color: #4f665b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminReviewsHead span,
+.adminReviewsRow span {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5efe9;
+}
+
+.adminReviewsRow {
+    color: #53665d;
+    font-size: 14px;
+}
+
+.adminReviewsBody .adminReviewsRow:last-child span {
+    border-bottom: 0;
+}
+
+.adminReviewsRow .adminReviewContent {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.adminProductThumb,
+.adminProductThumbEmpty {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+}
+
+.adminProductThumb {
+    object-fit: cover;
+    border: 1px solid #e0ece5;
+    background-color: #f8fcf9;
+}
+
+.adminProductThumbEmpty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #d8e7de;
+    background-color: #f8fcf9;
+    color: #8a9a91;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.adminUsersEmpty {
+    padding: 48px 16px;
+    border: 1px dashed #d8e7de;
+    border-radius: 16px;
+    background-color: #f8fcf9;
+    color: #718179;
+    text-align: center;
+    font-weight: 700;
+}
+
+.adminPagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.adminPagination button {
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid #cfe1d5;
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #53665d;
+    font-weight: 700;
+}
+
+.adminPagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.adminPagination span {
+    color: #4f665b;
+    font-size: 14px;
+    font-weight: 800;
 }
 
 .adminAccessDenied {
