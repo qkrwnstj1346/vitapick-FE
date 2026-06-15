@@ -1,6 +1,6 @@
 import './Header.css';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import {
     UserRound,
@@ -23,8 +23,21 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
     /* 검색어 상태 */
     const [searchKeyword, setSearchKeyword] = useState('');
 
-    /* 페이지 이동 */
+    /* 페이지 이동 및 현재 위치 정보 */
     const navigate = useNavigate();
+
+    /* 현재 URL 경로 정보 */
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.pathname.startsWith('/products/search/')) {
+            const keyword = location.pathname.replace('/products/search/', '');
+            setSearchKeyword(decodeURIComponent(keyword));
+        } else {
+            setSearchKeyword('');
+        }
+    }, [location.pathname]);
+
 
     /* 검색 */
     const handleSearch = () => {
@@ -36,7 +49,7 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
             return;
         }
 
-        navigate(`/products/search/${searchKeyword}`);
+        navigate(`/products/search/${encodeURIComponent(searchKeyword.trim())}`);
     };
 
     return (
