@@ -1,0 +1,153 @@
+.mychat-detail-wrap {
+    max-width: 900px;
+    width: calc(100% - 48px);
+    margin: 40px auto 80px;
+}
+
+/* 제목 */
+.mychat-detail-wrap h2 {
+    margin: 0 0 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #17251c;
+    font-size: 24px;
+    font-weight: 800;
+    color: #17251c;
+}
+
+/* 메시지 박스 */
+.chat-msg {
+    padding: 20px;
+    margin-bottom: 18px;
+    border: 1px solid #E3EEE5;
+    border-radius: 16px;
+    background-color: #ffffff;
+}
+
+/* 사용자 메시지 */
+.chat-msg.user {
+    background-color: #F7FBF7;
+}
+
+/* AI 메시지 */
+.chat-msg.ai {
+    background-color: #ffffff;
+}
+
+/* 나 / AI */
+.chat-msg > h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 800;
+    color: #7FAF8B;
+}
+
+/* 메시지 내용 */
+.chat-msg > p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #333;
+    white-space: pre-wrap;
+}
+
+/* 추천상품 전체 박스 */
+.chat-prd-box {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid #E3EEE5;
+}
+
+/* 추천상품 제목 */
+.chat-prd-box h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #17251c;
+}
+
+/* 상품 카드 */
+.chat-prd-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 14px;
+    margin-bottom: 12px;
+
+    border: 1px solid #E3EEE5;
+    border-radius: 14px;
+    background-color: #F7FBF7;
+}
+
+/* 상품 이미지 */
+.chat-prd-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    padding: 8px;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* 상품 정보 */
+.chat-prd-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.chat-prd-brand {
+    margin: 0 0 5px;
+    font-size: 12px;
+    color: #7FAF8B;
+    font-weight: 700;
+}
+
+.chat-prd-info h4 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #17251c;
+}
+
+.chat-prd-price {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 상품 보기 버튼 */
+.chat-prd-item button {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid #7FAF8B;
+    background-color: #ffffff;
+    color: #7FAF8B;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.chat-prd-item button:hover {
+    background-color: #7FAF8B;
+    color: #ffffff;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .mychat-detail-wrap {
+        width: calc(100% - 32px);
+    }
+
+    .chat-prd-item {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .chat-prd-item button {
+        margin-left: auto;
+    }
+}
