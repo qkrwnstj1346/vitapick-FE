@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
+import { getAdminCsInquiries } from '../../service/admin/adminCsInquiriesApi';
 import { getAdminDashboardSummary } from '../../service/admin/adminDashboardApi';
 import { getAdminOrders } from '../../service/admin/adminOrdersApi';
 import { getAdminProducts } from '../../service/admin/adminProductsApi';
@@ -14,6 +16,7 @@ const adminUsersPageSize = 10;
 const adminProductsPageSize = 10;
 const adminOrdersPageSize = 10;
 const adminReviewsPageSize = 10;
+const adminCsInquiriesPageSize = 10;
 const statusCdOptions = [
     { value: '', label: '전체' },
     { value: 'ACTIVE', label: '활성' },
@@ -49,29 +52,49 @@ const reviewUseYnOptions = [
     { value: 'Y', label: '표시' },
     { value: 'N', label: '숨김' }
 ];
+const inquiryStatusOptions = [
+    { value: '', label: '전체' },
+    { value: 'WAITING', label: 'WAITING' }
+];
 const roleCdOptions = [
     { value: '', label: '전체' },
     { value: 'ADMIN', label: '관리자' },
     { value: 'USER', label: '회원' }
 ];
 
+const adminTabPaths = {
+    dashboard: '/admin',
+    users: '/admin/users',
+    prd: '/admin/prd',
+    ord: '/admin/ord',
+    rvw: '/admin/rvw',
+    cscenter: '/admin/cscenter'
+};
+
+function getAdminTabFromPath(pathname) {
+    const matchedTab = Object.entries(adminTabPaths)
+        .find(([, path]) => pathname === path)?.[0];
+
+    return matchedTab || 'dashboard';
+}
+
 const pageInfo = {
-    members: {
+    users: {
         title: '회원 관리',
         description: '가입 회원 정보를 조회하고 관리할 수 있습니다.',
         emptyText: '회원 데이터 연동 예정입니다.'
     },
-    products: {
+    prd: {
         title: '상품 관리',
         description: '등록된 상품을 조회하고 관리할 수 있습니다.',
         emptyText: '상품 데이터 연동 예정입니다.'
     },
-    orders: {
+    ord: {
         title: '주문 관리',
         description: '주문 현황을 확인하고 관리할 수 있습니다.',
         emptyText: '주문 데이터 연동 예정입니다.'
     },
-    reviews: {
+    rvw: {
         title: '리뷰 관리',
         description: '상품 리뷰를 조회하고 답변 상태를 관리할 수 있습니다.',
         emptyText: '리뷰 데이터 연동 예정입니다.'
@@ -142,7 +165,8 @@ const placeholderLineChartPoints = '16,112 72,82 128,94 184,58 240,74 304,34';
 const placeholderBarHeights = ['42%', '66%', '54%', '78%', '48%', '72%'];
 
 function AdminPage() {
-    const [activeTab, setActiveTab] = useState('dashboard');
+    const location = useLocation();
+    const [activeTab, setActiveTab] = useState(() => getAdminTabFromPath(location.pathname));
     const [dashboardData, setDashboardData] = useState(dashboardPlaceholderData);
     const [dashboardLoading, setDashboardLoading] = useState(false);
     const [dashboardError, setDashboardError] = useState('');
@@ -184,7 +208,21 @@ function AdminPage() {
     const [adminReviewsPage, setAdminReviewsPage] = useState(0);
     const [adminReviewsTotalPages, setAdminReviewsTotalPages] = useState(0);
     const [adminReviewsTotalElements, setAdminReviewsTotalElements] = useState(0);
+    const [adminCsInquiries, setAdminCsInquiries] = useState([]);
+    const [adminCsInquiriesLoading, setAdminCsInquiriesLoading] = useState(false);
+    const [adminCsInquiriesError, setAdminCsInquiriesError] = useState('');
+    const [adminCsInquiriesKeyword, setAdminCsInquiriesKeyword] = useState('');
+    const [adminCsInquiriesStatus, setAdminCsInquiriesStatus] = useState('');
+    const [adminCsInquiriesStartDate, setAdminCsInquiriesStartDate] = useState('');
+    const [adminCsInquiriesEndDate, setAdminCsInquiriesEndDate] = useState('');
+    const [adminCsInquiriesPage, setAdminCsInquiriesPage] = useState(0);
+    const [adminCsInquiriesTotalPages, setAdminCsInquiriesTotalPages] = useState(0);
+    const [adminCsInquiriesTotalElements, setAdminCsInquiriesTotalElements] = useState(0);
     const isAdmin = sessionStorage.getItem('roleCd') === 'ADMIN';
+
+    useEffect(() => {
+        setActiveTab(getAdminTabFromPath(location.pathname));
+    }, [location.pathname]);
 
     useEffect(() => {
         if (!isAdmin) return;
@@ -219,7 +257,7 @@ function AdminPage() {
     }, [isAdmin]);
 
     useEffect(() => {
-        if (!isAdmin || activeTab !== 'members') return;
+        if (!isAdmin || activeTab !== 'users') return;
 
         let isMounted = true;
 
@@ -263,7 +301,7 @@ function AdminPage() {
     }, [activeTab, adminUsersKeyword, adminUsersPage, adminUsersRoleCd, adminUsersStatusCd, isAdmin]);
 
     useEffect(() => {
-        if (!isAdmin || activeTab !== 'products') return;
+        if (!isAdmin || activeTab !== 'prd') return;
 
         let isMounted = true;
 
@@ -307,7 +345,7 @@ function AdminPage() {
     }, [activeTab, adminProductsCategoryId, adminProductsKeyword, adminProductsPage, adminProductsStatus, isAdmin]);
 
     useEffect(() => {
-        if (!isAdmin || activeTab !== 'orders') return;
+        if (!isAdmin || activeTab !== 'ord') return;
 
         let isMounted = true;
 
@@ -360,7 +398,7 @@ function AdminPage() {
     ]);
 
     useEffect(() => {
-        if (!isAdmin || activeTab !== 'reviews') return;
+        if (!isAdmin || activeTab !== 'rvw') return;
 
         let isMounted = true;
 
@@ -409,6 +447,59 @@ function AdminPage() {
         adminReviewsPage,
         adminReviewsRating,
         adminReviewsStartDate,
+        isAdmin
+    ]);
+
+    useEffect(() => {
+        if (!isAdmin || activeTab !== 'cscenter') return;
+
+        let isMounted = true;
+
+        const fetchAdminCsInquiries = async () => {
+            setAdminCsInquiriesLoading(true);
+            setAdminCsInquiriesError('');
+
+            try {
+                const response = await getAdminCsInquiries({
+                    page: adminCsInquiriesPage,
+                    size: adminCsInquiriesPageSize,
+                    keyword: adminCsInquiriesKeyword.trim() || undefined,
+                    status: adminCsInquiriesStatus || undefined,
+                    startDate: adminCsInquiriesStartDate || undefined,
+                    endDate: adminCsInquiriesEndDate || undefined
+                });
+
+                if (!isMounted) return;
+
+                setAdminCsInquiries(Array.isArray(response?.content) ? response.content : []);
+                setAdminCsInquiriesTotalPages(Number(response?.totalPages) || 0);
+                setAdminCsInquiriesTotalElements(Number(response?.totalElements) || 0);
+            } catch (error) {
+                console.error('관리자 고객센터 문의 목록 조회 실패:', error);
+                if (!isMounted) return;
+                setAdminCsInquiries([]);
+                setAdminCsInquiriesTotalPages(0);
+                setAdminCsInquiriesTotalElements(0);
+                setAdminCsInquiriesError('문의 목록을 불러오지 못했습니다.');
+            } finally {
+                if (isMounted) {
+                    setAdminCsInquiriesLoading(false);
+                }
+            }
+        };
+
+        fetchAdminCsInquiries();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [
+        activeTab,
+        adminCsInquiriesEndDate,
+        adminCsInquiriesKeyword,
+        adminCsInquiriesPage,
+        adminCsInquiriesStartDate,
+        adminCsInquiriesStatus,
         isAdmin
     ]);
 
@@ -532,32 +623,131 @@ function AdminPage() {
     const renderFilterMock = (type) => (
         <section className="adminFilterCard">
             <div className="adminField">
-                <label>{type === 'reviews' ? '상품명 검색' : '검색어'}</label>
+                <label>{type === 'rvw' ? '상품명 검색' : '검색어'}</label>
                 <input type="text" placeholder="검색어를 입력하세요" disabled />
             </div>
             <div className="adminField">
-                <label>{type === 'reviews' ? '별점' : '상태'}</label>
+                <label>{type === 'rvw' ? '별점' : '상태'}</label>
                 <select disabled>
                     <option>전체</option>
                 </select>
             </div>
             <div className="adminField">
-                <label>{type === 'orders' ? '주문 기간' : '기간 선택'}</label>
+                <label>{type === 'ord' ? '주문 기간' : '기간 선택'}</label>
                 <input type="text" placeholder="연동 예정" disabled />
             </div>
             <button type="button" className="adminPrimaryBtn" disabled>검색</button>
         </section>
     );
 
+    const handleAdminCsInquiriesSearch = (event) => {
+        event.preventDefault();
+        setAdminCsInquiriesPage(0);
+    };
+
+    const handleAdminCsInquiriesFilterChange = (setter) => (event) => {
+        setter(event.target.value);
+        setAdminCsInquiriesPage(0);
+    };
+
     const renderCsCenter = () => (
         <>
             <div className="adminFeatureGrid">
                 <FeatureCard title="공지사항 관리" text="공지사항 목록과 노출 상태 관리 화면을 추후 연결합니다." />
                 <FeatureCard title="FAQ 관리" text="자주 묻는 질문과 답변 관리 화면을 추후 연결합니다." />
-                <FeatureCard title="1:1 문의 관리" text="고객 문의 확인과 답변 상태 관리를 추후 연결합니다." />
+                <FeatureCard title="1:1 문의 관리" text="고객 문의 목록을 조회합니다." />
                 <FeatureCard title="고객센터 메인 설정" text="고객센터 메인 콘텐츠 설정 화면을 추후 연결합니다." />
             </div>
-            <EmptyState text={pageInfo.cscenter.emptyText} />
+
+            <form className="adminFilterCard adminCsInquiryFilterCard" onSubmit={handleAdminCsInquiriesSearch}>
+                <div className="adminField">
+                    <label>검색어</label>
+                    <input
+                        type="text"
+                        value={adminCsInquiriesKeyword}
+                        onChange={(event) => {
+                            setAdminCsInquiriesKeyword(event.target.value);
+                            setAdminCsInquiriesPage(0);
+                        }}
+                        placeholder="제목, 작성자를 입력하세요"
+                    />
+                </div>
+                <div className="adminField">
+                    <label>문의 상태</label>
+                    <select
+                        value={adminCsInquiriesStatus}
+                        onChange={handleAdminCsInquiriesFilterChange(setAdminCsInquiriesStatus)}
+                    >
+                        {inquiryStatusOptions.map((option) => (
+                            <option key={option.value || 'all-inquiry-status'} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="adminField">
+                    <label>시작일</label>
+                    <input
+                        type="date"
+                        value={adminCsInquiriesStartDate}
+                        onChange={handleAdminCsInquiriesFilterChange(setAdminCsInquiriesStartDate)}
+                    />
+                </div>
+                <div className="adminField">
+                    <label>종료일</label>
+                    <input
+                        type="date"
+                        value={adminCsInquiriesEndDate}
+                        onChange={handleAdminCsInquiriesFilterChange(setAdminCsInquiriesEndDate)}
+                    />
+                </div>
+                <button type="submit" className="adminPrimaryBtn">검색</button>
+            </form>
+
+            <section className="adminOpsSection">
+                <div className="adminPanelHeader">
+                    <div>
+                        <h3>1:1 문의 목록</h3>
+                        <p>총 {adminCsInquiriesTotalElements.toLocaleString()}건의 문의를 조회했습니다.</p>
+                    </div>
+                    <span>{adminCsInquiriesLoading ? '조회 중' : `${adminCsInquiriesPage + 1} / ${Math.max(adminCsInquiriesTotalPages, 1)}`}</span>
+                </div>
+
+                {adminCsInquiriesError && (
+                    <div className="adminDashboardNotice">{adminCsInquiriesError}</div>
+                )}
+
+                {!adminCsInquiriesError && adminCsInquiriesLoading && (
+                    <div className="adminDashboardNotice">문의 목록을 불러오는 중입니다.</div>
+                )}
+
+                {!adminCsInquiriesError && !adminCsInquiriesLoading && adminCsInquiries.length === 0 && (
+                    <div className="adminUsersEmpty">문의 데이터가 없습니다.</div>
+                )}
+
+                {!adminCsInquiriesError && adminCsInquiries.length > 0 && (
+                    <>
+                        <AdminCsInquiriesTable inquiries={adminCsInquiries} />
+                        <div className="adminPagination">
+                            <button
+                                type="button"
+                                disabled={adminCsInquiriesPage <= 0 || adminCsInquiriesLoading}
+                                onClick={() => setAdminCsInquiriesPage((page) => Math.max(page - 1, 0))}
+                            >
+                                이전
+                            </button>
+                            <span>{adminCsInquiriesPage + 1} / {Math.max(adminCsInquiriesTotalPages, 1)}</span>
+                            <button
+                                type="button"
+                                disabled={adminCsInquiriesPage + 1 >= adminCsInquiriesTotalPages || adminCsInquiriesLoading}
+                                onClick={() => setAdminCsInquiriesPage((page) => page + 1)}
+                            >
+                                다음
+                            </button>
+                        </div>
+                    </>
+                )}
+            </section>
         </>
     );
 
@@ -571,7 +761,7 @@ function AdminPage() {
         setAdminUsersPage(0);
     };
 
-    const renderMembers = () => (
+    const renderUsers = () => (
         <>
             <form className="adminFilterCard" onSubmit={handleAdminUsersSearch}>
                 <div className="adminField">
@@ -672,7 +862,7 @@ function AdminPage() {
         setAdminProductsPage(0);
     };
 
-    const renderProducts = () => (
+    const renderPrd = () => (
         <>
             <form className="adminFilterCard" onSubmit={handleAdminProductsSearch}>
                 <div className="adminField">
@@ -773,7 +963,7 @@ function AdminPage() {
         setAdminOrdersPage(0);
     };
 
-    const renderOrders = () => (
+    const renderOrd = () => (
         <>
             <form className="adminFilterCard adminOrderFilterCard" onSubmit={handleAdminOrdersSearch}>
                 <div className="adminField">
@@ -877,7 +1067,7 @@ function AdminPage() {
         setAdminReviewsPage(0);
     };
 
-    const renderReviews = () => (
+    const renderRvw = () => (
         <>
             <form className="adminFilterCard adminReviewFilterCard" onSubmit={handleAdminReviewsSearch}>
                 <div className="adminField">
@@ -976,20 +1166,20 @@ function AdminPage() {
             return renderDashboard();
         }
 
-        if (activeTab === 'members') {
-            return renderMembers();
+        if (activeTab === 'users') {
+            return renderUsers();
         }
 
-        if (activeTab === 'products') {
-            return renderProducts();
+        if (activeTab === 'prd') {
+            return renderPrd();
         }
 
-        if (activeTab === 'orders') {
-            return renderOrders();
+        if (activeTab === 'ord') {
+            return renderOrd();
         }
 
-        if (activeTab === 'reviews') {
-            return renderReviews();
+        if (activeTab === 'rvw') {
+            return renderRvw();
         }
 
         if (activeTab === 'cscenter') {
@@ -998,7 +1188,7 @@ function AdminPage() {
 
         return (
             <>
-                {activeTab === 'reviews' && (
+                {activeTab === 'rvw' && (
                     <div className="adminStatusGrid">
                         <MetricCard label="전체 리뷰" value="연동 예정" />
                         <MetricCard label="답변 상태" value="준비중" />
@@ -1229,6 +1419,43 @@ function AdminReviewsTable({ reviews }) {
                         <span>{formatCode(review.useYn, reviewUseYnOptions)}</span>
                         <span>{formatDateTime(review.createdAt)}</span>
                         <span>{formatDateTime(review.updatedAt)}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function AdminCsInquiriesTable({ inquiries }) {
+    return (
+        <div className="adminCsInquiriesTable">
+            <div className="adminCsInquiriesHead">
+                <span>문의번호</span>
+                <span>제목</span>
+                <span>작성자 ID</span>
+                <span>작성자명</span>
+                <span>카테고리</span>
+                <span>상태</span>
+                <span>조회수</span>
+                <span>답변일</span>
+                <span>작성일</span>
+                <span>수정일</span>
+            </div>
+            <div className="adminCsInquiriesBody">
+                {inquiries.map((inquiry) => (
+                    <div className="adminCsInquiriesRow" key={inquiry.inquiryId ?? `${inquiry.writerId}-${inquiry.createdAt}`}>
+                        <span>{formatValue(inquiry.inquiryId)}</span>
+                        <span className="adminCsInquiryTitle" title={formatValue(inquiry.title)}>
+                            {formatValue(inquiry.title)}
+                        </span>
+                        <span>{formatValue(inquiry.writerId)}</span>
+                        <span>{formatValue(inquiry.writerName)}</span>
+                        <span>{formatValue(inquiry.category)}</span>
+                        <span>{formatCode(inquiry.status, inquiryStatusOptions)}</span>
+                        <span>{formatCount(inquiry.viewCnt, '-', '')}</span>
+                        <span>{formatDateTime(inquiry.answeredAt)}</span>
+                        <span>{formatDateTime(inquiry.createdAt)}</span>
+                        <span>{formatDateTime(inquiry.updatedAt)}</span>
                     </div>
                 ))}
             </div>
