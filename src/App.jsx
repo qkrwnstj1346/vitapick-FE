@@ -86,7 +86,7 @@ function App() {
                 } else {
                     alert(`** onLoginSubmit 시스템 오류, err=${err}`);
                 }
-                navigate("/login");
+                navigate("/v1/auth/login");
             });
     };
 

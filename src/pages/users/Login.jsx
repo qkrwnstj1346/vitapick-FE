@@ -40,7 +40,6 @@ const Login = ({ onLoginSubmit }) => {
                     <Link to="/v1/auth/sendotpcode">비밀번호 찾기</Link>
                 </div>
 
-
                 <span>
                     <span>아직 회원이 아니신가요?</span>&nbsp;
 
