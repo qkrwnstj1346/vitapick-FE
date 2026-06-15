@@ -13,6 +13,30 @@
     color: #7FAF8B;
 }
 
+/* 검색 결과 없음 */
+.prd_empty {
+    max-width: 900px;
+    margin: 80px auto;
+    padding: 70px 20px;
+    text-align: center;
+    background-color: #F7FBF7;
+    border: 1px solid #E3EEE5;
+    border-radius: 20px;
+    color: #17251c;
+}
+
+.prd_empty h3 {
+    margin: 0 0 10px;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.prd_empty p {
+    margin: 0;
+    font-size: 14px;
+    color: #999;
+}
+
 /* 상품 목록 */
 .prd_list {
     display: grid;
@@ -29,7 +53,6 @@
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    /* 가격을 카드 맨 아래에 고정하기 위해 flexbox 사용 */
     display: flex;
     flex-direction: column;
 }
@@ -83,7 +106,6 @@
     font-size: 16px;
     color: #17251c;
     font-weight: 800;
-    /* 가격을 카드 맨 아래에 고정하기 위해 margin-top auto 사용 */
     margin-top: auto;
 }
 
@@ -99,8 +121,18 @@
     .prd_container {
         width: calc(100% - 32px);
     }
+
     .prd_list {
         grid-template-columns: repeat(2, 1fr);
         gap: 14px;
+    }
+
+    .prd_empty {
+        margin: 50px auto;
+        padding: 50px 16px;
+    }
+
+    .prd_empty h3 {
+        font-size: 18px;
     }
 }
