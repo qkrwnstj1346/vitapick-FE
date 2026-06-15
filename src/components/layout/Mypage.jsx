@@ -37,7 +37,11 @@ function Mypage() {
                     </li>
 
 
-                    <li>AI 챗봇</li>
+                    <li>
+                        <NavLink to="/mypage/mychatbot">
+                            AI 챗봇
+                        </NavLink>
+                    </li>
 
                     <li>
                         <NavLink to="/mypage/myaddress">

@@ -11,6 +11,8 @@ import MyPage from './Mypage';
 import MyMain from '../../pages/mypage/mymain/MyMain';
 import MyProfile from '../../pages/mypage/myprofile/MyProfile';
 import MyCustomList from '../../pages/mypage/mycustom/MyCustomList';
+import MyChatbotList from '../../pages/mypage/mychatbot/MyChatbotList';
+import MyChatbotDetail from '../../pages/mypage/mychatbot/MyChatbotDetail';
 import MyReviewList from '../../pages/mypage/myreview/MyReviewList';
 import MyReviewDetail from '../../pages/mypage/myreview/MyReviewDetail';
 import MyWishList from '../../pages/mypage/mywishlist/MyWishList';
@@ -78,6 +80,12 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                     {/* 나의 배송지 관리 */}
                     <Route path="myaddress" element={<UserAddrList />} />
+
+                    {/* 챗봇 상담 내역 */}
+                    <Route path="mychatbot" element={<MyChatbotList />} />
+
+                    {/* 챗봇 상담 상세 */}
+                    <Route path="mychatbot/:chatId" element={<MyChatbotDetail />} />
 
                     {/* 내가 쓴 리뷰 목록 */}
                     <Route path="myreview" element={<MyReviewList />} />
