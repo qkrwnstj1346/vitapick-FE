@@ -60,8 +60,12 @@ function MyChatbotDetail() { // 챗봇 상담 상세 페이지 컴포넌트
     const [error, setError] = useState(null); // 에러 상태
     const [allCartStatus, setAllCartStatus] = useState("idle"); // 전체 장바구니 상태
 
-    const userNum = getSessionData("userNum"); // 사용자 번호 세션에서 추출
-    const userName = getSessionData("userNm") || getSessionData("userName") || "사용자"; // 사용자 이름 세션에서 추출
+    const userNum = getSessionData("userNum");
+
+    const userName = // 사용자 이름을 세션에서 가져오거나 기본값으로 "사용자" 설정
+        sessionStorage.getItem("userNm") || // 세션에서 사용자 이름 가져오기
+        sessionStorage.getItem("userName") || // 세션에서 다른 키로 사용자 이름 가져오기
+        "사용자";
 
     useEffect(() => { // 컴포넌트 마운트 시 챗봇 상담 상세 데이터 호출
         if (!userNum) { // 로그인 여부 확인
