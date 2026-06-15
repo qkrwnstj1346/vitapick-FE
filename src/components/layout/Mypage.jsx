@@ -32,14 +32,18 @@ function Mypage() {
 
                     <li>
                         <NavLink to="/mypage/mycustom">
-                        내 비타민 추천
+                            내 비타민 추천
                         </NavLink>
                     </li>
 
 
                     <li>AI 챗봇</li>
 
-                    <li>배송지 관리</li>
+                    <li>
+                        <NavLink to="/mypage/myaddress">
+                            배송지 관리
+                        </NavLink>
+                    </li>
 
                     <li>
                         <NavLink to="/mypage/myreview">
@@ -52,7 +56,7 @@ function Mypage() {
                             1:1 문의 관리
                         </NavLink>
                     </li>
-                    
+
                     <li>회원 탈퇴</li>
 
                 </ul>

@@ -5,9 +5,9 @@ import { getMyInq } from '../../../service/cscenter/csCenterApi';
 
 import Pagination from '../../../components/layout/Pagination';
 
-import './MyInquiryList.css';
+import './MyInquiry.css';
 
-function MyInquiryList() {
+function MyInquiry() {
 
     /* 페이지 이동 */
     const navigate = useNavigate();
@@ -178,4 +178,4 @@ function MyInquiryList() {
     );
 }
 
-export default MyInquiryList;
+export default MyInquiry;
