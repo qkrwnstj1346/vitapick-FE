@@ -1,0 +1,150 @@
+/* 주문 상세 전체 */
+.myOrderDetail {
+    width: 100%;
+}
+
+/* 상단 */
+.myOrderDetailHeader {
+    margin-bottom: 28px;
+}
+
+.myOrderDetailHeader h2 {
+    margin: 0 0 8px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #24382a;
+}
+
+.myOrderDetailHeader p {
+    margin: 0;
+    font-size: 15px;
+    color: #7a857c;
+}
+
+/* 주문 정보 */
+.myOrderInfoBox {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 28px;
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+.myOrderInfoBox div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.myOrderInfoBox strong {
+    font-size: 14px;
+    color: #777;
+}
+
+.myOrderInfoBox span {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 주문 상품 */
+.myOrderItemBox {
+    margin-top: 24px;
+    padding: 28px;
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+.myOrderItemBox h3 {
+    margin: 0 0 18px;
+    font-size: 20px;
+    color: #24382a;
+}
+
+.myOrderItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.myOrderItem:last-child {
+    border-bottom: none;
+}
+
+.myOrderItem strong {
+    font-size: 16px;
+    color: #333;
+}
+
+.myOrderItem p {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #777;
+}
+
+.myOrderItem span {
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 버튼 */
+.myOrderDetailButtons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 28px;
+}
+
+.myOrderDetailButtons button {
+    min-width: 120px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background-color: #7FAF8B;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.myOrderDetailButtons button:hover {
+    background-color: #6d9f78;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .myOrderInfoBox {
+        grid-template-columns: 1fr;
+    }
+
+    .myOrderItem {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .myOrderDetailButtons button {
+        width: 100%;
+    }
+}
+
+/* 작은 모바일 */
+@media (max-width: 480px) {
+    .myOrderInfoBox,
+    .myOrderItemBox {
+        padding: 22px 18px;
+    }
+
+    .myOrderDetailHeader h2 {
+        font-size: 22px;
+    }
+}

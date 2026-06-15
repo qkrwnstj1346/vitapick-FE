@@ -11,7 +11,9 @@ function Mypage() {
             <div className="mypageSidebar">
 
                 <h2 className="mypageTitle">
-                    마이페이지
+                    <NavLink to="/mypage">
+                        마이페이지
+                    </NavLink>
                 </h2>
 
                 <ul className="mypageMenu">
@@ -22,7 +24,11 @@ function Mypage() {
                         </NavLink>
                     </li>
 
-                    <li>주문 내역</li>
+                    <li>
+                        <NavLink to="/mypage/myorder">
+                            주문 내역
+                        </NavLink>
+                    </li>
 
                     <li>
                         <NavLink to="/mypage/mywishlist">
