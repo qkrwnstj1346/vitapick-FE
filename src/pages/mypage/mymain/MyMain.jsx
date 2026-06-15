@@ -70,7 +70,10 @@ function MyMain() {
 
                     <div className="mySummaryWrap">
 
-                        <div className="mySummaryCard">
+                        <div
+                            className="mySummaryCard"
+                            onClick={() => navigate('/mypage/myorder')}
+                        >
 
                             <Package
                                 size={24}
