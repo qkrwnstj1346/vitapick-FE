@@ -157,7 +157,7 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                 {/* 배송지 */}
                 <Route path="/address" element={<UserAddrList />} />
 
-                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/admin/*" element={<AdminPage />} />
 
             </Routes>
         </main>

@@ -771,6 +771,55 @@
     white-space: nowrap;
 }
 
+.adminCsInquiryFilterCard {
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+}
+
+.adminCsInquiriesTable {
+    overflow-x: auto;
+    border: 1px solid #e0ece5;
+    border-radius: 16px;
+}
+
+.adminCsInquiriesHead,
+.adminCsInquiriesRow {
+    display: grid;
+    grid-template-columns: 90px minmax(220px, 1.6fr) minmax(120px, 1fr) minmax(110px, 1fr) minmax(110px, 1fr) 100px 80px minmax(140px, 1fr) minmax(140px, 1fr) minmax(140px, 1fr);
+    min-width: 1240px;
+}
+
+.adminCsInquiriesHead {
+    background-color: #f3faf5;
+    color: #4f665b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminCsInquiriesHead span,
+.adminCsInquiriesRow span {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5efe9;
+}
+
+.adminCsInquiriesRow {
+    color: #53665d;
+    font-size: 14px;
+}
+
+.adminCsInquiriesBody .adminCsInquiriesRow:last-child span {
+    border-bottom: 0;
+}
+
+.adminCsInquiriesRow .adminCsInquiryTitle {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .adminProductThumb,
 .adminProductThumbEmpty {
     width: 56px;

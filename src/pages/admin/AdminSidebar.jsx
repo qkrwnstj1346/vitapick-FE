@@ -1,14 +1,21 @@
+import { useNavigate } from 'react-router-dom';
 import './Admin.css';
 
 function AdminSidebar({ activeTab, onChangeTab }) {
+    const navigate = useNavigate();
     const menuItems = [
-        { id: 'dashboard', label: '대시보드', mark: 'H' },
-        { id: 'members', label: '회원 관리', mark: 'M' },
-        { id: 'products', label: '상품 관리', mark: 'P' },
-        { id: 'orders', label: '주문 관리', mark: 'O' },
-        { id: 'reviews', label: '리뷰 관리', mark: 'R' },
-        { id: 'cscenter', label: '고객센터 관리', mark: 'C' }
+        { id: 'dashboard', label: '대시보드', mark: 'H', path: '/admin' },
+        { id: 'users', label: '회원 관리', mark: 'M', path: '/admin/users' },
+        { id: 'prd', label: '상품 관리', mark: 'P', path: '/admin/prd' },
+        { id: 'ord', label: '주문 관리', mark: 'O', path: '/admin/ord' },
+        { id: 'rvw', label: '리뷰 관리', mark: 'R', path: '/admin/rvw' },
+        { id: 'cscenter', label: '고객센터 관리', mark: 'C', path: '/admin/cscenter' }
     ];
+
+    const handleClickMenu = (item) => {
+        onChangeTab(item.id);
+        navigate(item.path);
+    };
 
     return (
         <aside className="adminSidebar">
@@ -30,7 +37,7 @@ function AdminSidebar({ activeTab, onChangeTab }) {
                                 ? 'adminMenuBtn active'
                                 : 'adminMenuBtn'
                         }
-                        onClick={() => onChangeTab(item.id)}
+                        onClick={() => handleClickMenu(item)}
                     >
                         <span className="adminMenuMark">{item.mark}</span>
                         <span>{item.label}</span>
