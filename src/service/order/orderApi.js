@@ -40,6 +40,11 @@ export function getOrderPay(ordId) {
     return apiCall.get(`/order/pay/order/${ordId}`);
 }
 
+/* 주문번호로 주문 상세 조회 */
+export function getOrderDetail(ordNo) {
+    return apiCall.get(`/order/${ordNo}`);
+}
+
 // 상품별 판매량 TOP5 조회
 export const getTopProducts = async () => {
     const response = await axios.get('/order/top-products');

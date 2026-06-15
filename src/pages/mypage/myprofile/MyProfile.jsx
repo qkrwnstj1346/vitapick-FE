@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { UsersApi } from '../../../service/usersApi';
 
+import './MyProfile.css';
+
 function MyProfile() {
     const navigate = useNavigate();
 

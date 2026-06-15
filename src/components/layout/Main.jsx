@@ -10,6 +10,8 @@ import Sur from '../../pages/custom/Sur';
 import MyPage from './Mypage';
 import MyMain from '../../pages/mypage/mymain/MyMain';
 import MyProfile from '../../pages/mypage/myprofile/MyProfile';
+import MyorderList from '../../pages/mypage/myorder/MyorderList';
+import MyorderDetail from '../../pages/mypage/myorder/MyorderDetail';
 import MyCustomList from '../../pages/mypage/mycustom/MyCustomList';
 import MyChatbotList from '../../pages/mypage/mychatbot/MyChatbotList';
 import MyChatbotDetail from '../../pages/mypage/mychatbot/MyChatbotDetail';
@@ -77,6 +79,12 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                     {/* 내 정보보기, 수정 */}
                     <Route path="myprofile" element={<MyProfile />} />
+
+                    {/* 나의 주문 내역 */}
+                    <Route path="myorder" element={<MyorderList />} />
+
+                    {/* 나의 주문 내역 상세 */}
+                    <Route path="myorder/:ordNo" element={<MyorderDetail />} />
 
                     {/* 나의 배송지 관리 */}
                     <Route path="myaddress" element={<UserAddrList />} />
