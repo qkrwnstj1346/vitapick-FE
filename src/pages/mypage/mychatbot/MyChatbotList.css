@@ -63,13 +63,20 @@
     color: #999;
 }
 
-/* 상세보기 버튼 */
-.mychat-item button {
+/* 버튼 묶음 */
+.mychat-btns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* 버튼 공통 */
+.mychat-detail-btn,
+.mychat-delete-btn {
     padding: 8px 18px;
     border-radius: 999px;
-    border: 1px solid #7FAF8B;
     background-color: #ffffff;
-    color: #7FAF8B;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
@@ -77,9 +84,25 @@
     flex-shrink: 0;
 }
 
-.mychat-item button:hover {
+/* 상세보기 버튼 */
+.mychat-detail-btn {
+    border: 1px solid #7FAF8B;
+    color: #7FAF8B;
+}
+
+.mychat-detail-btn:hover {
     background-color: #7FAF8B;
     color: #ffffff;
+}
+
+/* 삭제 버튼 */
+.mychat-delete-btn {
+    border: 1px solid #ff6b6b;
+    color: #ff4d4f;
+}
+
+.mychat-delete-btn:hover {
+    background-color: #fff5f5;
 }
 
 /* 모바일 */
@@ -93,7 +116,9 @@
         align-items: flex-start;
     }
 
-    .mychat-item button {
-        align-self: flex-end;
+    .mychat-btns {
+        width: 100%;
+        justify-content: flex-end;
+        flex-wrap: wrap;
     }
 }

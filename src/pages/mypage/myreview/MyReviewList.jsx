@@ -16,15 +16,6 @@ export default function MyReviewList() {
     // 에러 메시지
     const [error, setError] = useState(null);
 
-    // 수정 중인 리뷰 ID
-    const [editRvwId, setEditRvwId] = useState(null);
-
-    // 수정할 리뷰 내용
-    const [editCmt, setEditCmt] = useState('');
-
-    // 수정할 별점
-    const [editRating, setEditRating] = useState(5);
-
     // 내가 쓴 리뷰 목록 조회
     async function fetchMyReviews() {
         try {
@@ -62,65 +53,15 @@ export default function MyReviewList() {
         fetchMyReviews();
     }, []);
 
-    // 수정 버튼 클릭
-    function handleEditStart(e, rvw) {
-        e.stopPropagation();
-
-        setEditRvwId(rvw.rvwId);
-        setEditCmt(rvw.cmt);
-        setEditRating(rvw.rating);
-    }
-
-    // 수정 취소
-    function handleEditCancel(e) {
-        e.stopPropagation();
-
-        setEditRvwId(null);
-        setEditCmt('');
-        setEditRating(5);
-    }
-
-    // 수정 완료
-    async function handleEditSubmit(e, rvwId) {
-        e.stopPropagation();
-
-        try {
-            await apiCall.patch(`/api/v1/rvw/${rvwId}`, {
-                rating: editRating,
-                cmt: editCmt
-            });
-
-            setEditRvwId(null);
-            setEditCmt('');
-            setEditRating(5);
-
-            await fetchMyReviews();
-
-        } catch (err) {
-            console.error('리뷰 수정 실패:', err);
-            alert('리뷰 수정에 실패했습니다.');
-        }
-    }
-
-    // 리뷰 삭제
-    async function handleDeleteRvw(e, rvwId) {
-        e.stopPropagation();
-
-        if (!window.confirm('리뷰를 삭제하시겠습니까?')) return;
-
-        try {
-            await apiCall.delete(`/api/v1/rvw/${rvwId}`);
-            await fetchMyReviews();
-        } catch (err) {
-            console.error('리뷰 삭제 실패:', err);
-            alert('리뷰 삭제에 실패했습니다.');
-        }
-    }
-
     // 상품 상세 이동
     function goProductDetail(e, prdId) {
         e.stopPropagation();
         navigate(`/products/detail/${prdId}`);
+    }
+
+    // 리뷰 상세 이동
+    function goReviewDetail(rvwId) {
+        navigate(`/mypage/myreview/${rvwId}`);
     }
 
     if (loading) {
@@ -153,11 +94,7 @@ export default function MyReviewList() {
                     <div
                         key={rvw.rvwId}
                         className='rvw-item'
-                        onClick={() => {
-                            if (editRvwId !== rvw.rvwId) {
-                                navigate(`/mypage/myreview/${rvw.rvwId}`);
-                            }
-                        }}
+                        onClick={() => goReviewDetail(rvw.rvwId)}
                     >
 
                         {/* 상품 정보 */}
@@ -188,107 +125,56 @@ export default function MyReviewList() {
                             </div>
                         </div>
 
-                        {/* 수정 모드 */}
-                        {editRvwId === rvw.rvwId ? (
-                            <div
-                                className='rvw-edit-box'
-                                onClick={(e) => e.stopPropagation()}
+                        {/* 별점 / 작성일 */}
+                        <div className='rvw-item__top'>
+                            <span className='rvw-item__star'>
+                                {'★'.repeat(rvw.rating)}
+                                {'☆'.repeat(5 - rvw.rating)}
+                            </span>
+
+                            <span className='rvw-item__date'>
+                                {rvw.crtAt?.slice(0, 10)}
+                            </span>
+                        </div>
+
+                        {/* 리뷰 내용 */}
+                        <p className='rvw-item__cmt'>{rvw.cmt}</p>
+
+                        {/* 판매자 답변 */}
+                        <div className='rvw-item__reply'>
+                            {rvw.replyTxt ? (
+                                <>
+                                    <strong>판매자 답변:</strong>
+                                    <p>{rvw.replyTxt}</p>
+                                </>
+                            ) : (
+                                <p className='rvw-item__reply-wait'>
+                                    판매자 답변 대기중
+                                </p>
+                            )}
+                        </div>
+
+                        {/* 버튼 영역 */}
+                        <div className='rvw-item__btns'>
+
+                            <button
+                                className='rvw-item__prd-btn'
+                                onClick={(e) => goProductDetail(e, rvw.prdId)}
                             >
-                                {/* 별점 수정 */}
-                                <div className='rvw-edit-star'>
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                        <span
-                                            key={star}
-                                            onClick={() => setEditRating(star)}
-                                            className={star <= editRating ? 'rvw-edit-star-on' : 'rvw-edit-star-off'}
-                                        >
-                                            ★
-                                        </span>
-                                    ))}
-                                </div>
+                                상품 보기
+                            </button>
 
-                                {/* 리뷰 내용 수정 */}
-                                <textarea
-                                    className='rvw-edit-textarea'
-                                    value={editCmt}
-                                    onChange={(e) => setEditCmt(e.target.value)}
-                                    rows={3}
-                                />
+                            <button
+                                className='rvw-item__detail-btn'
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    goReviewDetail(rvw.rvwId);
+                                }}
+                            >
+                                상세보기
+                            </button>
 
-                                <div className='rvw-edit-btns'>
-                                    <button
-                                        className='rvw-edit-submit'
-                                        onClick={(e) => handleEditSubmit(e, rvw.rvwId)}
-                                    >
-                                        수정 완료
-                                    </button>
-
-                                    <button
-                                        className='rvw-edit-cancel'
-                                        onClick={handleEditCancel}
-                                    >
-                                        취소
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                {/* 별점 / 작성일 */}
-                                <div className='rvw-item__top'>
-                                    <span className='rvw-item__star'>
-                                        {'★'.repeat(rvw.rating)}
-                                        {'☆'.repeat(5 - rvw.rating)}
-                                    </span>
-
-                                    <span className='rvw-item__date'>
-                                        {rvw.crtAt?.slice(0, 10)}
-                                    </span>
-                                </div>
-
-                                {/* 리뷰 내용 */}
-                                <p className='rvw-item__cmt'>{rvw.cmt}</p>
-
-                                {/* 판매자 답변 */}
-                                <div className='rvw-item__reply'>
-                                    {rvw.replyTxt ? (
-                                        <>
-                                            <strong>판매자 답변:</strong>
-                                            <p>{rvw.replyTxt}</p>
-                                        </>
-                                    ) : (
-                                        <p className='rvw-item__reply-wait'>
-                                            판매자 답변 대기중
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* 버튼 영역 */}
-                                <div className='rvw-item__btns'>
-
-                                    <button
-                                        className='rvw-item__prd-btn'
-                                        onClick={(e) => goProductDetail(e, rvw.prdId)}
-                                    >
-                                        상품 보기
-                                    </button>
-
-                                    <button
-                                        className='rvw-item__edit-btn'
-                                        onClick={(e) => handleEditStart(e, rvw)}
-                                    >
-                                        수정
-                                    </button>
-
-                                    <button
-                                        className='rvw-item__delete-btn'
-                                        onClick={(e) => handleDeleteRvw(e, rvw.rvwId)}
-                                    >
-                                        삭제
-                                    </button>
-
-                                </div>
-                            </>
-                        )}
+                        </div>
 
                     </div>
                 ))}
