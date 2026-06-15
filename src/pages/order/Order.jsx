@@ -147,9 +147,12 @@ function Order() {
             reqMsg: finalReqMsg,
             payDto: {
                 payMthdCd
-            },
-            prdList
+            }
         };
+
+        if (isDirectOrder) {
+            orderData.prdList = prdList;
+        }
 
         createOrder(orderData)
             .then(res => {
