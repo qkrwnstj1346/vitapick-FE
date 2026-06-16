@@ -19,6 +19,7 @@ import MyReviewList from '../../pages/mypage/myreview/MyReviewList';
 import MyReviewDetail from '../../pages/mypage/myreview/MyReviewDetail';
 import MyWishList from '../../pages/mypage/mywishlist/MyWishList';
 import MyInquiry from '../../pages/mypage/myinquiry/MyInquiry'
+import MyWithdraw from '../../pages/mypage/mywithdraw/MyWithdraw'
 
 import CsMain from '../../pages/cscenter/csmain/CsMain';
 import NoticeList from '../../pages/cscenter/ntc/NoticeList';
@@ -36,7 +37,6 @@ import InquiryForm from '../../pages/cscenter/inq/InquiryForm';
 import Chatbot from '../../pages/chatbot/Chatbot';
 
 import CusResult from '../../pages/custom/CusResult';
-import CusList from '../../pages/custom/CusList';
 
 import ProductList from '../../pages/products/ProductList';
 import ProductDetail from '../../pages/products/ProductDetail';
@@ -111,6 +111,9 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                     {/* 나의 1대1 문의 목록 */}
                     <Route path="myinquiry" element={<MyInquiry />} />
+
+                    {/* 나의 1대1 문의 목록 */}
+                    <Route path="mywithdraw" element={<MyWithdraw />} />
                 </Route>
 
                 {/* 고객센터 메인 */}
@@ -157,9 +160,6 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                 {/* AI 추천 결과 */}
                 <Route path="/v1/cus/result/:cusId" element={<CusResult />} />
-
-                {/* 내 추천 목록 */}
-                <Route path="/v1/cus/list" element={<CusList />} />
 
                 {/* 장바구니 */}
                 <Route path="/cart" element={<Cart />} />

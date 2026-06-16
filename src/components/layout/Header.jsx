@@ -13,7 +13,8 @@ import {
     Trophy,
     Bot,
     Gift,
-    Leaf
+    Leaf,
+    SquarePlus,
 } from 'lucide-react';
 
 import { Link } from 'react-router-dom';
@@ -215,6 +216,26 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                                     </li>
 
+                                    {/* 회원가입 */}
+                                    <li className="menuItem">
+
+                                        <Link to="/v1/auth/join">
+
+                                            <div className="menuIcon">
+
+                                                <SquarePlus
+                                                    size={28}
+                                                    strokeWidth={1.8}
+                                                />
+
+                                            </div>
+
+                                            <p>회원가입</p>
+
+                                        </Link>
+
+                                    </li>
+
                                     {/* 장바구니 */}
                                     <li className="menuItem">
 
@@ -361,23 +382,6 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
                         </Link>
 
                     </li>
-
-                    {/* 회원가입 */}
-                    {
-                        !isLoggedIn && (
-                            <li>
-
-                                <Link to="/v1/auth/join">
-
-                                    <Sparkles size={17} />
-
-                                    join
-
-                                </Link>
-
-                            </li>
-                        )
-                    }
 
                 </ul>
 

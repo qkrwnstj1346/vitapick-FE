@@ -42,9 +42,9 @@ const Login = ({ onLoginSubmit }) => {
 
                 <span>
                     <span>아직 회원이 아니신가요?</span>&nbsp;
-
+                    <Link to="/v1/auth/join">
                     <strong style={{ color: '#7547a3' }}>회원가입</strong>
-
+                    </Link>
                 </span>
             </div>
         </div>

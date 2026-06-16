@@ -25,8 +25,9 @@ function MyWithdraw(){
         try{
             await apiCall.post("v1/withdraw", {pwd: data.pwd});
             sessionStorage.clear();
+            localStorage.clear();
             alert("탈퇴되었습니다.");
-            navigate("/");
+            window.location.href = "/"
         }catch(e){
             console.error("회원탈퇴실패", e);
             alert(e.response?.data || "탈퇴 중 오류가 발생했습니다.");

@@ -121,7 +121,7 @@ function FindId() {
             <div className="find-links">
                 <Link to="/v1/auth/login">로그인</Link>
                 <span className="divider">|</span>
-                <Link to="/v1/auth/findpwd">비밀번호찾기</Link>
+                <Link to="/v1/auth/sendotpcode">비밀번호찾기</Link>
                 <span className="divider">|</span>
                 <Link to="/v1/auth/join">회원가입</Link>
             </div>
