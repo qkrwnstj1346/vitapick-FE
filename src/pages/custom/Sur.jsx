@@ -658,7 +658,7 @@ export default function Sur() {
               onClick={handleSubmit}
               disabled={loading}
             >
-              {loading ? "AI 분석 중..." : "🌿 추천 받기"}
+              {loading ? "AI 분석 중..." : "추천 받기"}
             </button>
           )}
         </div>
