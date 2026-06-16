@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { apiCall } from '../../service/apiService';
+import { apiCall, getToken } from '../../service/apiService';
 import ProductReview from './ProductReview';
 import ProductWish from './ProductWish';
 import './ProductDetail.css';
@@ -44,8 +44,22 @@ const ProductDetail = () => {
         }
     };
 
-    // 바로 구매 버튼 클릭 시 주문 페이지로 이동
+    // 로그인 체크
+    const checkLogin = () => {
+        const token = getToken();
+
+        if (!token) {
+            alert('로그인이 필요한 서비스입니다.');
+            navigate('/v1/auth/login');
+            return false;
+        }
+
+        return true;
+    };
+
     const handleBuyNow = () => {
+        if (!checkLogin()) return;
+
         navigate('/order', {
             state: {
                 prdList: [
@@ -141,9 +155,11 @@ const ProductDetail = () => {
                         {/* 장바구니 버튼 */}
                         <button
                             className='detail_cart_btn'
-                            onClick={async () => {
-                                try {
-                                    await apiCall.post('/cart', {
+                                onClick={async () => {
+                                    if (!checkLogin()) return;
+
+                                    try {
+                                        await apiCall.post('/cart', {
                                         userNum: sessionStorage.getItem('userNum'),
                                         prdId: Number(prdId),
                                         itQty: quantity,
