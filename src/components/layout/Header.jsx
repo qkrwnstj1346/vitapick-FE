@@ -14,7 +14,10 @@ import {
     Bot,
     Gift,
     Leaf,
-    SquarePlus,
+    ShoppingBag,
+    CircleHelp,
+    User,
+    UsersRound
 } from 'lucide-react';
 
 import { Link } from 'react-router-dom';
@@ -157,7 +160,7 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                                             <div className="menuIcon">
 
-                                                <ShoppingCart
+                                                <ShoppingBag
                                                     size={28}
                                                     strokeWidth={1.8}
                                                 />
@@ -177,7 +180,7 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                                             <div className="menuIcon">
 
-                                                <Headphones
+                                                <CircleHelp
                                                     size={28}
                                                     strokeWidth={1.8}
                                                 />
@@ -203,7 +206,7 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                                             <div className="menuIcon">
 
-                                                <UserRound
+                                                <User
                                                     size={28}
                                                     strokeWidth={1.8}
                                                 />
@@ -223,7 +226,7 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                                             <div className="menuIcon">
 
-                                                <SquarePlus
+                                                <UsersRound
                                                     size={28}
                                                     strokeWidth={1.8}
                                                 />
@@ -243,7 +246,7 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                                             <div className="menuIcon">
 
-                                                <ShoppingCart
+                                                <ShoppingBag
                                                     size={28}
                                                     strokeWidth={1.8}
                                                 />
@@ -263,7 +266,7 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
 
                                             <div className="menuIcon">
 
-                                                <Headphones
+                                                <CircleHelp
                                                     size={28}
                                                     strokeWidth={1.8}
                                                 />
