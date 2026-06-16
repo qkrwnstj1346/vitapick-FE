@@ -1,0 +1,90 @@
+.mywithdraw-wrap {
+    max-width: 900px;
+    width: calc(100% - 48px);
+    margin: 40px auto 80px;
+}
+
+/* 제목 */
+.mywithdraw-wrap h2 {
+    margin: 0 0 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #17251c;
+    font-size: 24px;
+    font-weight: 800;
+    color: #17251c;
+}
+
+/* 안내 문구 */
+.mywithdraw-wrap p {
+    margin: 0 0 24px;
+    font-size: 15px;
+    color: #999;
+}
+
+/* 폼 영역 */
+.mywithdraw-form {
+    background-color: #ffffff;
+    border: 1px solid #E3EEE5;
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* input */
+.mywithdraw-form input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #E3EEE5;
+    border-radius: 999px;
+    font-size: 14px;
+    color: #17251c;
+    outline: none;
+    box-sizing: border-box;
+    transition: border 0.2s ease;
+}
+
+.mywithdraw-form input:focus {
+    border-color: #7FAF8B;
+}
+
+/* 에러 메시지 */
+.mywithdraw-error {
+    margin: 8px 0 0 12px;
+    font-size: 13px;
+    color: #ff4d4f;
+}
+
+/* 버튼 */
+.mywithdraw-btn {
+    margin-top: 24px;
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 999px;
+    background-color: #ff4d4f;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mywithdraw-btn:hover {
+    background-color: #ff6b6b;
+}
+
+.mywithdraw-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .mywithdraw-wrap {
+        width: calc(100% - 32px);
+    }
+
+    .mywithdraw-form {
+        padding: 24px 20px;
+    }
+}
