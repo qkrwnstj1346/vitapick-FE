@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
-import { getAdminCsInquiries } from '../../service/admin/adminCsInquiriesApi';
+import Pagination from '../../components/layout/Pagination';
+import { getAdminCsFaqs, getAdminCsInquiries, getAdminCsNotices } from '../../service/admin/adminCsCenterApi';
+import { createFaq, createNotice, deleteFaq, deleteNotice, getFaqDetail, getNoticeDetail } from '../../service/cscenter/csCenterApi';
 import { getAdminDashboardSummary } from '../../service/admin/adminDashboardApi';
 import { getAdminOrders } from '../../service/admin/adminOrdersApi';
 import { getAdminProducts } from '../../service/admin/adminProductsApi';
@@ -16,6 +18,8 @@ const adminUsersPageSize = 10;
 const adminProductsPageSize = 10;
 const adminOrdersPageSize = 10;
 const adminReviewsPageSize = 10;
+const adminCsNoticesPageSize = 10;
+const adminCsFaqsPageSize = 10;
 const adminCsInquiriesPageSize = 10;
 const statusCdOptions = [
     { value: '', label: '전체' },
@@ -54,7 +58,35 @@ const reviewUseYnOptions = [
 ];
 const inquiryStatusOptions = [
     { value: '', label: '전체' },
-    { value: 'WAITING', label: 'WAITING' }
+    { value: 'WAITING', label: 'WAITING' },
+    { value: 'ANSWERED', label: 'ANSWERED' }
+];
+const adminCsUseYnOptions = [
+    { value: '', label: '전체' },
+    { value: 'Y', label: '공개' },
+    { value: 'N', label: '비공개' }
+];
+const adminCsSortOptions = [
+    { value: 'latest', label: '최신순' },
+    { value: 'oldest', label: '오래된 순' }
+];
+const adminCsFaqCategoryOptions = [
+    { value: 'ORDER', label: 'ORDER' },
+    { value: 'DELIVERY', label: 'DELIVERY' },
+    { value: 'PRODUCT', label: 'PRODUCT' },
+    { value: 'MEMBER', label: 'MEMBER' },
+    { value: 'PAYMENT', label: 'PAYMENT' },
+    { value: 'CUSTOM', label: 'CUSTOM' },
+    { value: 'INGREDIENT', label: 'INGREDIENT' },
+    { value: 'ETC', label: 'ETC' }
+];
+const inquiryTypeOptions = [
+    { value: '', label: '전체' },
+    { value: 'MEMBER', label: '회원' },
+    { value: 'PRODUCT', label: '상품' },
+    { value: 'ORDER', label: '주문' },
+    { value: 'DELIVERY', label: '배송' },
+    { value: 'ETC', label: '기타' }
 ];
 const roleCdOptions = [
     { value: '', label: '전체' },
@@ -166,6 +198,7 @@ const placeholderBarHeights = ['42%', '66%', '54%', '78%', '48%', '72%'];
 
 function AdminPage() {
     const location = useLocation();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState(() => getAdminTabFromPath(location.pathname));
     const [dashboardData, setDashboardData] = useState(dashboardPlaceholderData);
     const [dashboardLoading, setDashboardLoading] = useState(false);
@@ -208,21 +241,61 @@ function AdminPage() {
     const [adminReviewsPage, setAdminReviewsPage] = useState(0);
     const [adminReviewsTotalPages, setAdminReviewsTotalPages] = useState(0);
     const [adminReviewsTotalElements, setAdminReviewsTotalElements] = useState(0);
+    const [adminCsActiveTab, setAdminCsActiveTab] = useState('notices');
+    const [adminCsNotices, setAdminCsNotices] = useState([]);
+    const [adminCsNoticesLoading, setAdminCsNoticesLoading] = useState(false);
+    const [adminCsNoticesError, setAdminCsNoticesError] = useState('');
+    const [adminCsNoticesUseYn, setAdminCsNoticesUseYn] = useState('');
+    const [adminCsNoticesSort, setAdminCsNoticesSort] = useState('latest');
+    const [adminCsNoticesPage, setAdminCsNoticesPage] = useState(0);
+    const [adminCsNoticesTotalPages, setAdminCsNoticesTotalPages] = useState(0);
+    const [adminCsNoticesTotalElements, setAdminCsNoticesTotalElements] = useState(0);
+    const [adminCsNoticesRefreshKey, setAdminCsNoticesRefreshKey] = useState(0);
+    const [adminCsFaqs, setAdminCsFaqs] = useState([]);
+    const [adminCsFaqsLoading, setAdminCsFaqsLoading] = useState(false);
+    const [adminCsFaqsError, setAdminCsFaqsError] = useState('');
+    const [adminCsFaqsUseYn, setAdminCsFaqsUseYn] = useState('');
+    const [adminCsFaqsSort, setAdminCsFaqsSort] = useState('latest');
+    const [adminCsFaqsPage, setAdminCsFaqsPage] = useState(0);
+    const [adminCsFaqsTotalPages, setAdminCsFaqsTotalPages] = useState(0);
+    const [adminCsFaqsTotalElements, setAdminCsFaqsTotalElements] = useState(0);
+    const [adminCsFaqsRefreshKey, setAdminCsFaqsRefreshKey] = useState(0);
     const [adminCsInquiries, setAdminCsInquiries] = useState([]);
     const [adminCsInquiriesLoading, setAdminCsInquiriesLoading] = useState(false);
     const [adminCsInquiriesError, setAdminCsInquiriesError] = useState('');
     const [adminCsInquiriesKeyword, setAdminCsInquiriesKeyword] = useState('');
     const [adminCsInquiriesStatus, setAdminCsInquiriesStatus] = useState('');
+    const [adminCsInquiriesType, setAdminCsInquiriesType] = useState('');
     const [adminCsInquiriesStartDate, setAdminCsInquiriesStartDate] = useState('');
     const [adminCsInquiriesEndDate, setAdminCsInquiriesEndDate] = useState('');
     const [adminCsInquiriesPage, setAdminCsInquiriesPage] = useState(0);
     const [adminCsInquiriesTotalPages, setAdminCsInquiriesTotalPages] = useState(0);
     const [adminCsInquiriesTotalElements, setAdminCsInquiriesTotalElements] = useState(0);
+    const [adminCsDetailModal, setAdminCsDetailModal] = useState(null);
+    const [adminCsDetailLoading, setAdminCsDetailLoading] = useState(false);
+    const [adminCsDetailError, setAdminCsDetailError] = useState('');
+    const [adminCsCreateModal, setAdminCsCreateModal] = useState(null);
+    const [adminCsCreateForm, setAdminCsCreateForm] = useState({
+        ttl: '',
+        ntcTxt: '',
+        faqTxt: '',
+        faqCtgCd: 'ORDER',
+        useYn: 'Y'
+    });
+    const [adminCsCreateSaving, setAdminCsCreateSaving] = useState(false);
+    const [adminCsCreateError, setAdminCsCreateError] = useState('');
     const isAdmin = sessionStorage.getItem('roleCd') === 'ADMIN';
 
     useEffect(() => {
         setActiveTab(getAdminTabFromPath(location.pathname));
     }, [location.pathname]);
+
+    useEffect(() => {
+        if (activeTab !== 'cscenter') return;
+
+        setAdminCsActiveTab('notices');
+        setAdminCsNoticesPage(0);
+    }, [activeTab]);
 
     useEffect(() => {
         if (!isAdmin) return;
@@ -451,7 +524,111 @@ function AdminPage() {
     ]);
 
     useEffect(() => {
-        if (!isAdmin || activeTab !== 'cscenter') return;
+        if (!isAdmin || activeTab !== 'cscenter' || adminCsActiveTab !== 'notices') return;
+
+        let isMounted = true;
+
+        const fetchAdminCsNotices = async () => {
+            setAdminCsNoticesLoading(true);
+            setAdminCsNoticesError('');
+
+            try {
+                const response = await getAdminCsNotices({
+                    page: adminCsNoticesPage,
+                    size: adminCsNoticesPageSize,
+                    useYn: adminCsNoticesUseYn || undefined,
+                    sort: adminCsNoticesSort
+                });
+                if (!isMounted) return;
+
+                const notices = Array.isArray(response?.content)
+                    ? response.content
+                    : Array.isArray(response)
+                        ? response.slice(
+                            adminCsNoticesPage * adminCsNoticesPageSize,
+                            (adminCsNoticesPage + 1) * adminCsNoticesPageSize
+                        )
+                        : [];
+                const totalElements = Number(response?.totalElements) || (Array.isArray(response) ? response.length : notices.length);
+
+                setAdminCsNotices(notices);
+                setAdminCsNoticesTotalElements(totalElements);
+                setAdminCsNoticesTotalPages(Number(response?.totalPages) || Math.ceil(totalElements / adminCsNoticesPageSize));
+            } catch (error) {
+                console.error('관리자 고객센터 공지사항 목록 조회 실패:', error);
+                if (!isMounted) return;
+                setAdminCsNotices([]);
+                setAdminCsNoticesTotalPages(0);
+                setAdminCsNoticesTotalElements(0);
+                setAdminCsNoticesError('목록을 불러오지 못했습니다.');
+            } finally {
+                if (isMounted) {
+                    setAdminCsNoticesLoading(false);
+                }
+            }
+        };
+
+        fetchAdminCsNotices();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [activeTab, adminCsActiveTab, adminCsNoticesPage, adminCsNoticesRefreshKey, adminCsNoticesSort, adminCsNoticesUseYn, isAdmin]);
+
+    useEffect(() => {
+        if (!isAdmin || activeTab !== 'cscenter' || adminCsActiveTab !== 'faqs') return;
+
+        let isMounted = true;
+
+        const fetchAdminCsFaqs = async () => {
+            setAdminCsFaqsLoading(true);
+            setAdminCsFaqsError('');
+
+            try {
+                const response = await getAdminCsFaqs({
+                    page: adminCsFaqsPage,
+                    size: adminCsFaqsPageSize,
+                    useYn: adminCsFaqsUseYn || undefined,
+                    sort: adminCsFaqsSort
+                });
+                if (!isMounted) return;
+
+                const faqs = Array.isArray(response?.content)
+                    ? response.content
+                    : Array.isArray(response)
+                        ? response.slice(
+                            adminCsFaqsPage * adminCsFaqsPageSize,
+                            (adminCsFaqsPage + 1) * adminCsFaqsPageSize
+                        )
+                        : [];
+                const totalElements = Number(response?.totalElements) || (Array.isArray(response) ? response.length : faqs.length);
+
+                setAdminCsFaqs(faqs);
+                setAdminCsFaqsTotalElements(totalElements);
+                setAdminCsFaqsTotalPages(Number(response?.totalPages) || Math.ceil(totalElements / adminCsFaqsPageSize));
+            } catch (error) {
+                console.error('관리자 고객센터 FAQ 목록 조회 실패:', error);
+                if (!isMounted) return;
+                setAdminCsFaqs([]);
+                setAdminCsFaqsTotalPages(0);
+                setAdminCsFaqsTotalElements(0);
+                setAdminCsFaqsError('목록을 불러오지 못했습니다.');
+            } finally {
+                if (isMounted) {
+                    setAdminCsFaqsLoading(false);
+                }
+            }
+        };
+
+        fetchAdminCsFaqs();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [activeTab, adminCsActiveTab, adminCsFaqsPage, adminCsFaqsRefreshKey, adminCsFaqsSort, adminCsFaqsUseYn, isAdmin]);
+
+    useEffect(() => {
+        if (!isAdmin || activeTab !== 'cscenter' || adminCsActiveTab !== 'inquiries') return;
 
         let isMounted = true;
 
@@ -465,6 +642,7 @@ function AdminPage() {
                     size: adminCsInquiriesPageSize,
                     keyword: adminCsInquiriesKeyword.trim() || undefined,
                     status: adminCsInquiriesStatus || undefined,
+                    type: adminCsInquiriesType || undefined,
                     startDate: adminCsInquiriesStartDate || undefined,
                     endDate: adminCsInquiriesEndDate || undefined
                 });
@@ -472,8 +650,9 @@ function AdminPage() {
                 if (!isMounted) return;
 
                 setAdminCsInquiries(Array.isArray(response?.content) ? response.content : []);
-                setAdminCsInquiriesTotalPages(Number(response?.totalPages) || 0);
-                setAdminCsInquiriesTotalElements(Number(response?.totalElements) || 0);
+                const totalElements = Number(response?.totalElements) || 0;
+                setAdminCsInquiriesTotalElements(totalElements);
+                setAdminCsInquiriesTotalPages(Number(response?.totalPages) || Math.ceil(totalElements / adminCsInquiriesPageSize));
             } catch (error) {
                 console.error('관리자 고객센터 문의 목록 조회 실패:', error);
                 if (!isMounted) return;
@@ -495,11 +674,13 @@ function AdminPage() {
         };
     }, [
         activeTab,
+        adminCsActiveTab,
         adminCsInquiriesEndDate,
         adminCsInquiriesKeyword,
         adminCsInquiriesPage,
         adminCsInquiriesStartDate,
         adminCsInquiriesStatus,
+        adminCsInquiriesType,
         isAdmin
     ]);
 
@@ -650,15 +831,301 @@ function AdminPage() {
         setAdminCsInquiriesPage(0);
     };
 
-    const renderCsCenter = () => (
-        <>
-            <div className="adminFeatureGrid">
-                <FeatureCard title="공지사항 관리" text="공지사항 목록과 노출 상태 관리 화면을 추후 연결합니다." />
-                <FeatureCard title="FAQ 관리" text="자주 묻는 질문과 답변 관리 화면을 추후 연결합니다." />
-                <FeatureCard title="1:1 문의 관리" text="고객 문의 목록을 조회합니다." />
-                <FeatureCard title="고객센터 메인 설정" text="고객센터 메인 콘텐츠 설정 화면을 추후 연결합니다." />
+    const handleAdminCsFilterChange = (setter, resetPage) => (event) => {
+        setter(event.target.value);
+        resetPage(0);
+    };
+
+    const openAdminCsCreateModal = (type) => {
+        setAdminCsCreateModal(type);
+        setAdminCsCreateError('');
+        setAdminCsCreateForm({
+            ttl: '',
+            ntcTxt: '',
+            faqTxt: '',
+            faqCtgCd: 'ORDER',
+            useYn: 'Y'
+        });
+    };
+
+    const closeAdminCsCreateModal = () => {
+        if (adminCsCreateSaving) return;
+        setAdminCsCreateModal(null);
+        setAdminCsCreateError('');
+    };
+
+    const handleAdminCsCreateFormChange = (event) => {
+        const { name, value } = event.target;
+        setAdminCsCreateForm((form) => ({
+            ...form,
+            [name]: value
+        }));
+    };
+
+    const handleAdminCsCreateSubmit = async (event) => {
+        event.preventDefault();
+
+        const title = adminCsCreateForm.ttl.trim();
+        const bodyField = adminCsCreateModal === 'notice' ? 'ntcTxt' : 'faqTxt';
+        const body = adminCsCreateForm[bodyField].trim();
+
+        if (!title || !body) {
+            setAdminCsCreateError('제목과 내용을 입력해 주세요.');
+            return;
+        }
+
+        setAdminCsCreateSaving(true);
+        setAdminCsCreateError('');
+
+        try {
+            if (adminCsCreateModal === 'notice') {
+                await createNotice({
+                    ttl: title,
+                    ntcTxt: body,
+                    useYn: adminCsCreateForm.useYn
+                });
+                setAdminCsNoticesPage(0);
+                setAdminCsNoticesRefreshKey((key) => key + 1);
+            } else {
+                await createFaq({
+                    faqCtgCd: adminCsCreateForm.faqCtgCd,
+                    ttl: title,
+                    faqTxt: body,
+                    useYn: adminCsCreateForm.useYn
+                });
+                setAdminCsFaqsPage(0);
+                setAdminCsFaqsRefreshKey((key) => key + 1);
+            }
+
+            setAdminCsCreateModal(null);
+        } catch {
+            setAdminCsCreateError('등록에 실패했습니다. 입력 내용을 확인하고 다시 시도해 주세요.');
+        } finally {
+            setAdminCsCreateSaving(false);
+        }
+    };
+
+    const closeAdminCsDetailModal = () => {
+        setAdminCsDetailModal(null);
+        setAdminCsDetailError('');
+    };
+
+    const handleAdminCsDetailOpen = async (type, item) => {
+        const id = type === 'notice' ? item.ntcId : item.faqId;
+        const getDetail = type === 'notice' ? getNoticeDetail : getFaqDetail;
+
+        setAdminCsDetailModal({ type, item });
+        setAdminCsDetailLoading(true);
+        setAdminCsDetailError('');
+
+        try {
+            const detail = await getDetail(id);
+            setAdminCsDetailModal({ type, item: detail || item });
+        } catch {
+            setAdminCsDetailModal({ type, item });
+            setAdminCsDetailError('상세 정보를 불러오지 못해 목록 데이터를 표시합니다.');
+        } finally {
+            setAdminCsDetailLoading(false);
+        }
+    };
+
+    const handleAdminCsEdit = (type, item) => {
+        if (type === 'notice') {
+            navigate(`/cscenter/notices/${item.ntcId}/edit`);
+            return;
+        }
+
+        navigate(`/cscenter/faqs/${item.faqId}/edit`);
+    };
+
+    const handleAdminCsDelete = async (type, item) => {
+        const id = type === 'notice' ? item.ntcId : item.faqId;
+        const deleteItem = type === 'notice' ? deleteNotice : deleteFaq;
+        const resetPage = type === 'notice' ? setAdminCsNoticesPage : setAdminCsFaqsPage;
+
+        if (!window.confirm('선택한 항목을 삭제하시겠습니까?')) return;
+
+        setAdminCsDetailLoading(true);
+        setAdminCsDetailError('');
+
+        try {
+            await deleteItem(id);
+            closeAdminCsDetailModal();
+            if (type === 'notice') {
+                setAdminCsNotices((items) => items.filter((notice) => notice.ntcId !== id));
+                setAdminCsNoticesTotalElements((count) => Math.max(count - 1, 0));
+            } else {
+                setAdminCsFaqs((items) => items.filter((faq) => faq.faqId !== id));
+                setAdminCsFaqsTotalElements((count) => Math.max(count - 1, 0));
+            }
+            resetPage(0);
+        } catch {
+            setAdminCsDetailError('삭제 처리에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        } finally {
+            setAdminCsDetailLoading(false);
+        }
+    };
+
+    const handleAdminCsTabChange = (tab) => {
+        setAdminCsActiveTab(tab);
+
+        if (tab === 'notices') {
+            setAdminCsNoticesPage(0);
+            return;
+        }
+
+        if (tab === 'faqs') {
+            setAdminCsFaqsPage(0);
+            return;
+        }
+
+        setAdminCsInquiriesPage(0);
+    };
+
+    const renderCsPagination = (currentPage, totalPages, onPageChange) => {
+        if (totalPages <= 0) return null;
+
+        return (
+            <Pagination
+                currentPage={currentPage + 1}
+                totalPage={Math.max(totalPages, 1)}
+                onPageChange={(page) => onPageChange(page - 1)}
+            />
+        );
+    };
+
+    const renderAdminCsNotices = () => (
+        <section className="adminOpsSection">
+            <div className="adminPanelHeader">
+                <div>
+                    <h3>공지사항 목록</h3>
+                    <p>총 {adminCsNoticesTotalElements.toLocaleString()}건의 공지사항을 조회했습니다.</p>
+                </div>
+                <div className="adminPanelActions">
+                    <span>{adminCsNoticesLoading ? '조회 중' : `${adminCsNoticesPage + 1} / ${Math.max(adminCsNoticesTotalPages, 1)}`}</span>
+                    <button type="button" className="adminPrimaryBtn" onClick={() => openAdminCsCreateModal('notice')}>
+                        등록
+                    </button>
+                </div>
             </div>
 
+            <div className="adminFilterCard adminCsListFilterCard">
+                <div className="adminField">
+                    <label>사용여부</label>
+                    <select
+                        value={adminCsNoticesUseYn}
+                        onChange={handleAdminCsFilterChange(setAdminCsNoticesUseYn, setAdminCsNoticesPage)}
+                    >
+                        {adminCsUseYnOptions.map((option) => (
+                            <option key={`notice-use-${option.value || 'all'}`} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="adminField">
+                    <label>등록일</label>
+                    <select
+                        value={adminCsNoticesSort}
+                        onChange={handleAdminCsFilterChange(setAdminCsNoticesSort, setAdminCsNoticesPage)}
+                    >
+                        {adminCsSortOptions.map((option) => (
+                            <option key={`notice-sort-${option.value}`} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+
+            {adminCsNoticesError && (
+                <div className="adminDashboardNotice">{adminCsNoticesError}</div>
+            )}
+
+            {!adminCsNoticesError && adminCsNoticesLoading && (
+                <div className="adminDashboardNotice">공지사항 목록을 불러오는 중입니다.</div>
+            )}
+
+            {!adminCsNoticesError && !adminCsNoticesLoading && adminCsNotices.length === 0 && (
+                <div className="adminUsersEmpty">공지사항 데이터가 없습니다.</div>
+            )}
+
+            {!adminCsNoticesError && adminCsNotices.length > 0 && (
+                <>
+                    <AdminCsNoticesTable notices={adminCsNotices} onTitleClick={(notice) => handleAdminCsDetailOpen('notice', notice)} />
+                    {renderCsPagination(adminCsNoticesPage, adminCsNoticesTotalPages, setAdminCsNoticesPage)}
+                </>
+            )}
+        </section>
+    );
+
+    const renderAdminCsFaqs = () => (
+        <section className="adminOpsSection">
+            <div className="adminPanelHeader">
+                <div>
+                    <h3>FAQ 목록</h3>
+                    <p>총 {adminCsFaqsTotalElements.toLocaleString()}건의 FAQ를 조회했습니다.</p>
+                </div>
+                <div className="adminPanelActions">
+                    <span>{adminCsFaqsLoading ? '조회 중' : `${adminCsFaqsPage + 1} / ${Math.max(adminCsFaqsTotalPages, 1)}`}</span>
+                    <button type="button" className="adminPrimaryBtn" onClick={() => openAdminCsCreateModal('faq')}>
+                        등록
+                    </button>
+                </div>
+            </div>
+
+            <div className="adminFilterCard adminCsListFilterCard">
+                <div className="adminField">
+                    <label>사용여부</label>
+                    <select
+                        value={adminCsFaqsUseYn}
+                        onChange={handleAdminCsFilterChange(setAdminCsFaqsUseYn, setAdminCsFaqsPage)}
+                    >
+                        {adminCsUseYnOptions.map((option) => (
+                            <option key={`faq-use-${option.value || 'all'}`} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="adminField">
+                    <label>등록일</label>
+                    <select
+                        value={adminCsFaqsSort}
+                        onChange={handleAdminCsFilterChange(setAdminCsFaqsSort, setAdminCsFaqsPage)}
+                    >
+                        {adminCsSortOptions.map((option) => (
+                            <option key={`faq-sort-${option.value}`} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+
+            {adminCsFaqsError && (
+                <div className="adminDashboardNotice">{adminCsFaqsError}</div>
+            )}
+
+            {!adminCsFaqsError && adminCsFaqsLoading && (
+                <div className="adminDashboardNotice">FAQ 목록을 불러오는 중입니다.</div>
+            )}
+
+            {!adminCsFaqsError && !adminCsFaqsLoading && adminCsFaqs.length === 0 && (
+                <div className="adminUsersEmpty">FAQ 데이터가 없습니다.</div>
+            )}
+
+            {!adminCsFaqsError && adminCsFaqs.length > 0 && (
+                <>
+                    <AdminCsFaqsTable faqs={adminCsFaqs} onTitleClick={(faq) => handleAdminCsDetailOpen('faq', faq)} />
+                    {renderCsPagination(adminCsFaqsPage, adminCsFaqsTotalPages, setAdminCsFaqsPage)}
+                </>
+            )}
+        </section>
+    );
+
+    const renderAdminCsInquiries = () => (
+        <>
             <form className="adminFilterCard adminCsInquiryFilterCard" onSubmit={handleAdminCsInquiriesSearch}>
                 <div className="adminField">
                     <label>검색어</label>
@@ -686,20 +1153,35 @@ function AdminPage() {
                     </select>
                 </div>
                 <div className="adminField">
-                    <label>시작일</label>
-                    <input
-                        type="date"
-                        value={adminCsInquiriesStartDate}
-                        onChange={handleAdminCsInquiriesFilterChange(setAdminCsInquiriesStartDate)}
-                    />
+                    <label>문의 유형</label>
+                    <select
+                        value={adminCsInquiriesType}
+                        onChange={handleAdminCsInquiriesFilterChange(setAdminCsInquiriesType)}
+                    >
+                        {inquiryTypeOptions.map((option) => (
+                            <option key={`inquiry-type-${option.value || 'all'}`} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-                <div className="adminField">
-                    <label>종료일</label>
-                    <input
-                        type="date"
-                        value={adminCsInquiriesEndDate}
-                        onChange={handleAdminCsInquiriesFilterChange(setAdminCsInquiriesEndDate)}
-                    />
+                <div className="adminField adminDateRangeField">
+                    <label>날짜</label>
+                    <div className="adminDateRangeInputs">
+                        <input
+                            type="date"
+                            value={adminCsInquiriesStartDate}
+                            onChange={handleAdminCsInquiriesFilterChange(setAdminCsInquiriesStartDate)}
+                            aria-label="시작일"
+                        />
+                        <span>~</span>
+                        <input
+                            type="date"
+                            value={adminCsInquiriesEndDate}
+                            onChange={handleAdminCsInquiriesFilterChange(setAdminCsInquiriesEndDate)}
+                            aria-label="종료일"
+                        />
+                    </div>
                 </div>
                 <button type="submit" className="adminPrimaryBtn">검색</button>
             </form>
@@ -728,26 +1210,66 @@ function AdminPage() {
                 {!adminCsInquiriesError && adminCsInquiries.length > 0 && (
                     <>
                         <AdminCsInquiriesTable inquiries={adminCsInquiries} />
-                        <div className="adminPagination">
-                            <button
-                                type="button"
-                                disabled={adminCsInquiriesPage <= 0 || adminCsInquiriesLoading}
-                                onClick={() => setAdminCsInquiriesPage((page) => Math.max(page - 1, 0))}
-                            >
-                                이전
-                            </button>
-                            <span>{adminCsInquiriesPage + 1} / {Math.max(adminCsInquiriesTotalPages, 1)}</span>
-                            <button
-                                type="button"
-                                disabled={adminCsInquiriesPage + 1 >= adminCsInquiriesTotalPages || adminCsInquiriesLoading}
-                                onClick={() => setAdminCsInquiriesPage((page) => page + 1)}
-                            >
-                                다음
-                            </button>
-                        </div>
+                        {renderCsPagination(adminCsInquiriesPage, adminCsInquiriesTotalPages, setAdminCsInquiriesPage)}
                     </>
                 )}
             </section>
+        </>
+    );
+
+    const renderActiveAdminCsList = () => {
+        if (adminCsActiveTab === 'faqs') return renderAdminCsFaqs();
+        if (adminCsActiveTab === 'inquiries') return renderAdminCsInquiries();
+
+        return renderAdminCsNotices();
+    };
+
+    const renderCsCenter = () => (
+        <>
+            <div className="adminFeatureGrid adminCsTabGrid">
+                <FeatureCard
+                    title="공지사항 관리"
+                    text="공지사항 목록과 노출 상태를 확인합니다."
+                    active={adminCsActiveTab === 'notices'}
+                    onClick={() => handleAdminCsTabChange('notices')}
+                />
+                <FeatureCard
+                    title="FAQ 관리"
+                    text="자주 묻는 질문과 답변 목록을 확인합니다."
+                    active={adminCsActiveTab === 'faqs'}
+                    onClick={() => handleAdminCsTabChange('faqs')}
+                />
+                <FeatureCard
+                    title="1:1 문의 관리"
+                    text="고객 문의 목록을 조회합니다."
+                    active={adminCsActiveTab === 'inquiries'}
+                    onClick={() => handleAdminCsTabChange('inquiries')}
+                />
+            </div>
+
+            {renderActiveAdminCsList()}
+            {adminCsCreateModal && (
+                <AdminCsCreateModal
+                    type={adminCsCreateModal}
+                    form={adminCsCreateForm}
+                    saving={adminCsCreateSaving}
+                    error={adminCsCreateError}
+                    onChange={handleAdminCsCreateFormChange}
+                    onClose={closeAdminCsCreateModal}
+                    onSubmit={handleAdminCsCreateSubmit}
+                />
+            )}
+            {adminCsDetailModal && (
+                <AdminCsDetailModal
+                    type={adminCsDetailModal.type}
+                    item={adminCsDetailModal.item}
+                    loading={adminCsDetailLoading}
+                    error={adminCsDetailError}
+                    onClose={closeAdminCsDetailModal}
+                    onEdit={() => handleAdminCsEdit(adminCsDetailModal.type, adminCsDetailModal.item)}
+                    onDelete={() => handleAdminCsDelete(adminCsDetailModal.type, adminCsDetailModal.item)}
+                />
+            )}
         </>
     );
 
@@ -1243,14 +1765,20 @@ function MetricCard({ label, value, basis, note = 'API 연결 후 표시' }) {
     );
 }
 
-function FeatureCard({ title, text }) {
+function FeatureCard({ title, text, active = false, onClick }) {
+    const Component = onClick ? 'button' : 'article';
+
     return (
-        <article className="adminFeatureCard">
+        <Component
+            type={onClick ? 'button' : undefined}
+            className={`adminFeatureCard${onClick ? ' adminCsTabCard' : ''}${active ? ' active' : ''}`}
+            onClick={onClick}
+        >
             <span className="adminFeatureIcon">{title.slice(0, 1)}</span>
             <h3>{title}</h3>
             <p>{text}</p>
-            <strong>추후 구현 예정</strong>
-        </article>
+            <strong>{active ? '선택됨' : '목록 보기'}</strong>
+        </Component>
     );
 }
 
@@ -1426,6 +1954,66 @@ function AdminReviewsTable({ reviews }) {
     );
 }
 
+function AdminCsNoticesTable({ notices, onTitleClick }) {
+    return (
+        <div className="adminCsNoticesTable">
+            <div className="adminCsNoticesHead">
+                <span>번호</span>
+                <span>제목</span>
+                <span>사용여부</span>
+                <span>조회수</span>
+                <span>등록일</span>
+            </div>
+            <div className="adminCsNoticesBody">
+                {notices.map((notice) => (
+                    <div className="adminCsNoticesRow" key={notice.ntcId ?? notice.ttl}>
+                        <span>{formatValue(notice.ntcId)}</span>
+                        <span className="adminCsListTitle" title={formatValue(notice.ttl)}>
+                            <button type="button" onClick={() => onTitleClick(notice)}>
+                                {formatValue(notice.ttl)}
+                            </button>
+                        </span>
+                        <span>{formatValue(notice.useYn)}</span>
+                        <span>{formatCount(notice.viewCnt, '-', '')}</span>
+                        <span>{formatDateTime(notice.crtAt)}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function AdminCsFaqsTable({ faqs, onTitleClick }) {
+    return (
+        <div className="adminCsFaqsTable">
+            <div className="adminCsFaqsHead">
+                <span>번호</span>
+                <span>카테고리</span>
+                <span>제목</span>
+                <span>사용여부</span>
+                <span>조회수</span>
+                <span>등록일</span>
+            </div>
+            <div className="adminCsFaqsBody">
+                {faqs.map((faq) => (
+                    <div className="adminCsFaqsRow" key={faq.faqId ?? faq.ttl}>
+                        <span>{formatValue(faq.faqId)}</span>
+                        <span>{formatValue(faq.faqCtgCd)}</span>
+                        <span className="adminCsListTitle" title={formatValue(faq.ttl)}>
+                            <button type="button" onClick={() => onTitleClick(faq)}>
+                                {formatValue(faq.ttl)}
+                            </button>
+                        </span>
+                        <span>{formatValue(faq.useYn)}</span>
+                        <span>{formatCount(faq.viewCnt, '-', '')}</span>
+                        <span>{formatDateTime(faq.crtAt)}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 function AdminCsInquiriesTable({ inquiries }) {
     return (
         <div className="adminCsInquiriesTable">
@@ -1459,6 +2047,154 @@ function AdminCsInquiriesTable({ inquiries }) {
                     </div>
                 ))}
             </div>
+        </div>
+    );
+}
+
+function AdminCsCreateModal({ type, form, saving, error, onChange, onClose, onSubmit }) {
+    const isNotice = type === 'notice';
+
+    return (
+        <div className="adminModalOverlay" role="presentation" onClick={onClose}>
+            <section className="adminCsDetailModal adminCsCreateModal" role="dialog" aria-modal="true" aria-labelledby="adminCsCreateTitle" onClick={(event) => event.stopPropagation()}>
+                <div className="adminCsDetailHeader">
+                    <div>
+                        <span className="adminCsDetailType">{isNotice ? '공지사항' : 'FAQ'} 관리</span>
+                        <h3 id="adminCsCreateTitle">{isNotice ? '공지사항 등록' : 'FAQ 등록'}</h3>
+                    </div>
+                    <button type="button" className="adminModalCloseBtn" onClick={onClose} aria-label="닫기" disabled={saving}>
+                        ×
+                    </button>
+                </div>
+
+                <form className="adminCsCreateForm" onSubmit={onSubmit}>
+                    {error && <div className="adminDashboardNotice">{error}</div>}
+
+                    {!isNotice && (
+                        <div className="adminField">
+                            <label>FAQ 분류</label>
+                            <select name="faqCtgCd" value={form.faqCtgCd} onChange={onChange} disabled={saving}>
+                                {adminCsFaqCategoryOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    <div className="adminField">
+                        <label>제목</label>
+                        <input
+                            type="text"
+                            name="ttl"
+                            value={form.ttl}
+                            onChange={onChange}
+                            placeholder={isNotice ? '공지사항 제목을 입력하세요' : 'FAQ 제목을 입력하세요'}
+                            disabled={saving}
+                        />
+                    </div>
+
+                    <div className="adminField">
+                        <label>내용</label>
+                        <textarea
+                            name={isNotice ? 'ntcTxt' : 'faqTxt'}
+                            value={isNotice ? form.ntcTxt : form.faqTxt}
+                            onChange={onChange}
+                            placeholder={isNotice ? '공지사항 내용을 입력하세요' : 'FAQ 내용을 입력하세요'}
+                            disabled={saving}
+                        />
+                    </div>
+
+                    <div className="adminField">
+                        <label>사용여부</label>
+                        <select name="useYn" value={form.useYn} onChange={onChange} disabled={saving}>
+                            <option value="Y">공개 Y</option>
+                            <option value="N">비공개 N</option>
+                        </select>
+                    </div>
+
+                    <div className="adminCsDetailActions">
+                        <button type="button" className="adminSecondaryBtn" onClick={onClose} disabled={saving}>
+                            취소
+                        </button>
+                        <button type="submit" className="adminPrimaryBtn" disabled={saving}>
+                            {saving ? '저장 중' : '저장'}
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    );
+}
+
+function AdminCsDetailModal({ type, item, loading, error, onClose, onEdit, onDelete }) {
+    const isNotice = type === 'notice';
+    const title = formatValue(item?.ttl);
+    const body = isNotice ? item?.ntcTxt : item?.faqTxt;
+    const id = isNotice ? item?.ntcId : item?.faqId;
+
+    return (
+        <div className="adminModalOverlay" role="presentation" onClick={onClose}>
+            <section className="adminCsDetailModal" role="dialog" aria-modal="true" aria-labelledby="adminCsDetailTitle" onClick={(event) => event.stopPropagation()}>
+                <div className="adminCsDetailHeader">
+                    <div>
+                        <span className="adminCsDetailType">{isNotice ? '공지사항' : 'FAQ'} 상세</span>
+                        <h3 id="adminCsDetailTitle">{title}</h3>
+                    </div>
+                    <button type="button" className="adminModalCloseBtn" onClick={onClose} aria-label="닫기">
+                        ×
+                    </button>
+                </div>
+
+                {error && <div className="adminDashboardNotice">{error}</div>}
+                {loading && <div className="adminDashboardNotice">상세 정보를 불러오는 중입니다.</div>}
+
+                <dl className="adminCsDetailMeta">
+                    <div>
+                        <dt>번호</dt>
+                        <dd>{formatValue(id)}</dd>
+                    </div>
+                    {!isNotice && (
+                        <div>
+                            <dt>카테고리</dt>
+                            <dd>{formatValue(item?.faqCtgCd)}</dd>
+                        </div>
+                    )}
+                    <div>
+                        <dt>사용여부</dt>
+                        <dd>{formatValue(item?.useYn)}</dd>
+                    </div>
+                    <div>
+                        <dt>조회수</dt>
+                        <dd>{formatCount(item?.viewCnt, '-', '')}</dd>
+                    </div>
+                    <div>
+                        <dt>등록일</dt>
+                        <dd>{formatDateTime(item?.crtAt)}</dd>
+                    </div>
+                    <div>
+                        <dt>수정일</dt>
+                        <dd>{formatDateTime(item?.updAt)}</dd>
+                    </div>
+                </dl>
+
+                <div className="adminCsDetailContent">
+                    {formatMultilineText(body)}
+                </div>
+
+                <div className="adminCsDetailActions">
+                    <button type="button" className="adminSecondaryBtn" onClick={onClose}>
+                        닫기
+                    </button>
+                    <button type="button" className="adminSecondaryBtn" onClick={onEdit} disabled={loading}>
+                        수정
+                    </button>
+                    <button type="button" className="adminDangerBtn" onClick={onDelete} disabled={loading}>
+                        삭제
+                    </button>
+                </div>
+            </section>
         </div>
     );
 }
@@ -1636,6 +2372,18 @@ function formatValue(value, fallback = '-') {
     }
 
     return value;
+}
+
+function formatMultilineText(value) {
+    if (value === null || value === undefined || value === '') {
+        return '-';
+    }
+
+    return String(value).split('\n').map((line, index) => (
+        <span key={`${line}-${index}`}>
+            {line || ' '}
+        </span>
+    ));
 }
 
 function formatCode(value, options) {
