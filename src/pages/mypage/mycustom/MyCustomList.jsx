@@ -35,6 +35,20 @@ function MyCustomList(){
         }
         loadMyCustomList();
         },[])
+    
+    // 커스텀 삭제버튼
+    async function handleDelete(cusId) {
+        if(!window.confirm("삭제하시겠습니까?"))return;
+        try{
+            await apiCall.delete(`v1/cus/delete/${cusId}`);
+            //삭제 후 다시 리스트 셋업
+            const result = await apiCall.get(`v1/cus/list/`);
+            setCusList(result);
+        }catch(err){
+            console.error('삭제오류', err);
+            alert('삭제에 실패했습니다.');
+        }
+    }
 
     return(
         <div className="cs-faq-wrap">
@@ -45,9 +59,10 @@ function MyCustomList(){
                 <thead>
                     <tr>
                         <th width='15%'>설문자ID</th>
-                        <th width='10%'>커스텀번호</th>
-                        <th width='50%'>제목</th>
-                        <th width='25%'>작성일</th>
+                        <th width='15%'>커스텀번호</th>
+                        <th width='35%'>제목</th>
+                        <th width='20%'>작성일</th>
+                        <th width='15%'>상세보기/삭제</th>
                     </tr>
                 </thead>
 
@@ -63,11 +78,17 @@ function MyCustomList(){
                                     </Link>
                                 </td>
                                 <td>{cus.crtAt}</td>
+                                <td>
+                                    <Link to={`/v1/cus/result/${cus.cusId}`}>
+                                        <button>상세보기</button>
+                                    </Link>
+                                    <button onClick={()=>handleDelete(cus.cusId)}>삭제</button>
+                                </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan='4' className="cs-faq-empty">'등록된 FAQ가 없습니다.'</td>
+                            <td colSpan='5' className="cs-faq-empty">'등록된 FAQ가 없습니다.'</td>
                         </tr>
                     )}
                 </tbody>
