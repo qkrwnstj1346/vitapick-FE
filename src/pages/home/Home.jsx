@@ -39,7 +39,7 @@ function Home({ isLoggedIn }) {
             {/* 메인 배너 영역 */}
             <section className="mainBanner">
                 <img
-                    src="/images/VitaPick_MainBanner.png"
+                    src="/images/VitaPick_MainBanner4.png"
                     alt="메인 배너"
                 />
             </section>

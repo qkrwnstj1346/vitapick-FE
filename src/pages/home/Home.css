@@ -11,8 +11,8 @@
 .mainBanner {
     max-width: 1200px;
     width: calc(100% - 48px);
-    height: 300px;
-    margin: 28px auto 36px;
+    height: 380px;
+    margin: 28px auto 40px;
     overflow: hidden;
     border-radius: 28px;
     box-sizing: border-box;
@@ -284,7 +284,7 @@
 
     .mainBanner {
         width: calc(100% - 32px);
-        height: 180px;
+        height: 240px;
         margin: 20px auto 32px;
         border-radius: 22px;
     }
@@ -373,7 +373,7 @@
     }
 
     .mainBanner {
-        height: 150px;
+        height: 190px;
     }
 
     .productList {
