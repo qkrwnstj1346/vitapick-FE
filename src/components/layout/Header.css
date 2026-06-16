@@ -6,7 +6,7 @@
     border-bottom: 1px solid #e6f0e8;
     font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
     position: relative;
-    z-index: 1000;
+    z-index: 99999;
 }
 
 /* Header 상단 영역 */
@@ -23,7 +23,7 @@
     box-sizing: border-box;
 }
 
-/* 로고 이미지 */
+/* 로고 */
 .headerLogo {
     flex-shrink: 0;
 }
@@ -33,7 +33,7 @@
     display: block;
 }
 
-/* 검색창 영역 */
+/* 검색창 */
 .headerSearch {
     width: 430px;
     height: 48px;
@@ -47,7 +47,6 @@
     min-width: 260px;
 }
 
-/* 검색 input */
 .headerSearch input {
     flex: 1;
     min-width: 0;
@@ -58,7 +57,6 @@
     font-size: 15px;
 }
 
-/* 검색 버튼 */
 .headerSearch button {
     width: 60px;
     height: 100%;
@@ -72,12 +70,11 @@
     flex-shrink: 0;
 }
 
-/* 검색 버튼 hover */
 .headerSearch button:hover {
     background-color: #4CAF50;
 }
 
-/* 우측 아이콘 메뉴 */
+/* 우측 메뉴 */
 .headerMenu {
     flex-shrink: 0;
 }
@@ -91,7 +88,6 @@
     padding: 0;
 }
 
-/* 메뉴 링크 */
 .menuItem a {
     text-decoration: none;
     color: #222;
@@ -103,7 +99,6 @@
     font-weight: 600;
 }
 
-/* 아이콘 박스 */
 .menuIcon {
     width: 48px;
     height: 48px;
@@ -117,29 +112,27 @@
     transition: all 0.25s;
 }
 
-/* 메뉴 텍스트 */
 .menuItem p {
     margin: 0;
     white-space: nowrap;
 }
 
-/* 아이콘 hover */
 .menuItem a:hover .menuIcon {
     background-color: #6FA57C;
     color: #ffffff;
     transform: translateY(-2px);
 }
 
-/* GNB 전체 영역 */
+/* GNB */
 .gnb {
     width: 100%;
     height: 60px;
     background-color: #ffffff;
     position: relative;
-    z-index: 999;
+    z-index: 99998;
+    overflow: visible;
 }
 
-/* GNB 메뉴 묶음 */
 .gnbMenu {
     max-width: 1200px;
     width: calc(100% - 48px);
@@ -153,16 +146,16 @@
     background-color: #7FAF8B;
     border-radius: 18px 18px 0 0;
     position: relative;
+    z-index: 99998;
     box-sizing: border-box;
+    overflow: visible;
 }
 
-/* GNB 각 li */
 .gnbMenu li {
     position: relative;
     flex-shrink: 0;
 }
 
-/* GNB 링크 공통 */
 .gnbMenu a,
 .categoryTitle {
     text-decoration: none;
@@ -172,7 +165,6 @@
     cursor: pointer;
 }
 
-/* GNB 일반 메뉴 탭 */
 .gnbMenu li a {
     height: 40px;
     padding: 0 18px;
@@ -185,12 +177,11 @@
     white-space: nowrap;
 }
 
-/* GNB 일반 메뉴 hover */
 .gnbMenu li a:hover {
     background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* 카테고리 메뉴 */
+/* 카테고리 */
 .categoryMenu {
     width: 180px;
     height: 60px;
@@ -198,11 +189,10 @@
     border-radius: 18px 0 0 0;
     box-sizing: border-box;
     position: relative;
-    z-index: 1001;
+    z-index: 100000;
     flex-shrink: 0;
 }
 
-/* 카테고리 상단 버튼 */
 .categoryTitle {
     height: 60px;
     display: flex;
@@ -212,22 +202,18 @@
     padding: 0;
 }
 
-/* 기본 상태 텍스트 */
 .categoryText {
     display: inline;
 }
 
-/* hover 상태 텍스트 */
 .categoryTextHover {
     display: none;
 }
 
-/* hover 시 카테고리 숨김 */
 .categoryMenu:hover .categoryText {
     display: none;
 }
 
-/* hover 시 전체보기 표시 */
 .categoryMenu:hover .categoryTextHover {
     display: inline;
 }
@@ -244,15 +230,13 @@
     box-shadow: 0 12px 24px rgba(127, 175, 139, 0.25);
     display: none;
     flex-direction: column;
-    z-index: 9999;
+    z-index: 100001;
 }
 
-/* hover 시 드롭다운 펼침 */
 .categoryMenu:hover .categoryDropdown {
     display: flex;
 }
 
-/* 드롭다운 메뉴 */
 .categoryDropdown a {
     color: #222;
     font-size: 15px;
@@ -265,14 +249,14 @@
     white-space: nowrap;
 }
 
-/* 드롭다운 hover */
 .categoryDropdown a:hover {
     background-color: #F1F7F2;
     color: #4CAF50;
 }
 
-/* 태블릿 화면 */
+/* 태블릿 */
 @media (max-width: 1024px) {
+
     .headerTop {
         height: auto;
         padding: 20px 0;
@@ -296,37 +280,29 @@
 
     .gnb {
         height: 60px;
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
-
-    .gnb::-webkit-scrollbar {
-        display: none;
+        overflow: visible;
     }
 
     .gnbMenu {
-        width: max-content;
-        min-width: calc(100% - 48px);
+        width: calc(100% - 48px);
+        min-width: 0;
         height: 60px;
         flex-wrap: nowrap;
         gap: 8px;
-        padding: 0 12px 0 0;
+        padding: 0 10px 0 0;
         border-radius: 16px 16px 0 0;
-    }
-
-    .gnbMenu li {
-        flex-shrink: 0;
+        overflow: visible;
     }
 
     .gnbMenu li a {
         height: 40px;
-        padding: 0 14px;
+        padding: 0 12px;
         font-size: 14px;
         gap: 6px;
     }
 
     .categoryMenu {
-        width: 160px;
+        width: 150px;
         height: 60px;
     }
 
@@ -336,12 +312,14 @@
     }
 
     .categoryDropdown {
-        width: 160px;
+        width: 150px;
+        top: 60px;
     }
 }
 
-/* 모바일 화면 */
+/* 모바일 */
 @media (max-width: 768px) {
+
     .headerTop {
         width: calc(100% - 32px);
         padding: 18px 0;
@@ -380,20 +358,20 @@
     }
 
     .gnbMenu {
-        min-width: calc(100% - 32px);
-        gap: 6px;
-        padding: 0 10px 0 0;
+        width: calc(100% - 32px);
+        gap: 5px;
+        padding: 0 8px 0 0;
     }
 
     .gnbMenu li a {
         height: 38px;
-        padding: 0 10px;
+        padding: 0 8px;
         font-size: 13px;
         gap: 5px;
     }
 
     .categoryMenu {
-        width: 140px;
+        width: 132px;
         height: 60px;
     }
 
@@ -404,17 +382,19 @@
     }
 
     .categoryDropdown {
-        width: 140px;
+        width: 132px;
         top: 60px;
     }
 
     .categoryDropdown a {
         font-size: 13px;
+        padding: 11px 14px;
     }
 }
 
-/* 작은 모바일 화면 */
+/* 작은 모바일 */
 @media (max-width: 480px) {
+
     .headerTop {
         width: calc(100% - 24px);
         padding: 16px 0;
@@ -454,35 +434,35 @@
     }
 
     .gnbMenu {
-        min-width: calc(100% - 24px);
-        gap: 5px;
-        padding: 0 8px 0 0;
+        width: calc(100% - 24px);
+        gap: 4px;
+        padding: 0 6px 0 0;
     }
 
     .gnbMenu li a {
         height: 36px;
-        padding: 0 8px;
+        padding: 0 6px;
         font-size: 12px;
         gap: 4px;
     }
 
     .categoryMenu {
-        width: 125px;
+        width: 118px;
         height: 60px;
     }
 
     .categoryTitle {
         font-size: 12px;
         gap: 6px;
-        white-space: nowrap;
     }
 
     .categoryDropdown {
-        width: 125px;
+        width: 118px;
         top: 60px;
     }
 
     .categoryDropdown a {
         font-size: 12px;
+        padding: 10px 12px;
     }
 }
