@@ -67,7 +67,11 @@ function Mypage() {
                         </NavLink>
                     </li>
 
-                    <li>회원 탈퇴</li>
+                    <li>
+                        <NavLink to="/mypage/mywithdraw">
+                        회원 탈퇴
+                        </NavLink>
+                    </li>
 
                 </ul>
 

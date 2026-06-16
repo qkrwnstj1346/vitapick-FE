@@ -245,7 +245,7 @@ export default function CusResult() {
         <div className="cus-actions">
           <button
             className="cus-btn cus-btn--list"
-            onClick={() => navigate("/v1/cus/list")}
+            onClick={() => navigate("/mypage/mycustom")}
           >
             📋 내 추천 목록
           </button>
