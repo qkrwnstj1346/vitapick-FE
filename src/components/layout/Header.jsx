@@ -298,7 +298,11 @@ function Header({ userInfo, isLoggedIn, onLogout }) {
                     {/* 카테고리 */}
                     <li className="categoryMenu">
 
-                        <div className="categoryTitle">
+                        <div
+                            className="categoryTitle"
+                            onClick={() => navigate('/products')}
+                        >
+                        
 
                             <Menu
                                 size={20}

@@ -40,8 +40,8 @@ import CusResult from '../../pages/custom/CusResult';
 
 import ProductList from '../../pages/products/ProductList';
 import ProductDetail from '../../pages/products/ProductDetail';
-import ProductLatest from '../../pages/products/ProductLatest';
-import ProductBest from '../../pages/products/ProductBest';
+import NewProductList from '../../pages/gnb/NewProductList';
+import BestProductList from '../../pages/gnb/BestProductList';
 
 import Cart from '../../pages/cart/Cart';
 
@@ -106,13 +106,13 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                     {/* 내가 찜한 상품 목록 */}
                     <Route path="mywishlist" element={<MyWishList />} />
 
-                    {/* 내가 찜한 상품 목록 */}
+                    {/* 나의 맞춤 추천 결과 */}
                     <Route path="mycustom" element={<MyCustomList />} />
 
                     {/* 나의 1대1 문의 목록 */}
                     <Route path="myinquiry" element={<MyInquiry />} />
 
-                    {/* 나의 1대1 문의 목록 */}
+                    {/* 회원 탈퇴 */}
                     <Route path="mywithdraw" element={<MyWithdraw />} />
                 </Route>
 
@@ -143,14 +143,17 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                 {/* 상품 검색 결과 */}
                 <Route path="/products/search/:keyword" element={<ProductList />} />
 
+                {/* 전체 상품 목록 */}
+                <Route path="/products" element={<ProductList />} />
+
                 {/* 상품 목록 */}
                 <Route path="/products/:catCd" element={<ProductList />} />
 
                 {/* 이번 주 신상 */}
-                <Route path="/recommend" element={<ProductLatest />} />
+                <Route path="/recommend" element={<NewProductList />} />
 
                 {/* 베스트 상품 */}
-                <Route path="/best" element={<ProductBest />} />
+                <Route path="/best" element={<BestProductList />} />
 
                 {/* 챗봇 */}
                 <Route path="/chatbot" element={<Chatbot />} />
