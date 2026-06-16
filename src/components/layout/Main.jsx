@@ -40,6 +40,8 @@ import CusList from '../../pages/custom/CusList';
 
 import ProductList from '../../pages/products/ProductList';
 import ProductDetail from '../../pages/products/ProductDetail';
+import ProductLatest from '../../pages/products/ProductLatest';
+import ProductBest from '../../pages/products/ProductBest';
 
 import Cart from '../../pages/cart/Cart';
 
@@ -140,6 +142,12 @@ function Main({ onLoginSubmit, isLoggedIn }) {
 
                 {/* 상품 목록 */}
                 <Route path="/products/:catCd" element={<ProductList />} />
+
+                {/* 이번 주 신상 */}
+                <Route path="/recommend" element={<ProductLatest />} />
+
+                {/* 베스트 상품 */}
+                <Route path="/best" element={<ProductBest />} />
 
                 {/* 챗봇 */}
                 <Route path="/chatbot" element={<Chatbot />} />
