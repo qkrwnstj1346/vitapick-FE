@@ -3,7 +3,7 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px 120px;
+    padding: 24px 20px 120px;
 }
 
 /* 상단 */
@@ -11,10 +11,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 28px;
+    margin-bottom: 18px;
 }
 
 .cartTitle {
+    margin: 0;
     font-size: 32px;
     font-weight: 700;
     color: #222;
@@ -44,7 +45,7 @@
     background: #F1F7F2;
     border: 1px solid #dfeee2;
     border-radius: 20px 20px 0 0;
-    padding: 16px 20px;
+    padding: 14px 20px;
     margin-bottom: 0;
     border-bottom: none;
 }
@@ -112,9 +113,9 @@
 .cartLayout {
     display: grid;
     grid-template-columns: 1fr 300px;
-    gap: 30px;
+    gap: 26px;
 
-    padding: 30px 24px 36px;
+    padding: 8px 24px 34px;
     border: 1px solid #dfeee2;
     border-top: none;
     border-radius: 0 0 20px 20px;
@@ -131,20 +132,20 @@
     position: sticky;
     top: 100px;
     z-index: 3;
-    margin-top: 60px;
+    margin-top: 26px;
     height: fit-content;
 }
 
 /* 섹션 */
 .cartSection {
-    margin-bottom: 50px;
+    margin-bottom: 36px;
 }
 
 .sectionTitle {
+    margin: -2px 0 24px;
     font-size: 22px;
     font-weight: 700;
     color: #333;
-    margin-bottom: 16px;
     line-height: 1;
 }
 
@@ -156,6 +157,7 @@
 
 /* 커스텀 그룹 */
 .customGroup {
+    margin-top: 0;
     margin-bottom: 35px;
     padding: 22px;
     border-radius: 24px;
@@ -400,12 +402,23 @@
 
 /* 태블릿 */
 @media screen and (max-width: 1024px) {
+    .cartPage {
+        padding: 22px 20px 100px;
+    }
+
     .cartLayout {
         grid-template-columns: 1fr;
+        gap: 22px;
+        padding: 8px 20px 30px;
     }
 
     .cartPayArea {
         position: static;
+        margin-top: 0;
+    }
+
+    .cartSection {
+        margin-bottom: 34px;
     }
 
     .cartItem {
@@ -420,35 +433,62 @@
 
 /* 모바일 */
 @media screen and (max-width: 768px) {
+    .cartPage {
+        padding: 20px 16px 90px;
+    }
+
     .cartTop {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+
+    .cartTitle {
+        font-size: 28px;
     }
 
     .cartSelectBox {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+        padding: 14px 16px;
+    }
+
+    .cartLayout {
+        padding: 12px 16px 26px;
+    }
+
+    .sectionTitle {
+        margin: 0 0 20px;
+        font-size: 21px;
     }
 
     .customGroup {
         padding: 18px;
+        margin-bottom: 28px;
     }
 
     .customGroupTitleBox {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+        margin-bottom: 14px;
     }
 
     .customGroupCheckLabel {
         align-self: flex-start;
     }
 
+    .customReason {
+        padding: 13px 14px;
+        font-size: 13px;
+    }
+
     .cartItem {
         flex-direction: column;
         align-items: flex-start;
+        padding: 16px;
     }
 
     .cartCheckBox {
@@ -464,20 +504,41 @@
         width: 100%;
         justify-content: flex-end;
     }
+
+    .cartSummaryBox {
+        padding: 22px;
+    }
 }
 
 /* 작은 모바일 */
 @media screen and (max-width: 480px) {
     .cartPage {
-        padding: 30px 14px 80px;
+        padding: 18px 14px 80px;
     }
 
     .cartTitle {
         font-size: 26px;
     }
 
+    .cartSelectBox {
+        padding: 12px 14px;
+    }
+
+    .cartLayout {
+        padding: 10px 14px 24px;
+    }
+
     .sectionTitle {
+        margin: 0 0 18px;
         font-size: 20px;
+    }
+
+    .customGroup {
+        padding: 16px;
+    }
+
+    .customGroupTitle {
+        font-size: 16px;
     }
 
     .cartPrdNm {

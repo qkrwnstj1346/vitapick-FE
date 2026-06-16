@@ -1,31 +1,55 @@
+/* 전체 요소 */
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* 기본 페이지 */
+html,
+body {
+    width: 100%;
+    margin: 0;
+    overflow-x: hidden;
 }
 
 body {
-  margin: 0;
-  background-color: #F1F7F2;
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    background-color: #F1F7F2;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
 }
 
+/* 앱 전체 */
 .App {
-  width: 100%;
-  min-height: 100vh;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
+/* 링크 */
 a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
+/* 버튼 */
 button {
-  font-family: inherit;
+    font-family: inherit;
 }
+
+/* 전체 가로 넘침 강제 차단 */
+html,
+body,
+#root,
+.App {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+
 
 /* 챗봇 플로팅 버튼 */
 .chatbotFloatingBtn {
     position: fixed;
-    right: calc((100vw - 1200px) / 2 - 180px);
+    right: max(24px, calc((100vw - 1200px) / 2 - 140px));
     top: 400px;
     display: flex;
     flex-direction: column;
@@ -65,9 +89,17 @@ button {
 
 /* 둥둥 애니메이션 */
 @keyframes floatChatbot {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0); }
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
 }
 
 /* 태블릿 */
@@ -76,10 +108,12 @@ button {
         right: 20px;
         top: 300px;
     }
+
     .chatbotFloatingBtn img {
         width: 92px;
         height: 92px;
     }
+
     .chatbotFloatingText {
         font-size: 14px;
         padding: 7px 14px;
@@ -93,10 +127,12 @@ button {
         top: 180px;
         gap: 8px;
     }
+
     .chatbotFloatingBtn img {
         width: 78px;
         height: 78px;
     }
+
     .chatbotFloatingText {
         font-size: 13px;
         padding: 6px 12px;
@@ -110,10 +146,12 @@ button {
         top: 160px;
         gap: 6px;
     }
+
     .chatbotFloatingBtn img {
         width: 66px;
         height: 66px;
     }
+
     .chatbotFloatingText {
         font-size: 12px;
         padding: 5px 10px;

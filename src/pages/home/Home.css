@@ -1,6 +1,8 @@
 /* Home 전체 영역 */
 .home {
     width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
     background-color: #F1F7F2;
     font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
 }
@@ -13,6 +15,7 @@
     margin: 28px auto 36px;
     overflow: hidden;
     border-radius: 28px;
+    box-sizing: border-box;
 }
 
 /* 메인 배너 이미지 */
@@ -33,6 +36,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 40px;
     background: linear-gradient(135deg, #F7FBF7 0%, #F1F7F2 100%);
     border-radius: 32px;
     overflow: hidden;
@@ -41,6 +45,7 @@
 /* 메인 텍스트 영역 */
 .heroText {
     width: 52%;
+    min-width: 0;
     text-align: left;
 }
 
@@ -69,7 +74,8 @@
 
 /* 메인 설명 */
 .heroDesc {
-    width: 430px;
+    width: 100%;
+    max-width: 430px;
     margin: 0 0 28px;
     color: #5f7464;
     font-size: 16px;
@@ -104,6 +110,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0;
 }
 
 /* 챗봇 이미지 */
@@ -136,6 +143,7 @@
     max-width: 1200px;
     width: calc(100% - 48px);
     margin: 0 auto 90px;
+    box-sizing: border-box;
 }
 
 /* 인기상품 제목 영역 */
@@ -169,12 +177,13 @@
 /* 인기상품 목록 */
 .productList {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 20px;
 }
 
 /* 인기상품 카드 */
 .productCard {
+    min-width: 0;
     min-height: 280px;
     background-color: #ffffff;
     border: 1px solid #E3EEE5;
@@ -263,7 +272,7 @@
     }
 
     .productList {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
@@ -334,7 +343,7 @@
     }
 
     .productList {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
     }
 
