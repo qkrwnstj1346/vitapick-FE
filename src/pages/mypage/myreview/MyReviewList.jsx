@@ -16,15 +16,23 @@ export default function MyReviewList() {
     // 에러 메시지
     const [error, setError] = useState(null);
 
+    // 페이지네이션
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // 페이지당 리뷰 수
+    const pageSize = 5;
+
+    const totalPage = Math.ceil(rvwList.length / pageSize);
+    const startIndex = (currentPage - 1) * pageSize;
+    const currentList = rvwList.slice(startIndex, startIndex + pageSize);
+
     // 내가 쓴 리뷰 목록 조회
     async function fetchMyReviews() {
         try {
             setLoading(true);
 
-            // 1. 내가 쓴 리뷰 목록 조회
             const data = await apiCall.get('/api/v1/rvw/user');
 
-            // 2. 리뷰마다 상품 정보 추가 조회
             const reviewWithProduct = [];
 
             for (const rvw of data) {
@@ -40,6 +48,7 @@ export default function MyReviewList() {
             }
 
             setRvwList(reviewWithProduct);
+            setCurrentPage(1);
 
         } catch (err) {
             console.error('리뷰 목록 오류:', err);
@@ -75,29 +84,25 @@ export default function MyReviewList() {
     return (
         <div className='rvw-wrap'>
 
-            {/* 헤더 */}
             <div className='rvw-header'>
                 <h2 className='rvw-title'>내가 쓴 리뷰</h2>
                 <p className='rvw-count'>총 {rvwList.length}개</p>
             </div>
 
-            {/* 리뷰 없을 때 */}
             {rvwList.length === 0 && (
                 <div className='rvw-empty'>
                     <p>작성한 리뷰가 없습니다.</p>
                 </div>
             )}
 
-            {/* 리뷰 목록 */}
             <div className='rvw-list'>
-                {rvwList.map((rvw) => (
+                {currentList.map((rvw) => (
                     <div
                         key={rvw.rvwId}
                         className='rvw-item'
                         onClick={() => goReviewDetail(rvw.rvwId)}
                     >
 
-                        {/* 상품 정보 */}
                         <div className='rvw-item__product'>
                             <div
                                 className='rvw-item__img-box'
@@ -125,7 +130,6 @@ export default function MyReviewList() {
                             </div>
                         </div>
 
-                        {/* 별점 / 작성일 */}
                         <div className='rvw-item__top'>
                             <span className='rvw-item__star'>
                                 {'★'.repeat(rvw.rating)}
@@ -137,10 +141,8 @@ export default function MyReviewList() {
                             </span>
                         </div>
 
-                        {/* 리뷰 내용 */}
                         <p className='rvw-item__cmt'>{rvw.cmt}</p>
 
-                        {/* 판매자 답변 */}
                         <div className='rvw-item__reply'>
                             {rvw.replyTxt ? (
                                 <>
@@ -154,7 +156,6 @@ export default function MyReviewList() {
                             )}
                         </div>
 
-                        {/* 버튼 영역 */}
                         <div className='rvw-item__btns'>
 
                             <button
@@ -179,6 +180,30 @@ export default function MyReviewList() {
                     </div>
                 ))}
             </div>
+
+            {totalPage > 1 && (
+                <div className='mypage-pagination'>
+                    <button
+                        type='button'
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                    >
+                        이전
+                    </button>
+
+                    <span>
+                        {currentPage} / {totalPage}
+                    </span>
+
+                    <button
+                        type='button'
+                        disabled={currentPage === totalPage}
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                        다음
+                    </button>
+                </div>
+            )}
 
         </div>
     );

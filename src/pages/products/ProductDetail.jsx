@@ -142,17 +142,29 @@ const ProductDetail = () => {
                         <button
                             className='detail_cart_btn'
                             onClick={async () => {
-                                await apiCall.post('/cart', {
-                                    userNum: sessionStorage.getItem('userNum'),
-                                    prdId: Number(prdId),
-                                    itQty: quantity,
-                                    selectedYn: 'Y'
-                                });
+                                try {
+                                    await apiCall.post('/cart', {
+                                        userNum: sessionStorage.getItem('userNum'),
+                                        prdId: Number(prdId),
+                                        itQty: quantity,
+                                        selectedYn: 'Y'
+                                    });
 
-                                const go = window.confirm('장바구니에 담았습니다!\n장바구니로 이동하시겠습니까?');
+                                    const go = window.confirm('장바구니에 담았습니다!\n장바구니로 이동하시겠습니까?');
 
-                                if (go) {
-                                    navigate('/cart');
+                                    if (go) {
+                                        navigate('/cart');
+                                    }
+                                } catch (err) {
+                                    console.error('장바구니 담기 실패:', err);
+
+                                    const message = err.response?.data?.message || err.response?.data;
+
+                                    if (message) {
+                                        alert(message);
+                                    } else {
+                                        alert('최대 구매 수량은 10개입니다.\n장바구니 수량과 추가 수량을 확인해 주세요.');
+                                    }
                                 }
                             }}
                         >

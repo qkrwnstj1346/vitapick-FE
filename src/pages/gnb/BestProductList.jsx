@@ -46,7 +46,7 @@ const ProductBest = () => {
                 </div>
             ) : (
                 <div className='prd_list'>
-                    {prdList.map((prd, idx) => (
+                    {prdList.map((prd) => (
                         <div
                             key={prd.prdId}
                             className='prd_card'
