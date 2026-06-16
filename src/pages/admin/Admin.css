@@ -441,7 +441,7 @@
 }
 
 .adminOrderFilterCard {
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    grid-template-columns: 2fr 1fr 2fr auto;
 }
 
 .adminField label {
@@ -780,7 +780,7 @@
 }
 
 .adminReviewFilterCard {
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    grid-template-columns: 2fr 1fr 2fr auto;
 }
 
 .adminReviewsTable {

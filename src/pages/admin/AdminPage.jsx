@@ -28,8 +28,8 @@ const statusCdOptions = [
 ];
 const productStatusOptions = [
     { value: '', label: '전체' },
-    { value: 'Y', label: '사용' },
-    { value: 'N', label: '미사용' }
+    { value: 'Y', label: 'Y' },
+    { value: 'N', label: 'N' }
 ];
 const productCategoryOptions = [
     { value: '', label: '전체' },
@@ -41,7 +41,6 @@ const productCategoryOptions = [
     { value: '6', label: '종합영양' }
 ];
 const orderStatusOptions = [
-    { value: '', label: '전체' },
     { value: 'PAID', label: '결제완료' }
 ];
 const reviewRatingOptions = [
@@ -208,7 +207,8 @@ function AdminPage() {
     const [adminUsersError, setAdminUsersError] = useState('');
     const [adminUsersKeyword, setAdminUsersKeyword] = useState('');
     const [adminUsersStatusCd, setAdminUsersStatusCd] = useState('');
-    const [adminUsersRoleCd, setAdminUsersRoleCd] = useState('');
+    const [adminUsersStartDate, setAdminUsersStartDate] = useState('');
+    const [adminUsersEndDate, setAdminUsersEndDate] = useState('');
     const [adminUsersPage, setAdminUsersPage] = useState(0);
     const [adminUsersTotalPages, setAdminUsersTotalPages] = useState(0);
     const [adminUsersTotalElements, setAdminUsersTotalElements] = useState(0);
@@ -225,7 +225,7 @@ function AdminPage() {
     const [adminOrdersLoading, setAdminOrdersLoading] = useState(false);
     const [adminOrdersError, setAdminOrdersError] = useState('');
     const [adminOrdersKeyword, setAdminOrdersKeyword] = useState('');
-    const [adminOrdersStatus, setAdminOrdersStatus] = useState('');
+    const [adminOrdersCategoryId, setAdminOrdersCategoryId] = useState('');
     const [adminOrdersStartDate, setAdminOrdersStartDate] = useState('');
     const [adminOrdersEndDate, setAdminOrdersEndDate] = useState('');
     const [adminOrdersPage, setAdminOrdersPage] = useState(0);
@@ -344,7 +344,8 @@ function AdminPage() {
                     size: adminUsersPageSize,
                     keyword: adminUsersKeyword.trim() || undefined,
                     statusCd: adminUsersStatusCd || undefined,
-                    roleCd: adminUsersRoleCd || undefined
+                    startDate: adminUsersStartDate || undefined,
+                    endDate: adminUsersEndDate || undefined
                 });
 
                 if (!isMounted) return;
@@ -371,7 +372,7 @@ function AdminPage() {
         return () => {
             isMounted = false;
         };
-    }, [activeTab, adminUsersKeyword, adminUsersPage, adminUsersRoleCd, adminUsersStatusCd, isAdmin]);
+    }, [activeTab, adminUsersEndDate, adminUsersKeyword, adminUsersPage, adminUsersStartDate, adminUsersStatusCd, isAdmin]);
 
     useEffect(() => {
         if (!isAdmin || activeTab !== 'prd') return;
@@ -431,7 +432,7 @@ function AdminPage() {
                     page: adminOrdersPage,
                     size: adminOrdersPageSize,
                     keyword: adminOrdersKeyword.trim() || undefined,
-                    status: adminOrdersStatus || undefined,
+                    categoryId: adminOrdersCategoryId || undefined,
                     startDate: adminOrdersStartDate || undefined,
                     endDate: adminOrdersEndDate || undefined
                 });
@@ -462,11 +463,11 @@ function AdminPage() {
         };
     }, [
         activeTab,
+        adminOrdersCategoryId,
         adminOrdersEndDate,
         adminOrdersKeyword,
         adminOrdersPage,
         adminOrdersStartDate,
-        adminOrdersStatus,
         isAdmin
     ]);
 
@@ -1295,7 +1296,7 @@ function AdminPage() {
                             setAdminUsersKeyword(event.target.value);
                             setAdminUsersPage(0);
                         }}
-                        placeholder="아이디 또는 이름을 입력하세요"
+                        placeholder="아이디 또는 닉네임을 입력하세요"
                     />
                 </div>
                 <div className="adminField">
@@ -1311,18 +1312,23 @@ function AdminPage() {
                         ))}
                     </select>
                 </div>
-                <div className="adminField">
-                    <label>권한</label>
-                    <select
-                        value={adminUsersRoleCd}
-                        onChange={handleAdminUsersFilterChange(setAdminUsersRoleCd)}
-                    >
-                        {roleCdOptions.map((option) => (
-                            <option key={option.value || 'all-role'} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
+                <div className="adminField adminDateRangeField">
+                    <label>가입일</label>
+                    <div className="adminDateRangeInputs">
+                        <input
+                            type="date"
+                            value={adminUsersStartDate}
+                            onChange={handleAdminUsersFilterChange(setAdminUsersStartDate)}
+                            aria-label="가입 시작일"
+                        />
+                        <span>~</span>
+                        <input
+                            type="date"
+                            value={adminUsersEndDate}
+                            onChange={handleAdminUsersFilterChange(setAdminUsersEndDate)}
+                            aria-label="가입 종료일"
+                        />
+                    </div>
                 </div>
                 <button type="submit" className="adminPrimaryBtn">검색</button>
             </form>
@@ -1396,11 +1402,11 @@ function AdminPage() {
                             setAdminProductsKeyword(event.target.value);
                             setAdminProductsPage(0);
                         }}
-                        placeholder="상품명을 입력하세요"
+                        placeholder="상품명 및 제조사를 입력하세요"
                     />
                 </div>
                 <div className="adminField">
-                    <label>판매 상태</label>
+                    <label>상품 상태</label>
                     <select
                         value={adminProductsStatus}
                         onChange={handleAdminProductsFilterChange(setAdminProductsStatus)}
@@ -1501,33 +1507,35 @@ function AdminPage() {
                     />
                 </div>
                 <div className="adminField">
-                    <label>주문 상태</label>
+                    <label>카테고리</label>
                     <select
-                        value={adminOrdersStatus}
-                        onChange={handleAdminOrdersFilterChange(setAdminOrdersStatus)}
+                        value={adminOrdersCategoryId}
+                        onChange={handleAdminOrdersFilterChange(setAdminOrdersCategoryId)}
                     >
-                        {orderStatusOptions.map((option) => (
-                            <option key={option.value || 'all-order-status'} value={option.value}>
+                        {productCategoryOptions.map((option) => (
+                            <option key={option.value || 'all-order-category'} value={option.value}>
                                 {option.label}
                             </option>
                         ))}
                     </select>
                 </div>
-                <div className="adminField">
-                    <label>시작일</label>
-                    <input
-                        type="date"
-                        value={adminOrdersStartDate}
-                        onChange={handleAdminOrdersFilterChange(setAdminOrdersStartDate)}
-                    />
-                </div>
-                <div className="adminField">
-                    <label>종료일</label>
-                    <input
-                        type="date"
-                        value={adminOrdersEndDate}
-                        onChange={handleAdminOrdersFilterChange(setAdminOrdersEndDate)}
-                    />
+                <div className="adminField adminDateRangeField">
+                    <label>주문일</label>
+                    <div className="adminDateRangeInputs">
+                        <input
+                            type="date"
+                            value={adminOrdersStartDate}
+                            onChange={handleAdminOrdersFilterChange(setAdminOrdersStartDate)}
+                            aria-label="주문 시작일"
+                        />
+                        <span>~</span>
+                        <input
+                            type="date"
+                            value={adminOrdersEndDate}
+                            onChange={handleAdminOrdersFilterChange(setAdminOrdersEndDate)}
+                            aria-label="주문 종료일"
+                        />
+                    </div>
                 </div>
                 <button type="submit" className="adminPrimaryBtn">검색</button>
             </form>
@@ -1617,21 +1625,23 @@ function AdminPage() {
                         ))}
                     </select>
                 </div>
-                <div className="adminField">
-                    <label>시작일</label>
-                    <input
-                        type="date"
-                        value={adminReviewsStartDate}
-                        onChange={handleAdminReviewsFilterChange(setAdminReviewsStartDate)}
-                    />
-                </div>
-                <div className="adminField">
-                    <label>종료일</label>
-                    <input
-                        type="date"
-                        value={adminReviewsEndDate}
-                        onChange={handleAdminReviewsFilterChange(setAdminReviewsEndDate)}
-                    />
+                <div className="adminField adminDateRangeField">
+                    <label>등록일</label>
+                    <div className="adminDateRangeInputs">
+                        <input
+                            type="date"
+                            value={adminReviewsStartDate}
+                            onChange={handleAdminReviewsFilterChange(setAdminReviewsStartDate)}
+                            aria-label="등록 시작일"
+                        />
+                        <span>~</span>
+                        <input
+                            type="date"
+                            value={adminReviewsEndDate}
+                            onChange={handleAdminReviewsFilterChange(setAdminReviewsEndDate)}
+                            aria-label="등록 종료일"
+                        />
+                    </div>
                 </div>
                 <button type="submit" className="adminPrimaryBtn">검색</button>
             </form>
