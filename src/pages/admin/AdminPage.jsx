@@ -24,7 +24,7 @@ const adminCsInquiriesPageSize = 10;
 const statusCdOptions = [
     { value: '', label: '전체' },
     { value: 'ACTIVE', label: '활성' },
-    { value: 'W', label: '탈퇴' }
+    { value: 'WITHDRAWN', label: '탈퇴' }
 ];
 const productStatusOptions = [
     { value: '', label: '전체' },
@@ -52,18 +52,18 @@ const reviewRatingOptions = [
     { value: '5', label: '5점' }
 ];
 const reviewUseYnOptions = [
-    { value: 'Y', label: '표시' },
-    { value: 'N', label: '숨김' }
+    { value: 'Y', label: 'Y' },
+    { value: 'N', label: 'N' }
 ];
 const inquiryStatusOptions = [
     { value: '', label: '전체' },
-    { value: 'WAITING', label: 'WAITING' },
-    { value: 'ANSWERED', label: 'ANSWERED' }
+    { value: 'WAITING', label: '답변대기' },
+    { value: 'ANSWERED', label: '답변완료' }
 ];
 const adminCsUseYnOptions = [
     { value: '', label: '전체' },
-    { value: 'Y', label: '공개' },
-    { value: 'N', label: '비공개' }
+    { value: 'Y', label: 'Y' },
+    { value: 'N', label: 'N' }
 ];
 const adminCsSortOptions = [
     { value: 'latest', label: '최신순' },
@@ -284,7 +284,7 @@ function AdminPage() {
     });
     const [adminCsCreateSaving, setAdminCsCreateSaving] = useState(false);
     const [adminCsCreateError, setAdminCsCreateError] = useState('');
-    const isAdmin = sessionStorage.getItem('roleCd') === 'ADMIN';
+    const isAdmin = sessionStorage.getItem('roleCd') === 'ADMIN'
 
     useEffect(() => {
         setActiveTab(getAdminTabFromPath(location.pathname));
