@@ -3,7 +3,7 @@ import { apiCall } from "../../../service/apiService";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from '../../../components/layout/Pagination';
 
-import '../../cscenter/faq/FaqList.css';
+import './MyCustomList.css';
 
 function MyCustomList(){
 
@@ -51,18 +51,19 @@ function MyCustomList(){
     }
 
     return(
-        <div className="cs-faq-wrap">
-            <div className="cs-faq-header">
+        <section className="myCustomList">
+            <div className="myCustomHeader">
                 <h2>내 영양제 추천 보기</h2>
-            </div>        
-            <table className="cs-faq-table">
+                <p>A.I가 추천한 영양제 목록을 확인 할 수 있습니다.</p>
+            </div>
+            <table className="myCustomTable">
                 <thead>
                     <tr>
-                        <th width='15%'>설문자ID</th>
-                        <th width='15%'>커스텀번호</th>
-                        <th width='35%'>제목</th>
-                        <th width='20%'>작성일</th>
-                        <th width='15%'>상세보기/삭제</th>
+                        <th>설문자ID</th>
+                        <th>커스텀번호</th>
+                        <th>제목</th>
+                        <th>작성일</th>
+                        <th>상세보기/삭제</th>
                     </tr>
                 </thead>
 
@@ -79,15 +80,13 @@ function MyCustomList(){
                                 </td>
                                 <td>{cus.crtAt}</td>
                                 <td>
-                                    <Link to={`/v1/cus/result/${cus.cusId}`}>
-                                        <button>상세보기</button>
-                                    </Link>
-                                    <button onClick={()=>handleDelete(cus.cusId)}>삭제</button>
+                                    <button className="myCustomDetailBtn" onClick={()=>navigate(`/v1/cus/result/${cus.cusId}`)}>상세보기</button>
+                                    <button className="myCustomDetailBtn" onClick={()=>handleDelete(cus.cusId)}>삭제</button>
                                 </td>
                             </tr>
                         ))
                     ) : (
-                        <tr>
+                        <tr className="myCustomEmpty">
                             <td colSpan='5' className="cs-faq-empty">'등록된 FAQ가 없습니다.'</td>
                         </tr>
                     )}
@@ -100,7 +99,7 @@ function MyCustomList(){
                 onPageChange={setCurrentPage}
             />
 
-        </div>
+        </section>
     );
 }
 export default MyCustomList;
