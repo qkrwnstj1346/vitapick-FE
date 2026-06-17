@@ -39,12 +39,12 @@ apiCall.interceptors.response.use(
         const originalRequest = error.config; //=> error.config: 에러난 객체의 내부설정 정보(그러므로 커스텀속성 "_retry" 추가 가능)
         //=> error.config는 첫 요청의 config와 내용이 동일함. 그러므로 retry 속성추가, headers의 authorization에 새토큰만 넣어서 다시 요청가능
         if(error.response?.status == 401 && !originalRequest._retry){
-            console.log(`401발생 111:`);
+            console.log(`401발생: retry를 true로 변경.`);
             originalRequest._retry = true;
             if(!isRefreshing){
                 //-> 만약 리프레시 요청중인 상태면 else에서 큐에 담아 대기
                 isRefreshing = true;
-                console.log(`401발생 222;`);
+                console.log(`isRefreshing을 true로 변경하고 getRefresh를 실행합니다.`);
                 try{
                     const response = await getRefresh();
                     const newAccessToken = response.accessToken;
@@ -69,7 +69,7 @@ apiCall.interceptors.response.use(
                     isRefreshing = false;
                 }//try
             }else{//-> 만약 리프레시 요청중인 상태면 "refresh 끝날 때까지 기다려야 함" 그래서 Promise를 만들고 요청 대기 큐에 담아 대기함, 새토큰이 오면 header에 세팅하고 반환하여 실행하게됨 
-                console.log(`401발생 333`);
+                console.log(`isRefreshing이 true입니다. 요청을 대기 큐로 보냅니다.`);
                 return new Promise((resolve)=>{
                     requestQueue.push((newAccessToken)=>{
                         originalRequest.headers["Authorization"]=`Bearer ${newAccessToken}`;
