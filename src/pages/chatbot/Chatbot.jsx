@@ -19,10 +19,17 @@ const Chatbot = ({ onClose, userInfo }) => {
 
     const findPrdImages = async (msgTxt) => {
         const json = JSON.parse(msgTxt);
-        const prdIds = json.products.map(item => item.prd_id);
 
-        const results = [];
+        // 추천 상품이 없으면 빈 배열 반환
+        if (json.products.length === 0) {
+            return [];
+        }
 
+        const prdIds = json.products.map(item => item.prd_id); // 상품ID 추출
+
+        const results = []; // 상품ID마다 상세 정보 조회하여 이미지 URL 포함된 객체 생성
+        
+        // 상품ID마다 상세 정보 조회
         for (const id of prdIds) {
             const data = await apiCall.get(`/api/v1/product/detail/${id}`);
             if (data !== null) {
@@ -30,19 +37,21 @@ const Chatbot = ({ onClose, userInfo }) => {
             }
         }
 
-        return results;
+        return results; // 이미지 URL이 포함된 상품 정보 배열 반환
     };
 
-    const handleSend = async () => {
+    const handleSend = async () => { // 전송 버튼 눌렀을 때
 
         if (!inputText.trim()) return;
 
         const sendText = inputText;
 
+        // 사용자가 입력한 메시지를 대화창에 먼저 추가
         setMessages(prev => [...prev, { senderCd: 'USER', msgTxt: sendText }]);
         setInputText('');
         setLoading(true);
-
+        
+        // 챗봇 API에 메시지 전송
         try {
             const result = await apiCall.post(
                 '/api/v1/chatbot/message',
@@ -57,16 +66,25 @@ const Chatbot = ({ onClose, userInfo }) => {
                 setChatId(result.chatId);
             }
 
-            const matchedPrds = await findPrdImages(result.msgTxt);
+            const matchedPrds = await findPrdImages(result.msgTxt); // 응답 메시지에서 상품ID 찾아서 이미지 URL 포함된 상품 정보 배열 가져오기
 
-            const json = JSON.parse(result.msgTxt);
+            const json = JSON.parse(result.msgTxt); // 응답 메시지 JSON 파싱
 
-            const displayText =
-                json.reason + '\n\n' +
-                '조합이유: ' + json.comboReason + '\n\n' +
-                '주의사항: ' + json.caution;
+            let displayText = ''; // 최종적으로 보여줄 텍스트
 
-            setMessages(prev => [...prev, {
+            displayText += json.reason; // 챗봇이 답변한 조합 이유
+
+            // 조합 이유와 주의사항이 있을 때만 텍스트에 추가
+            if (json.comboReason !== '') {
+                displayText += '\n\n추가 추천 이유: ' + json.comboReason;
+            }
+
+            // 주의사항이 있을 때만 텍스트에 추가
+            if (json.caution !== '') {
+                displayText += '\n\n주의사항: ' + json.caution;
+            }
+
+            setMessages(prev => [...prev, { // 챗봇 답변 메시지에 상품 정보 포함하여 추가
                 senderCd: 'AI',
                 msgTxt: displayText,
                 products: matchedPrds
@@ -108,7 +126,7 @@ const Chatbot = ({ onClose, userInfo }) => {
         navigate(`/products/detail/${prdId}`);
     };
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e) => { // Enter 키 눌렀을 때 메시지 전송
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSend();
@@ -129,7 +147,7 @@ const Chatbot = ({ onClose, userInfo }) => {
                     <div key={idx} className={msg.senderCd === 'USER' ? 'chatPopup_msg_user' : 'chatPopup_msg_ai'}>
 
                         <div className='chatPopup_bubble'>
-                            {msg.msgTxt.replace(/상품ID:\s*\d+\s*\/\s*/g, '')}
+                            {msg.msgTxt.replace(/상품ID:\s*\d+\s*\/\s*/g, '')} 
                         </div>
 
                         {msg.products && msg.products.length > 0 && (

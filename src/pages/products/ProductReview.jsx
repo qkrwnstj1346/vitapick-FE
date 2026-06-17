@@ -1,10 +1,14 @@
 import './ProductReview.css';
 import { useState, useEffect } from 'react';
-import { apiCall } from '../../service/apiService';
+import { useNavigate } from 'react-router-dom';
+import { apiCall, getToken } from '../../service/apiService';
 import Pagination from '../../components/layout/Pagination';
 
 // 상품 리뷰 영역 컴포넌트
 const ProductReview = ({ prdId }) => {
+
+    // 페이지 이동 함수
+    const navigate = useNavigate();
 
     // 리뷰 목록
     const [rvwList, setRvwList] = useState([]);
@@ -17,6 +21,9 @@ const ProductReview = ({ prdId }) => {
 
     // 리뷰 작성 폼 열림 여부
     const [showRvwForm, setShowRvwForm] = useState(false);
+
+    // 리뷰 작성 가능한 주문상품 ID
+    const [writeOrdItId, setWriteOrdItId] = useState(null);
 
     // 수정 중인 리뷰 ID
     const [editRvwId, setEditRvwId] = useState(null);
@@ -46,7 +53,9 @@ const ProductReview = ({ prdId }) => {
     const loginUserNum = sessionStorage.getItem('userNum');
 
     // 관리자 여부
-    const isAdmin = sessionStorage.getItem('roleCd') === 'ROLE_ADMIN' || sessionStorage.getItem('roleCd') === 'ADMIN';
+    const isAdmin =
+        sessionStorage.getItem('roleCd') === 'ROLE_ADMIN' ||
+        sessionStorage.getItem('roleCd') === 'ADMIN';
 
     // 리뷰 목록 다시 가져오기
     const fetchRvwList = async () => {
@@ -62,21 +71,74 @@ const ProductReview = ({ prdId }) => {
     useEffect(() => {
         fetchRvwList();
         setRvwPage(1);
+        setShowRvwForm(false);
+        setWriteOrdItId(null);
+        setRvwTxt('');
+        setRating(5);
     }, [prdId]);
 
-    // 리뷰 작성
+    // 리뷰 작성 버튼 클릭
+    const handleOpenRvwForm = async () => {
+        const token = getToken();
+
+        if (!token) {
+            alert('로그인이 필요한 서비스입니다.');
+            navigate('/v1/auth/login');
+            return;
+        }
+
+        try {
+            const result = await apiCall.get(`/api/v1/rvw/can-write/${prdId}`);
+
+            if (!result.canWrite) {
+                alert('구매한 상품만 리뷰를 작성할 수 있습니다.');
+                return;
+            }
+
+            setWriteOrdItId(result.ordItId);
+            setShowRvwForm(prev => !prev);
+
+        } catch (err) {
+            console.error('리뷰 작성 가능 여부 확인 실패:', err);
+            console.error('상태코드:', err.response?.status);
+            console.error('응답데이터:', err.response?.data);
+
+            const message = err.response?.data?.message || err.response?.data;
+
+            if (message) {
+                alert(message);
+            } else {
+                alert('리뷰 작성 가능 여부를 확인하지 못했습니다.');
+            }
+        }
+    };
+
+    // 리뷰 작성 완료
     const handleSubmitRvw = async () => {
         try {
+            if (!rvwTxt.trim()) {
+                alert('리뷰 내용을 입력해주세요.');
+                return;
+            }
+
+            if (!writeOrdItId) {
+                alert('구매한 상품만 리뷰를 작성할 수 있습니다.');
+                return;
+            }
+
             await apiCall.post('/api/v1/rvw', {
-                ordItId: 1,
+                ordItId: writeOrdItId,
                 prdId: Number(prdId),
                 rating: rating,
                 cmt: rvwTxt
             });
 
+            alert('리뷰가 작성되었습니다.');
+
             setRvwTxt('');
             setRating(5);
             setShowRvwForm(false);
+            setWriteOrdItId(null);
             setRvwPage(1);
 
             await fetchRvwList();
@@ -85,7 +147,14 @@ const ProductReview = ({ prdId }) => {
             console.error('리뷰 작성 실패:', err);
             console.error('상태코드:', err.response?.status);
             console.error('응답데이터:', err.response?.data);
-            alert('리뷰 작성에 실패했습니다.');
+
+            const message = err.response?.data?.message || err.response?.data;
+
+            if (message) {
+                alert(message);
+            } else {
+                alert('리뷰 작성에 실패했습니다.');
+            }
         }
     };
 
@@ -265,7 +334,7 @@ const ProductReview = ({ prdId }) => {
             {/* 리뷰 작성 버튼 */}
             <button
                 className='rvw_write_btn'
-                onClick={() => setShowRvwForm(prev => !prev)}
+                onClick={handleOpenRvwForm}
             >
                 리뷰 작성하기
             </button>
@@ -380,6 +449,11 @@ const ProductReview = ({ prdId }) => {
                             <span className='rvw_date'>
                                 {rvw.crtAt?.slice(0, 10)}
                             </span>
+
+                            {/* 작성자 */}
+                            <p className='rvw_writer'>
+                                {(rvw.loginId || '회원')} 님의 리뷰
+                            </p>
 
                             {/* 리뷰 내용 */}
                             <p className='rvw_cmt'>{rvw.cmt}</p>
