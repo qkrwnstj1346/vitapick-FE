@@ -87,7 +87,7 @@ function MyCustomList(){
                         ))
                     ) : (
                         <tr className="myCustomEmpty">
-                            <td colSpan='5' className="cs-faq-empty">'등록된 FAQ가 없습니다.'</td>
+                            <td colSpan='5'>저장된 영양제 추천이 없습니다.</td>
                         </tr>
                     )}
                 </tbody>
