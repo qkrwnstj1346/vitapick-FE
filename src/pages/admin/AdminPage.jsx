@@ -218,6 +218,9 @@ function AdminPage() {
     const [adminProductsKeyword, setAdminProductsKeyword] = useState('');
     const [adminProductsStatus, setAdminProductsStatus] = useState('');
     const [adminProductsCategoryId, setAdminProductsCategoryId] = useState('');
+    const [adminProductsQueryKeyword, setAdminProductsQueryKeyword] = useState('');
+    const [adminProductsQueryStatus, setAdminProductsQueryStatus] = useState('');
+    const [adminProductsQueryCategoryId, setAdminProductsQueryCategoryId] = useState('');
     const [adminProductsPage, setAdminProductsPage] = useState(0);
     const [adminProductsTotalPages, setAdminProductsTotalPages] = useState(0);
     const [adminProductsTotalElements, setAdminProductsTotalElements] = useState(0);
@@ -387,9 +390,9 @@ function AdminPage() {
                 const response = await getAdminProducts({
                     page: adminProductsPage,
                     size: adminProductsPageSize,
-                    keyword: adminProductsKeyword.trim() || undefined,
-                    status: adminProductsStatus || undefined,
-                    categoryId: adminProductsCategoryId || undefined
+                    keyword: adminProductsQueryKeyword.trim() || undefined,
+                    status: adminProductsQueryStatus || undefined,
+                    categoryId: adminProductsQueryCategoryId || undefined
                 });
 
                 if (!isMounted) return;
@@ -416,7 +419,7 @@ function AdminPage() {
         return () => {
             isMounted = false;
         };
-    }, [activeTab, adminProductsCategoryId, adminProductsKeyword, adminProductsPage, adminProductsStatus, isAdmin]);
+    }, [activeTab, adminProductsPage, adminProductsQueryCategoryId, adminProductsQueryKeyword, adminProductsQueryStatus, isAdmin]);
 
     useEffect(() => {
         if (!isAdmin || activeTab !== 'ord') return;
@@ -1387,11 +1390,9 @@ function AdminPage() {
 
     const handleAdminProductsSearch = (event) => {
         event.preventDefault();
-        setAdminProductsPage(0);
-    };
-
-    const handleAdminProductsFilterChange = (setter) => (event) => {
-        setter(event.target.value);
+        setAdminProductsQueryKeyword(adminProductsKeyword);
+        setAdminProductsQueryStatus(adminProductsStatus);
+        setAdminProductsQueryCategoryId(adminProductsCategoryId);
         setAdminProductsPage(0);
     };
 
@@ -1403,10 +1404,7 @@ function AdminPage() {
                     <input
                         type="text"
                         value={adminProductsKeyword}
-                        onChange={(event) => {
-                            setAdminProductsKeyword(event.target.value);
-                            setAdminProductsPage(0);
-                        }}
+                        onChange={(event) => setAdminProductsKeyword(event.target.value)}
                         placeholder="상품명 및 제조사를 입력하세요"
                     />
                 </div>
@@ -1414,7 +1412,7 @@ function AdminPage() {
                     <label>상품 상태</label>
                     <select
                         value={adminProductsStatus}
-                        onChange={handleAdminProductsFilterChange(setAdminProductsStatus)}
+                        onChange={(event) => setAdminProductsStatus(event.target.value)}
                     >
                         {productStatusOptions.map((option) => (
                             <option key={option.value || 'all-product-status'} value={option.value}>
@@ -1427,7 +1425,7 @@ function AdminPage() {
                     <label>카테고리</label>
                     <select
                         value={adminProductsCategoryId}
-                        onChange={handleAdminProductsFilterChange(setAdminProductsCategoryId)}
+                        onChange={(event) => setAdminProductsCategoryId(event.target.value)}
                     >
                         {productCategoryOptions.map((option) => (
                             <option key={option.value || 'all-product-category'} value={option.value}>
@@ -1887,7 +1885,7 @@ function AdminProductsTable({ products }) {
                         <span>{formatValue(product.prdId)}</span>
                         <span>{formatValue(product.prdNm)}</span>
                         <span>{formatValue(product.brand)}</span>
-                        <span>{formatValue(product.categoryName || formatCode(String(product.catCd ?? ''), productCategoryOptions))}</span>
+                        <span>{formatCode(String(product.catCd ?? ''), productCategoryOptions) !== '-' ? formatCode(String(product.catCd ?? ''), productCategoryOptions) : formatValue(product.categoryName)}</span>
                         <span>{formatCurrency(product.price)}</span>
                         <span>{formatCode(product.useYn, productStatusOptions)}</span>
                         <span>{formatDateTime(product.crtAt)}</span>
