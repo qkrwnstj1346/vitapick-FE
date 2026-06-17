@@ -18,6 +18,15 @@ function MyorderDetail() {
     const [payment, setPayment] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const ORDER_STATUS_TEXT = {
+        PAID: '결제완료',
+    };
+
+    const PAYMENT_METHOD_TEXT = {
+        CARD: '카드',
+        BANK: '무통장입금'
+    };
+
     useEffect(() => {
         const loadOrderDetail = async () => {
             try {
@@ -65,7 +74,9 @@ function MyorderDetail() {
 
                 <div>
                     <strong>주문상태</strong>
-                    <span>{order.ordStCd}</span>
+                    <span>
+                        {ORDER_STATUS_TEXT[order.ordStCd] || order.ordStCd}
+                    </span>
                 </div>
 
                 <div>
@@ -75,7 +86,9 @@ function MyorderDetail() {
 
                 <div>
                     <strong>결제수단</strong>
-                    <span>{payment?.payMthdCd || '-'}</span>
+                    <span>
+                        {PAYMENT_METHOD_TEXT[payment?.payMthdCd] || payment?.payMthdCd || '-'}
+                    </span>
                 </div>
             </div>
 

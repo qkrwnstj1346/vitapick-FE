@@ -13,6 +13,10 @@ function MyorderList() {
     const [orderList, setOrderList] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const ORDER_STATUS_TEXT = {
+        PAID: '결제완료',
+    };
+
     useEffect(() => {
         const getOrderList = async () => {
             if (!userNum) {
@@ -71,7 +75,7 @@ function MyorderList() {
                                     <td>{order.crtAt?.slice(0, 10)}</td>
                                     <td>
                                         <span className="myOrderStatus">
-                                            {order.ordStCd}
+                                            {ORDER_STATUS_TEXT[order.ordStCd] || order.ordStCd}
                                         </span>
                                     </td>
                                     <td>
