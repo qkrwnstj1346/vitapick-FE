@@ -35,7 +35,7 @@ function MyCustomList(){
         }
         loadMyCustomList();
         },[])
-    
+
     // 커스텀 삭제버튼
     async function handleDelete(cusId) {
         if(!window.confirm("삭제하시겠습니까?"))return;
@@ -48,6 +48,13 @@ function MyCustomList(){
             console.error('삭제오류', err);
             alert('삭제에 실패했습니다.');
         }
+    }
+
+    // 날짜 형식 변환
+    function formDate(raw){
+        return new Intl.DateTimeFormat('ko-KR', {
+            year: 'numeric', month: 'long', day:'numeric', hour:'numeric', minute:'2-digit', hour12: true
+        }).format(new Date(raw));
     }
 
     return(
@@ -78,7 +85,7 @@ function MyCustomList(){
                                     {cus.surTitle}
                                     </Link>
                                 </td>
-                                <td>{cus.crtAt}</td>
+                                <td>{formDate(cus.crtAt)}</td>
                                 <td>
                                     <button className="myCustomDetailBtn" onClick={()=>navigate(`/v1/cus/result/${cus.cusId}`)}>상세보기</button>
                                     <button className="myCustomDetailBtn" onClick={()=>handleDelete(cus.cusId)}>삭제</button>
