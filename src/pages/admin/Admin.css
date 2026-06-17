@@ -553,6 +553,7 @@
 .adminLineChart {
     width: 100%;
     height: 150px;
+    overflow: visible;
 }
 
 .adminLineChart polyline {
@@ -582,24 +583,26 @@
 .adminBarChart {
     display: flex;
     align-items: end;
-    gap: 14px;
+    justify-content: center;
+    gap: 12px;
     height: 150px;
     padding: 12px 8px 0;
 }
 
 .adminBarChart span {
-    flex: 1;
-    min-width: 18px;
+    width: 12px;
+    min-width: 12px;
     border-radius: 12px 12px 4px 4px;
     background: linear-gradient(180deg, #6fb682 0%, #d8efdf 100%);
 }
 
 .adminBarItem {
     display: flex;
-    flex: 1;
-    min-width: 18px;
+    width: 34px;
+    min-width: 34px;
     height: 100%;
     flex-direction: column;
+    align-items: center;
     justify-content: flex-end;
     gap: 8px;
     text-align: center;
@@ -616,12 +619,36 @@
     font-weight: 800;
 }
 
+.adminOrderChartCard {
+    min-height: 278px;
+    padding: 24px 18px;
+}
+
+.adminOrderChartCard .adminBarChart {
+    width: 100%;
+    height: 233px;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px 4px 0;
+}
+
+.adminOrderChartCard .adminBarItem {
+    flex: 1;
+    width: auto;
+    min-width: 24px;
+}
+
+.adminOrderChartCard .adminBarChart span {
+    width: 10px;
+    min-width: 10px;
+}
+
 .adminTopProductsSection {
     min-width: 0;
 }
 
 .adminTopProductsTable {
-    overflow-x: auto;
+    overflow-x: hidden;
     margin-top: 18px;
     border: 1px solid #e0ece5;
     border-radius: 16px;
@@ -630,8 +657,7 @@
 .adminTopProductsHead,
 .adminTopProductsRow {
     display: grid;
-    grid-template-columns: 80px minmax(160px, 1.4fr) minmax(120px, 1fr) minmax(120px, 1fr) minmax(120px, 1fr);
-    min-width: 720px;
+    grid-template-columns: 70px minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .adminTopProductsHead {
@@ -645,6 +671,7 @@
 .adminTopProductsRow span {
     padding: 14px 16px;
     border-bottom: 1px solid #e5efe9;
+    text-align: center;
 }
 
 .adminTopProductsRow {
@@ -1266,7 +1293,4 @@
         font-size: 24px;
     }
 
-    .adminDonutWrap {
-        grid-template-columns: 1fr;
-    }
 }
