@@ -75,14 +75,15 @@ const adminCsSortOptions = [
     { value: 'oldest', label: '오래된 순' }
 ];
 const adminCsFaqCategoryOptions = [
-    { value: 'ORDER', label: 'ORDER' },
-    { value: 'DELIVERY', label: 'DELIVERY' },
-    { value: 'PRODUCT', label: 'PRODUCT' },
-    { value: 'MEMBER', label: 'MEMBER' },
-    { value: 'PAYMENT', label: 'PAYMENT' },
-    { value: 'CUSTOM', label: 'CUSTOM' },
-    { value: 'INGREDIENT', label: 'INGREDIENT' },
-    { value: 'ETC', label: 'ETC' }
+    { value: '주문', label: '주문' },
+    { value: '배송', label: '배송' },
+    { value: '상품', label: '상품' },
+    { value: '회원', label: '회원' },
+    { value: '기타', label: '기타' }
+];
+const adminCsFaqCategoryFilterOptions = [
+    { value: '', label: '전체' },
+    ...adminCsFaqCategoryOptions
 ];
 const inquiryTypeOptions = [
     { value: '', label: '전체' },
@@ -261,6 +262,7 @@ function AdminPage() {
     const [adminReviewDetailLoading, setAdminReviewDetailLoading] = useState(false);
     const [adminReviewDetailSaving, setAdminReviewDetailSaving] = useState(false);
     const [adminReviewDetailError, setAdminReviewDetailError] = useState('');
+    const [adminReviewDetailMessage, setAdminReviewDetailMessage] = useState('');
     const [adminReviewReplyText, setAdminReviewReplyText] = useState('');
     const [adminCsActiveTab, setAdminCsActiveTab] = useState('notices');
     const [adminCsNotices, setAdminCsNotices] = useState([]);
@@ -276,6 +278,7 @@ function AdminPage() {
     const [adminCsFaqsLoading, setAdminCsFaqsLoading] = useState(false);
     const [adminCsFaqsError, setAdminCsFaqsError] = useState('');
     const [adminCsFaqsUseYn, setAdminCsFaqsUseYn] = useState('');
+    const [adminCsFaqsCategory, setAdminCsFaqsCategory] = useState('');
     const [adminCsFaqsSort, setAdminCsFaqsSort] = useState('latest');
     const [adminCsFaqsPage, setAdminCsFaqsPage] = useState(0);
     const [adminCsFaqsTotalPages, setAdminCsFaqsTotalPages] = useState(0);
@@ -300,12 +303,22 @@ function AdminPage() {
         ttl: '',
         ntcTxt: '',
         faqTxt: '',
-        faqCtgCd: 'ORDER',
+        faqCtgCd: '주문',
         useYn: 'Y'
     });
     const [adminCsCreateSaving, setAdminCsCreateSaving] = useState(false);
     const [adminCsCreateError, setAdminCsCreateError] = useState('');
     const isAdmin = sessionStorage.getItem('roleCd') === 'ADMIN'
+
+    useEffect(() => {
+        if (!adminReviewDetailMessage) return undefined;
+
+        const timerId = window.setTimeout(() => {
+            setAdminReviewDetailMessage('');
+        }, 1800);
+
+        return () => window.clearTimeout(timerId);
+    }, [adminReviewDetailMessage]);
 
     useEffect(() => {
         setActiveTab(getAdminTabFromPath(location.pathname));
@@ -611,6 +624,7 @@ function AdminPage() {
                     page: adminCsFaqsPage,
                     size: adminCsFaqsPageSize,
                     useYn: adminCsFaqsUseYn || undefined,
+                    faqCtgCd: adminCsFaqsCategory || undefined,
                     sort: adminCsFaqsSort
                 });
                 if (!isMounted) return;
@@ -647,7 +661,7 @@ function AdminPage() {
         return () => {
             isMounted = false;
         };
-    }, [activeTab, adminCsActiveTab, adminCsFaqsPage, adminCsFaqsRefreshKey, adminCsFaqsSort, adminCsFaqsUseYn, isAdmin]);
+    }, [activeTab, adminCsActiveTab, adminCsFaqsCategory, adminCsFaqsPage, adminCsFaqsRefreshKey, adminCsFaqsSort, adminCsFaqsUseYn, isAdmin]);
 
     useEffect(() => {
         if (!isAdmin || activeTab !== 'cscenter' || adminCsActiveTab !== 'inquiries') return;
@@ -855,7 +869,7 @@ function AdminPage() {
             ttl: '',
             ntcTxt: '',
             faqTxt: '',
-            faqCtgCd: 'ORDER',
+            faqCtgCd: '주문',
             useYn: 'Y'
         });
     };
@@ -1086,7 +1100,7 @@ function AdminPage() {
                 </div>
             </div>
 
-            <div className="adminFilterCard adminCsListFilterCard">
+            <div className="adminFilterCard adminCsListFilterCard adminCsFaqListFilterCard">
                 <div className="adminField">
                     <label>사용여부</label>
                     <select
@@ -1095,6 +1109,19 @@ function AdminPage() {
                     >
                         {adminCsUseYnOptions.map((option) => (
                             <option key={`faq-use-${option.value || 'all'}`} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="adminField">
+                    <label>카테고리</label>
+                    <select
+                        value={adminCsFaqsCategory}
+                        onChange={handleAdminCsFilterChange(setAdminCsFaqsCategory, setAdminCsFaqsPage)}
+                    >
+                        {adminCsFaqCategoryFilterOptions.map((option) => (
+                            <option key={`faq-category-${option.value || 'all'}`} value={option.value}>
                                 {option.label}
                             </option>
                         ))}
@@ -1654,6 +1681,7 @@ function AdminPage() {
         if (adminReviewDetailSaving) return;
         setAdminReviewDetailModal(null);
         setAdminReviewDetailError('');
+        setAdminReviewDetailMessage('');
         setAdminReviewReplyText('');
     };
 
@@ -1666,6 +1694,7 @@ function AdminPage() {
         setAdminReviewReplyText(review.replyTxt || '');
         setAdminReviewDetailLoading(true);
         setAdminReviewDetailError('');
+        setAdminReviewDetailMessage('');
 
         try {
             const detail = await getAdminReviewDetail(reviewId);
@@ -1687,6 +1716,7 @@ function AdminPage() {
 
         setAdminReviewDetailSaving(true);
         setAdminReviewDetailError('');
+        setAdminReviewDetailMessage('');
 
         try {
             const detail = await saveAdminReviewReply(reviewId, { replyTxt: adminReviewReplyText });
@@ -1700,6 +1730,7 @@ function AdminPage() {
                 review.reviewId === reviewId ? { ...review, replyTxt: nextReplyText } : review
             )));
             setAdminReviewReplyText(nextReplyText);
+            setAdminReviewDetailMessage('답글이 저장 되었습니다.');
         } catch {
             setAdminReviewDetailError('답글 저장에 실패했습니다.');
         } finally {
@@ -1714,6 +1745,7 @@ function AdminPage() {
 
         setAdminReviewDetailSaving(true);
         setAdminReviewDetailError('');
+        setAdminReviewDetailMessage('');
 
         try {
             await deleteAdminReviewReply(reviewId);
@@ -1725,6 +1757,7 @@ function AdminPage() {
                 review.reviewId === reviewId ? { ...review, replyTxt: '' } : review
             )));
             setAdminReviewReplyText('');
+            setAdminReviewDetailMessage('답글이 삭제 되었습니다.');
         } catch {
             setAdminReviewDetailError('답글 삭제에 실패했습니다.');
         } finally {
@@ -1830,6 +1863,7 @@ function AdminPage() {
                     loading={adminReviewDetailLoading}
                     saving={adminReviewDetailSaving}
                     error={adminReviewDetailError}
+                    message={adminReviewDetailMessage}
                     onReplyChange={(event) => setAdminReviewReplyText(event.target.value)}
                     onReplySave={handleAdminReviewReplySave}
                     onReplyDelete={handleAdminReviewReplyDelete}
@@ -2083,25 +2117,47 @@ function AdminReviewsTable({ reviews, onReviewOpen }) {
                 <span>작성자명</span>
                 <span>평점</span>
                 <span>내용</span>
+                <span>답글</span>
                 <span>작성일</span>
                 <span>수정일</span>
             </div>
             <div className="adminReviewsBody">
-                {reviews.map((review) => (
-                    <div className="adminReviewsRow" key={review.reviewId ?? `${review.productId}-${review.writerId}`}>
-                        <span>{formatValue(review.reviewId)}</span>
-                        <span>{formatValue(review.productId)}</span>
-                        <span>{formatValue(review.productName)}</span>
-                        <span>{formatValue(review.writerId)}</span>
-                        <span>{formatValue(review.writerName)}</span>
-                        <span>{formatRating(review.rating)}</span>
-                        <button type="button" className="adminReviewContent" title={formatValue(review.content)} onClick={() => onReviewOpen(review)}>
-                            {formatValue(review.content)}
-                        </button>
-                        <span>{formatDateTime(review.createdAt)}</span>
-                        <span>{formatDateTime(review.updatedAt)}</span>
-                    </div>
-                ))}
+                {reviews.map((review) => {
+                    const hasReply = Boolean(review.replyTxt);
+
+                    return (
+                        <div
+                            className={`adminReviewsRow ${hasReply ? 'hasReply' : ''}`}
+                            key={review.reviewId ?? `${review.productId}-${review.writerId}`}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => onReviewOpen(review)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    onReviewOpen(review);
+                                }
+                            }}
+                        >
+                            <span>{formatValue(review.reviewId)}</span>
+                            <span>{formatValue(review.productId)}</span>
+                            <span>{formatValue(review.productName)}</span>
+                            <span>{formatValue(review.writerId)}</span>
+                            <span>{formatValue(review.writerName)}</span>
+                            <span>{formatRating(review.rating)}</span>
+                            <span className="adminReviewContent" title={formatValue(review.content)}>
+                                {formatValue(review.content)}
+                            </span>
+                            <span>
+                                <em className={`adminReviewReplyBadge ${hasReply ? 'done' : 'pending'}`}>
+                                    {hasReply ? '답글완료' : '미답변'}
+                                </em>
+                            </span>
+                            <span>{formatDateTime(review.createdAt)}</span>
+                            <span>{formatDateTime(review.updatedAt)}</span>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
@@ -2151,7 +2207,7 @@ function AdminCsFaqsTable({ faqs, onTitleClick }) {
                 {faqs.map((faq) => (
                     <div className="adminCsFaqsRow" key={faq.faqId ?? faq.ttl}>
                         <span>{formatValue(faq.faqId)}</span>
-                        <span>{formatValue(faq.faqCtgCd)}</span>
+                        <span>{formatFaqCategory(faq.faqCtgCd)}</span>
                         <span className="adminCsListTitle" title={formatValue(faq.ttl)}>
                             <button type="button" onClick={() => onTitleClick(faq)}>
                                 {formatValue(faq.ttl)}
@@ -2204,7 +2260,9 @@ function AdminCsInquiriesTable({ inquiries }) {
     );
 }
 
-function AdminReviewDetailModal({ review, replyText, loading, saving, error, onReplyChange, onReplySave, onReplyDelete, onClose }) {
+function AdminReviewDetailModal({ review, replyText, loading, saving, error, message, onReplyChange, onReplySave, onReplyDelete, onClose }) {
+    const hasReply = Boolean(review?.replyTxt);
+
     return (
         <div className="adminModalOverlay" role="presentation" onClick={onClose}>
             <section className="adminCsDetailModal adminReviewDetailModal" role="dialog" aria-modal="true" aria-labelledby="adminReviewDetailTitle" onClick={(event) => event.stopPropagation()}>
@@ -2220,6 +2278,7 @@ function AdminReviewDetailModal({ review, replyText, loading, saving, error, onR
 
                 {error && <div className="adminDashboardNotice">{error}</div>}
                 {loading && <div className="adminDashboardNotice">상세 정보를 불러오는 중입니다.</div>}
+                {message && <div className="adminReviewDetailMessage">{message}</div>}
 
                 <dl className="adminCsDetailMeta">
                     <div>
@@ -2267,7 +2326,7 @@ function AdminReviewDetailModal({ review, replyText, loading, saving, error, onR
                     <button type="button" className="adminSecondaryBtn" onClick={onClose} disabled={saving}>
                         닫기
                     </button>
-                    <button type="button" className="adminSecondaryBtn" onClick={onReplyDelete} disabled={loading || saving}>
+                    <button type="button" className="adminSecondaryBtn" onClick={onReplyDelete} disabled={loading || saving || !hasReply}>
                         삭제
                     </button>
                     <button type="button" className="adminPrimaryBtn" onClick={onReplySave} disabled={loading || saving}>
@@ -2386,7 +2445,7 @@ function AdminCsDetailModal({ type, item, loading, error, onClose, onEdit, onDel
                     {!isNotice && (
                         <div>
                             <dt>카테고리</dt>
-                            <dd>{formatValue(item?.faqCtgCd)}</dd>
+                            <dd>{formatFaqCategory(item?.faqCtgCd)}</dd>
                         </div>
                     )}
                     <div>
@@ -2694,6 +2753,22 @@ function formatCode(value, options) {
     }
 
     return options.find((option) => option.value === value)?.label || value;
+}
+
+function formatFaqCategory(value) {
+    if (!value) {
+        return '-';
+    }
+
+    const categoryLabels = {
+        ORDER: '주문',
+        DELIVERY: '배송',
+        PRODUCT: '상품',
+        MEMBER: '회원',
+        ETC: '기타'
+    };
+
+    return categoryLabels[value] || formatCode(value, adminCsFaqCategoryOptions);
 }
 
 function formatRating(value) {
