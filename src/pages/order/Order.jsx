@@ -6,7 +6,7 @@ import {
 } from '../../service/order/orderApi';
 
 import './Order.css';
-import UserAddrForm from '../../components/useraddr/UserAddrForm';
+import UserAddrForm from '../mypage/myaddress/UserAddrForm';
 
 function Order() {
 
@@ -31,12 +31,17 @@ function Order() {
     const [selectedAddrId, setSelectedAddrId] = useState('');
     const [selectedAddr, setSelectedAddr] = useState(null);
 
+    /* 모달에서 선택 중인 배송지 */
+    const [modalSelectedAddrId, setModalSelectedAddrId] = useState('');
+    const [modalSelectedAddr, setModalSelectedAddr] = useState(null);
+
     /* 배송 요청사항 */
     const [reqMsg, setReqMsg] = useState('');
     const [customReqMsg, setCustomReqMsg] = useState('');
 
     /* 배송지 모달 */
     const [isAddrModalOpen, setIsAddrModalOpen] = useState(false);
+    const [addrModalMode, setAddrModalMode] = useState('list');
 
     /* 결제수단 */
     const [payMthdCd, setPayMthdCd] = useState('CARD');
@@ -81,9 +86,18 @@ function Order() {
                 if (baseAddr) {
                     setSelectedAddrId(String(baseAddr.addrId));
                     setSelectedAddr(baseAddr);
+                    setModalSelectedAddrId(String(baseAddr.addrId));
+                    setModalSelectedAddr(baseAddr);
                 } else if (list.length > 0) {
                     setSelectedAddrId(String(list[0].addrId));
                     setSelectedAddr(list[0]);
+                    setModalSelectedAddrId(String(list[0].addrId));
+                    setModalSelectedAddr(list[0]);
+                } else {
+                    setSelectedAddrId('');
+                    setSelectedAddr(null);
+                    setModalSelectedAddrId('');
+                    setModalSelectedAddr(null);
                 }
             })
             .catch(err => {
@@ -92,15 +106,43 @@ function Order() {
             });
     };
 
-    /* 배송지 선택 */
-    const handleSelectAddr = (addr) => {
-        setSelectedAddrId(String(addr.addrId));
-        setSelectedAddr(addr);
+    /* 배송지 모달 열기 */
+    const handleOpenAddrModal = () => {
+        setAddrModalMode(addrList.length === 0 ? 'add' : 'list');
+        setModalSelectedAddrId(selectedAddrId);
+        setModalSelectedAddr(selectedAddr);
+        setIsAddrModalOpen(true);
+    };
+
+    /* 배송지 모달 닫기 */
+    const handleCloseAddrModal = () => {
+        setIsAddrModalOpen(false);
+        setAddrModalMode('list');
+        setModalSelectedAddrId(selectedAddrId);
+        setModalSelectedAddr(selectedAddr);
+    };
+
+    /* 모달 배송지 선택 */
+    const handleModalSelectAddr = (addr) => {
+        setModalSelectedAddrId(String(addr.addrId));
+        setModalSelectedAddr(addr);
+    };
+
+    /* 배송지 선택 완료 */
+    const handleConfirmAddr = () => {
+        if (!modalSelectedAddrId || !modalSelectedAddr) {
+            alert('배송지를 선택해주세요.');
+            return;
+        }
+
+        setSelectedAddrId(modalSelectedAddrId);
+        setSelectedAddr(modalSelectedAddr);
+        handleCloseAddrModal();
     };
 
     /* 배송지 저장 성공 */
     const handleAddrSuccess = () => {
-        setIsAddrModalOpen(false);
+        setAddrModalMode('list');
         fetchAddressList();
     };
 
@@ -181,7 +223,7 @@ function Order() {
                             <button
                                 type="button"
                                 className="addAddrBtn"
-                                onClick={() => setIsAddrModalOpen(true)}
+                                onClick={handleOpenAddrModal}
                             >
                                 {addrList.length === 0 ? '배송지 추가' : '배송지 변경'}
                             </button>
@@ -316,31 +358,57 @@ function Order() {
 
             {isAddrModalOpen && (
                 <div className="addrModalBg">
-                    <div className="addrModalBox">
+                    <div className="addrModalBox addrSelectModalBox">
+
                         <button
                             type="button"
                             className="addrModalCloseBtn"
-                            onClick={() => setIsAddrModalOpen(false)}
+                            onClick={handleCloseAddrModal}
                         >
                             ×
                         </button>
 
-                        {addrList.length === 0 ? (
+                        {addrModalMode === 'add' ? (
                             <UserAddrForm
                                 onSuccess={handleAddrSuccess}
-                                onClose={() => setIsAddrModalOpen(false)}
+                                onClose={() => {
+                                    if (addrList.length === 0) {
+                                        handleCloseAddrModal();
+                                        return;
+                                    }
+
+                                    setAddrModalMode('list');
+                                }}
                             />
                         ) : (
                             <>
-                                <h3 className="addrModalTitle">배송지 변경</h3>
+                                <h3 className="addrModalTitle addrSelectTitle">
+                                    배송지 선택
+                                </h3>
 
-                                <div className="addrList">
+                                <button
+                                    type="button"
+                                    className="addrAddLineBtn"
+                                    onClick={() => setAddrModalMode('add')}
+                                >
+                                    + 배송지 추가
+                                </button>
+
+                                <div className="addrList addrSelectList">
                                     {addrList.map(addr => (
-                                        <div
+                                        <button
+                                            type="button"
                                             key={addr.addrId}
-                                            className={`addrCard ${selectedAddrId === String(addr.addrId) ? 'active' : ''}`}
+                                            className={`addrSelectCard ${modalSelectedAddrId === String(addr.addrId) ? 'active' : ''}`}
+                                            onClick={() => handleModalSelectAddr(addr)}
                                         >
-                                            <div>
+                                            <div className="addrSelectRadio">
+                                                {modalSelectedAddrId === String(addr.addrId) && (
+                                                    <span />
+                                                )}
+                                            </div>
+
+                                            <div className="addrSelectInfo">
                                                 <div className="addrNameRow">
                                                     <strong>{addr.addrNm}</strong>
 
@@ -352,20 +420,17 @@ function Order() {
                                                 <p>{addr.rcvNm} / {addr.rcvTel}</p>
                                                 <p>[{addr.zipCd}] {addr.addr1} {addr.addr2}</p>
                                             </div>
-
-                                            <button
-                                                type="button"
-                                                className="selectAddrBtn"
-                                                onClick={() => {
-                                                    handleSelectAddr(addr);
-                                                    setIsAddrModalOpen(false);
-                                                }}
-                                            >
-                                                선택
-                                            </button>
-                                        </div>
+                                        </button>
                                     ))}
                                 </div>
+
+                                <button
+                                    type="button"
+                                    className="addrConfirmBtn"
+                                    onClick={handleConfirmAddr}
+                                >
+                                    선택 완료
+                                </button>
                             </>
                         )}
                     </div>

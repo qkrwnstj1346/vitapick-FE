@@ -59,7 +59,7 @@
     margin: 0;
 }
 
-/* 배송지 버튼 */
+/* 배송지 추가/변경 버튼 */
 .addAddrBtn {
     flex-shrink: 0;
     border: none;
@@ -380,21 +380,23 @@
 .addrModalBg {
     position: fixed;
     inset: 0;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.35);
+    z-index: 99999;
+    background: rgba(0, 0, 0, 0.45);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 40px 20px;
     box-sizing: border-box;
+    overflow-y: auto;
 }
 
 /* 배송지 모달 */
 .addrModalBox {
     position: relative;
+    z-index: 100000;
     width: 100%;
     max-width: 640px;
-    max-height: 90vh;
+    max-height: calc(100vh - 80px);
     overflow-y: auto;
     background: #fff;
     border-radius: 20px;
@@ -402,25 +404,93 @@
     box-sizing: border-box;
 }
 
-/* 모달 제목 */
-.addrModalTitle {
-    margin: 0 40px 22px 0;
+/* 모달 내부 폼 영역 보정 */
+.addrModalBox .userAddrFormWrap {
+    width: 100%;
+    margin: 0;
+}
+
+.addrModalBox .userAddrForm {
+    width: 100%;
+    max-width: 100%;
+    padding: 28px;
+    border-radius: 18px;
+    box-sizing: border-box;
+    box-shadow: none;
+}
+
+.addrModalBox .userAddrFormTitle {
+    margin: 0 0 24px;
+    padding-right: 42px;
+    font-size: 26px;
+}
+
+/* 배송지 선택 모달 */
+.addrSelectModalBox {
+    max-width: 520px;
+    min-height: auto;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 배송지 선택 제목 */
+.addrSelectTitle {
+    margin: 0 0 22px;
+    padding: 0 48px;
+    border-bottom: none;
+    text-align: center;
     font-size: 22px;
     font-weight: 700;
     color: #333;
+    box-sizing: border-box;
 }
 
 /* 모달 닫기 */
 .addrModalCloseBtn {
     position: absolute;
     top: 18px;
-    right: 20px;
+    right: 18px;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
     border: none;
     background: transparent;
-    font-size: 28px;
+    color: #333;
+    font-size: 30px;
     line-height: 1;
     cursor: pointer;
-    color: #555;
+    transition: 0.2s;
+}
+
+.addrModalCloseBtn:hover {
+    color: #111;
+}
+
+/* 배송지 안내 문구 숨김 */
+.addrModalInfo {
+    display: none;
+}
+
+/* 배송지 추가 라인 버튼 */
+.addrAddLineBtn {
+    width: 100%;
+    height: 48px;
+    margin-bottom: 18px;
+    border: 1px solid #d8e5da;
+    border-radius: 14px;
+    background-color: #F7FBF7;
+    color: #4f7a57;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.addrAddLineBtn:hover {
+    border-color: #7FAF8B;
+    background-color: #F1F7F2;
 }
 
 /* 모달 배송지 목록 */
@@ -430,54 +500,102 @@
     gap: 14px;
 }
 
-/* 모달 배송지 카드 */
-.addrCard {
+/* 배송지 선택 목록 */
+.addrSelectList {
+    max-height: 360px;
+    overflow-y: auto;
+    padding-bottom: 18px;
+}
+
+/* 배송지 선택 카드 */
+.addrSelectCard {
+    width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
     gap: 14px;
     padding: 20px;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #d8e5da;
     border-radius: 16px;
     background-color: #fff;
-    transition: 0.2s;
+    color: inherit;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
     box-sizing: border-box;
+    transition: 0.2s;
 }
 
-.addrCard:hover {
+.addrSelectCard:hover {
     border-color: #AFCBB1;
     background-color: #F7FBF7;
 }
 
-.addrCard.active {
+.addrSelectCard.active {
     border-color: #7FAF8B;
     background-color: #F1F7F2;
 }
 
-.addrCard p {
-    margin: 4px 0 0;
+/* 선택 라디오 표시 */
+.addrSelectRadio {
+    width: 18px;
+    height: 18px;
+    margin-top: 31px;
+    border: 2px solid #7FAF8B;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.addrSelectRadio span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #7FAF8B;
+}
+
+/* 선택 카드 정보 */
+.addrSelectInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.addrSelectInfo .addrNameRow {
+    margin-bottom: 8px;
+}
+
+.addrSelectInfo .addrNameRow strong {
+    font-size: 16px;
+    color: #333;
+}
+
+.addrSelectInfo p {
+    margin: 5px 0 0;
     font-size: 14px;
-    color: #555;
+    color: #444;
     line-height: 1.5;
     word-break: keep-all;
 }
 
-/* 배송지 선택 버튼 */
-.selectAddrBtn {
-    flex-shrink: 0;
+/* 선택 완료 버튼 */
+.addrConfirmBtn {
+    width: 100%;
+    height: 52px;
+    margin-top: 4px;
     border: none;
-    border-radius: 10px;
+    border-radius: 14px;
     background-color: #7FAF8B;
     color: #fff;
-    padding: 9px 14px;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     font-family: inherit;
     cursor: pointer;
     transition: 0.2s;
 }
 
-.selectAddrBtn:hover {
+.addrConfirmBtn:hover {
     background-color: #6c9d77;
 }
 
@@ -569,23 +687,28 @@
     }
 
     .addrModalBg {
-        align-items: flex-end;
-        padding: 16px;
+        align-items: center;
+        padding: 24px 16px;
     }
 
     .addrModalBox {
         max-width: 100%;
-        max-height: 86vh;
+        max-height: calc(100vh - 48px);
+        padding: 22px;
+        border-radius: 20px;
+    }
+
+    .addrModalBox .userAddrForm {
+        padding: 22px;
+    }
+
+    .addrSelectModalBox {
+        max-width: 100%;
         padding: 24px;
-        border-radius: 20px 20px 0 0;
     }
 
-    .addrCard {
-        flex-direction: column;
-    }
-
-    .selectAddrBtn {
-        width: 100%;
+    .addrSelectTitle {
+        font-size: 20px;
     }
 }
 
@@ -683,20 +806,46 @@
     }
 
     .addrModalBg {
-        padding: 10px;
+        padding: 14px;
     }
 
     .addrModalBox {
+        max-height: calc(100vh - 28px);
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .addrModalBox .userAddrForm {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .addrModalBox .userAddrFormTitle {
+        font-size: 22px;
+    }
+
+    .addrSelectModalBox {
         padding: 22px 18px;
-        border-radius: 18px 18px 0 0;
     }
 
-    .addrModalTitle {
-        font-size: 20px;
+    .addrSelectTitle {
+        font-size: 19px;
     }
 
-    .addrCard {
-        padding: 16px;
+    .addrAddLineBtn {
+        height: 46px;
+    }
+
+    .addrSelectCard {
+        padding: 18px 14px;
+    }
+
+    .addrSelectRadio {
+        margin-top: 30px;
+    }
+
+    .addrConfirmBtn {
+        height: 50px;
     }
 }
 
@@ -722,5 +871,21 @@
 
     .summaryTotal strong {
         font-size: 20px;
+    }
+
+    .addrModalBox {
+        padding: 16px;
+    }
+
+    .addrModalBox .userAddrForm {
+        padding: 16px;
+    }
+
+    .addrSelectCard {
+        gap: 10px;
+    }
+
+    .addrSelectInfo p {
+        font-size: 13px;
     }
 }

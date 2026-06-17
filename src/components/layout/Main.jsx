@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 
+import ScrollTop from './ScrollTop';
 import Login from '../../pages/users/Login';
 import Home from '../../pages/home/Home';
 import Join from '../../pages/users/Join';
@@ -15,6 +16,7 @@ import MyorderDetail from '../../pages/mypage/myorder/MyorderDetail';
 import MyCustomList from '../../pages/mypage/mycustom/MyCustomList';
 import MyChatbotList from '../../pages/mypage/mychatbot/MyChatbotList';
 import MyChatbotDetail from '../../pages/mypage/mychatbot/MyChatbotDetail';
+import UserAddrList from '../../pages/mypage/myaddress/UserAddrList';
 import MyReviewList from '../../pages/mypage/myreview/MyReviewList';
 import MyReviewDetail from '../../pages/mypage/myreview/MyReviewDetail';
 import MyWishList from '../../pages/mypage/mywishlist/MyWishList';
@@ -48,14 +50,13 @@ import Cart from '../../pages/cart/Cart';
 import Order from '../../pages/order/Order';
 import OrderComplete from '../../pages/order/OrderComplete';
 
-
-import UserAddrList from '../useraddr/UserAddrList';
 import AdminPage from '../../pages/admin/AdminPage';
 
 function Main({ onLoginSubmit, isLoggedIn }) {
 
     return (
         <main>
+            <ScrollTop />
             <Routes>
                 <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
 
@@ -173,9 +174,7 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                 {/* 주문 완료 */}
                 <Route path="/order/complete/:ordNo" element={<OrderComplete />} />
 
-                {/* 배송지 */}
-                <Route path="/address" element={<UserAddrList />} />
-
+                {/* 관리자 */}
                 <Route path="/admin/*" element={<AdminPage />} />
 
             </Routes>
