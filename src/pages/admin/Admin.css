@@ -190,6 +190,19 @@
     color: #ffffff;
 }
 
+.adminPrimaryBtn:hover {
+    border-color: #5f9f70;
+    background-color: #5f9f70;
+    box-shadow: 0 8px 18px rgba(82, 142, 99, 0.22);
+}
+
+.adminPrimaryBtn:active {
+    border-color: #4f8f60;
+    background-color: #4f8f60;
+    box-shadow: 0 3px 8px rgba(82, 142, 99, 0.18);
+    transform: translateY(1px);
+}
+
 .adminSecondaryBtn,
 .adminDangerBtn {
     min-height: 40px;
