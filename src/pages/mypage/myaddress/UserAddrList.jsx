@@ -5,11 +5,11 @@ import {
     getAddrList,
     deleteAddr,
     updateBaseAddr
-} from '../../service/useraddr/userAddrApi';
+} from '../../../service/useraddr/userAddrApi';
 
 import {
     getToken
-} from '../../service/apiService';
+} from '../../../service/apiService';
 
 import UserAddrForm from './UserAddrForm';
 
@@ -62,7 +62,7 @@ function UserAddrList() {
         getAddrList()
             .then(res => {
                 console.log('배송지 목록 응답 => ', res);
-                setAddrList(res);
+                setAddrList(res || []);
             })
             .catch(err => {
                 console.log(err);

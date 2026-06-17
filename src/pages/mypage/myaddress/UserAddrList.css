@@ -2,6 +2,7 @@
 .addrPage {
     width: 100%;
     padding: 10px 0 60px;
+    box-sizing: border-box;
 }
 
 /* 상단 */
@@ -18,69 +19,89 @@
     margin: 0;
     font-size: 28px;
     font-weight: 700;
-    color: #333;
+    color: #24382a;
 }
 
 /* 설명 */
 .addrDesc {
     margin: 8px 0 0;
     font-size: 15px;
-    color: #777;
+    color: #6f7f72;
 }
 
 /* 추가 버튼 */
 .addrAddBtn {
     min-width: 120px;
     height: 42px;
+    padding: 0 18px;
     border: none;
     border-radius: 12px;
     background-color: #7FAF8B;
     color: #fff;
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+.addrAddBtn:hover {
+    background-color: #6c9d77;
 }
 
 /* 목록 */
 .addrList {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
 }
 
 /* 빈 목록 */
 .addrEmpty {
     padding: 70px 20px;
-    border: 1px solid #e5e5e5;
-    border-radius: 20px;
+    border: 1px solid #dfeee2;
+    border-radius: 22px;
     background-color: #fff;
     text-align: center;
-    color: #888;
-    font-size: 16px;
+    color: #777;
+    font-size: 15px;
+    box-shadow: 0 6px 18px rgba(127, 175, 139, 0.08);
 }
 
 /* 카드 */
 .addrCard {
-    padding: 24px;
-    border: 1px solid #e8e8e8;
-    border-radius: 20px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px 24px;
+    min-height: 150px;
+    padding: 28px 26px;
+    border: 1px solid #dfeee2;
+    border-radius: 22px;
     background-color: #fff;
-    box-shadow: 0 6px 18px rgba(127, 175, 139, 0.08);
+    box-shadow: 0 8px 22px rgba(127, 175, 139, 0.08);
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+.addrCard:hover {
+    border-color: #AFCBB1;
+    background-color: #F7FBF7;
 }
 
 /* 카드 상단 */
 .addrCardTop {
+    grid-column: 1;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    margin: 0;
 }
 
 /* 배송지명 */
 .addrName {
-    font-size: 19px;
-    font-weight: 700;
-    color: #333;
+    font-size: 20px;
+    font-weight: 800;
+    color: #17251c;
 }
 
 /* 기본 배송지 뱃지 */
@@ -90,63 +111,78 @@
     margin-left: 10px;
     padding: 5px 10px;
     border-radius: 999px;
-    background-color: #F1F7F2;
-    color: #7FAF8B;
-    font-size: 13px;
-    font-weight: 600;
+    background-color: #EAF6EC;
+    color: #5f936d;
+    font-size: 12px;
+    font-weight: 700;
+    vertical-align: middle;
 }
 
 /* 정보 */
 .addrInfo {
-    margin-bottom: 18px;
+    grid-column: 1;
+    margin: 0;
 }
 
 /* 정보 텍스트 */
 .addrInfo p {
-    margin: 5px 0;
+    margin: 7px 0;
     font-size: 15px;
-    color: #555;
+    color: #3f4f43;
     line-height: 1.5;
+    word-break: keep-all;
 }
 
 /* 버튼 영역 */
 .addrBtnBox {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     gap: 8px;
+    min-width: max-content;
 }
 
-/* 보조 버튼 */
-.addrSubBtn {
-    min-width: 86px;
-    height: 36px;
-    border: 1px solid #d8e7da;
+/* 공통 버튼 */
+.addrSubBtn,
+.addrDeleteBtn {
+    min-width: 82px;
+    height: 38px;
+    padding: 0 14px;
+    border: none;
     border-radius: 10px;
-    background-color: #fff;
-    color: #5f936d;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: inherit;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+/* 수정/기본 배송지 버튼 */
+.addrSubBtn {
+    background-color: #F1F7F2;
+    color: #4f7a57;
+}
+
+.addrSubBtn:hover {
+    background-color: #E3EEE5;
 }
 
 /* 삭제 버튼 */
 .addrDeleteBtn {
-    min-width: 70px;
-    height: 36px;
-    border: 1px solid #f0c7c7;
-    border-radius: 10px;
-    background-color: #fff;
-    color: #d35f5f;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+    background-color: #F3F5F3;
+    color: #6f7f72;
 }
 
-/* 버튼 hover */
-.addrAddBtn:hover,
-.addrSubBtn:hover,
 .addrDeleteBtn:hover {
-    opacity: 0.85;
+    background-color: #E8ECE8;
+}
+
+/* 기본 배송지 설정 버튼 */
+.addrBtnBox .addrSubBtn:first-child:not(:only-child) {
+    min-width: 126px;
 }
 
 /* 태블릿 */
@@ -156,7 +192,7 @@
     }
 
     .addrCard {
-        padding: 22px;
+        padding: 24px;
     }
 }
 
@@ -165,25 +201,47 @@
     .addrHeader {
         flex-direction: column;
         align-items: stretch;
+        gap: 16px;
     }
 
     .addrAddBtn {
         width: 100%;
     }
 
+    .addrCard {
+        display: block;
+        padding: 22px;
+    }
+
+    .addrCardTop {
+        margin-bottom: 14px;
+    }
+
+    .addrInfo {
+        margin-bottom: 18px;
+    }
+
     .addrBtnBox {
+        display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
+        gap: 8px;
+        min-width: 0;
     }
 
     .addrSubBtn,
     .addrDeleteBtn {
         flex: 1;
+        min-width: 0;
     }
 }
 
 /* 작은 모바일 */
 @media (max-width: 480px) {
+    .addrPage {
+        padding-bottom: 50px;
+    }
+
     .addrTitle {
         font-size: 24px;
     }
@@ -198,7 +256,7 @@
     }
 
     .addrName {
-        font-size: 17px;
+        font-size: 18px;
     }
 
     .baseBadge {
@@ -209,5 +267,9 @@
 
     .addrInfo p {
         font-size: 14px;
+    }
+
+    .addrBtnBox {
+        gap: 7px;
     }
 }

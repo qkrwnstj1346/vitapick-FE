@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import {
     createAddr,
     updateAddr
-} from '../../service/useraddr/userAddrApi';
+} from '../../../service/useraddr/userAddrApi';
 
 import './UserAddrForm.css';
 
@@ -11,7 +11,8 @@ function UserAddrForm({
     mode = 'create',
     addrData = null,
     onSuccess,
-    onCancel
+    onCancel,
+    onClose
 }) {
 
     /* 배송지 입력값 */
@@ -417,7 +418,7 @@ function UserAddrForm({
                     <button
                         type="button"
                         className="userAddrCancelBtn"
-                        onClick={onCancel}
+                        onClick={onClose || onCancel}
                     >
                         취소
                     </button>
