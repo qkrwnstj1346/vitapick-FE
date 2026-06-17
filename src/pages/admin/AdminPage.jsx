@@ -2,8 +2,8 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import Pagination from '../../components/layout/Pagination';
-import { getAdminCsFaqs, getAdminCsInquiries, getAdminCsNotices } from '../../service/admin/adminCsCenterApi';
-import { createFaq, createNotice, deleteFaq, deleteNotice, getFaqDetail, getNoticeDetail } from '../../service/cscenter/csCenterApi';
+import { createAdminCsFaq, getAdminCsFaqs, getAdminCsInquiries, getAdminCsNotices } from '../../service/admin/adminCsCenterApi';
+import { createNotice, deleteFaq, deleteNotice, getFaqDetail, getNoticeDetail, updateNotice } from '../../service/cscenter/csCenterApi';
 import { getAdminDashboardSummary } from '../../service/admin/adminDashboardApi';
 import { getAdminOrders } from '../../service/admin/adminOrdersApi';
 import { getAdminProducts } from '../../service/admin/adminProductsApi';
@@ -292,12 +292,24 @@ function AdminPage() {
     const [adminCsInquiriesType, setAdminCsInquiriesType] = useState('');
     const [adminCsInquiriesStartDate, setAdminCsInquiriesStartDate] = useState('');
     const [adminCsInquiriesEndDate, setAdminCsInquiriesEndDate] = useState('');
+    const [adminCsInquiriesQueryKeyword, setAdminCsInquiriesQueryKeyword] = useState('');
+    const [adminCsInquiriesQueryStatus, setAdminCsInquiriesQueryStatus] = useState('');
+    const [adminCsInquiriesQueryType, setAdminCsInquiriesQueryType] = useState('');
+    const [adminCsInquiriesQueryStartDate, setAdminCsInquiriesQueryStartDate] = useState('');
+    const [adminCsInquiriesQueryEndDate, setAdminCsInquiriesQueryEndDate] = useState('');
     const [adminCsInquiriesPage, setAdminCsInquiriesPage] = useState(0);
     const [adminCsInquiriesTotalPages, setAdminCsInquiriesTotalPages] = useState(0);
     const [adminCsInquiriesTotalElements, setAdminCsInquiriesTotalElements] = useState(0);
     const [adminCsDetailModal, setAdminCsDetailModal] = useState(null);
     const [adminCsDetailLoading, setAdminCsDetailLoading] = useState(false);
     const [adminCsDetailError, setAdminCsDetailError] = useState('');
+    const [adminCsDetailEditing, setAdminCsDetailEditing] = useState(false);
+    const [adminCsEditForm, setAdminCsEditForm] = useState({
+        ttl: '',
+        ntcTxt: '',
+        useYn: 'Y'
+    });
+    const [adminCsEditSaving, setAdminCsEditSaving] = useState(false);
     const [adminCsCreateModal, setAdminCsCreateModal] = useState(null);
     const [adminCsCreateForm, setAdminCsCreateForm] = useState({
         ttl: '',
@@ -676,11 +688,11 @@ function AdminPage() {
                 const response = await getAdminCsInquiries({
                     page: adminCsInquiriesPage,
                     size: adminCsInquiriesPageSize,
-                    keyword: adminCsInquiriesKeyword.trim() || undefined,
-                    status: adminCsInquiriesStatus || undefined,
-                    type: adminCsInquiriesType || undefined,
-                    startDate: adminCsInquiriesStartDate || undefined,
-                    endDate: adminCsInquiriesEndDate || undefined
+                    keyword: adminCsInquiriesQueryKeyword.trim() || undefined,
+                    status: adminCsInquiriesQueryStatus || undefined,
+                    type: adminCsInquiriesQueryType || undefined,
+                    startDate: adminCsInquiriesQueryStartDate || undefined,
+                    endDate: adminCsInquiriesQueryEndDate || undefined
                 });
 
                 if (!isMounted) return;
@@ -711,12 +723,12 @@ function AdminPage() {
     }, [
         activeTab,
         adminCsActiveTab,
-        adminCsInquiriesEndDate,
-        adminCsInquiriesKeyword,
         adminCsInquiriesPage,
-        adminCsInquiriesStartDate,
-        adminCsInquiriesStatus,
-        adminCsInquiriesType,
+        adminCsInquiriesQueryEndDate,
+        adminCsInquiriesQueryKeyword,
+        adminCsInquiriesQueryStartDate,
+        adminCsInquiriesQueryStatus,
+        adminCsInquiriesQueryType,
         isAdmin
     ]);
 
@@ -849,12 +861,16 @@ function AdminPage() {
 
     const handleAdminCsInquiriesSearch = (event) => {
         event.preventDefault();
+        setAdminCsInquiriesQueryKeyword(adminCsInquiriesKeyword);
+        setAdminCsInquiriesQueryStatus(adminCsInquiriesStatus);
+        setAdminCsInquiriesQueryType(adminCsInquiriesType);
+        setAdminCsInquiriesQueryStartDate(adminCsInquiriesStartDate);
+        setAdminCsInquiriesQueryEndDate(adminCsInquiriesEndDate);
         setAdminCsInquiriesPage(0);
     };
 
     const handleAdminCsInquiriesFilterChange = (setter) => (event) => {
         setter(event.target.value);
-        setAdminCsInquiriesPage(0);
     };
 
     const handleAdminCsFilterChange = (setter, resetPage) => (event) => {
@@ -913,7 +929,7 @@ function AdminPage() {
                 setAdminCsNoticesPage(0);
                 setAdminCsNoticesRefreshKey((key) => key + 1);
             } else {
-                await createFaq({
+                await createAdminCsFaq({
                     faqCtgCd: adminCsCreateForm.faqCtgCd,
                     ttl: title,
                     faqTxt: body,
@@ -932,8 +948,10 @@ function AdminPage() {
     };
 
     const closeAdminCsDetailModal = () => {
+        if (adminCsEditSaving) return;
         setAdminCsDetailModal(null);
         setAdminCsDetailError('');
+        setAdminCsDetailEditing(false);
     };
 
     const handleAdminCsDetailOpen = async (type, item) => {
@@ -943,6 +961,7 @@ function AdminPage() {
         setAdminCsDetailModal({ type, item });
         setAdminCsDetailLoading(true);
         setAdminCsDetailError('');
+        setAdminCsDetailEditing(false);
 
         try {
             const detail = await getDetail(id);
@@ -957,11 +976,72 @@ function AdminPage() {
 
     const handleAdminCsEdit = (type, item) => {
         if (type === 'notice') {
-            navigate(`/cscenter/notices/${item.ntcId}/edit`);
+            setAdminCsEditForm({
+                ttl: item?.ttl || '',
+                ntcTxt: item?.ntcTxt || '',
+                useYn: item?.useYn || 'Y'
+            });
+            setAdminCsDetailError('');
+            setAdminCsDetailEditing(true);
             return;
         }
 
         navigate(`/cscenter/faqs/${item.faqId}/edit`);
+    };
+
+    const handleAdminCsEditFormChange = (event) => {
+        const { name, value } = event.target;
+        setAdminCsEditForm((form) => ({
+            ...form,
+            [name]: value
+        }));
+    };
+
+    const handleAdminCsEditCancel = () => {
+        setAdminCsDetailEditing(false);
+        setAdminCsDetailError('');
+    };
+
+    const handleAdminCsNoticeEditSubmit = async (event) => {
+        event.preventDefault();
+
+        const id = adminCsDetailModal?.item?.ntcId;
+        const title = adminCsEditForm.ttl.trim();
+        const body = adminCsEditForm.ntcTxt.trim();
+
+        if (!id || !title || !body) {
+            setAdminCsDetailError('제목과 내용을 입력해 주세요.');
+            return;
+        }
+
+        setAdminCsEditSaving(true);
+        setAdminCsDetailError('');
+
+        try {
+            const response = await updateNotice(id, {
+                ttl: title,
+                ntcTxt: body,
+                useYn: adminCsEditForm.useYn
+            });
+            const nextItem = {
+                ...adminCsDetailModal.item,
+                ...(response || {}),
+                ttl: response?.ttl || title,
+                ntcTxt: response?.ntcTxt || body,
+                useYn: response?.useYn || adminCsEditForm.useYn
+            };
+
+            setAdminCsDetailModal({ type: 'notice', item: nextItem });
+            setAdminCsNotices((items) => items.map((notice) => (
+                notice.ntcId === id ? { ...notice, ...nextItem } : notice
+            )));
+            setAdminCsNoticesRefreshKey((key) => key + 1);
+            setAdminCsDetailEditing(false);
+        } catch {
+            setAdminCsDetailError('등록에 실패했습니다. 입력 내용을 확인하고 다시 시도해 주세요.');
+        } finally {
+            setAdminCsEditSaving(false);
+        }
     };
 
     const handleAdminCsDelete = async (type, item) => {
@@ -1171,10 +1251,7 @@ function AdminPage() {
                     <input
                         type="text"
                         value={adminCsInquiriesKeyword}
-                        onChange={(event) => {
-                            setAdminCsInquiriesKeyword(event.target.value);
-                            setAdminCsInquiriesPage(0);
-                        }}
+                        onChange={(event) => setAdminCsInquiriesKeyword(event.target.value)}
                         placeholder="제목, 작성자를 입력하세요"
                     />
                 </div>
@@ -1304,6 +1381,12 @@ function AdminPage() {
                     item={adminCsDetailModal.item}
                     loading={adminCsDetailLoading}
                     error={adminCsDetailError}
+                    editing={adminCsDetailEditing}
+                    editForm={adminCsEditForm}
+                    saving={adminCsEditSaving}
+                    onEditFormChange={handleAdminCsEditFormChange}
+                    onEditCancel={handleAdminCsEditCancel}
+                    onEditSubmit={handleAdminCsNoticeEditSubmit}
                     onClose={closeAdminCsDetailModal}
                     onEdit={() => handleAdminCsEdit(adminCsDetailModal.type, adminCsDetailModal.item)}
                     onDelete={() => handleAdminCsDelete(adminCsDetailModal.type, adminCsDetailModal.item)}
@@ -2247,7 +2330,7 @@ function AdminCsInquiriesTable({ inquiries }) {
                         </span>
                         <span>{formatValue(inquiry.writerId)}</span>
                         <span>{formatValue(inquiry.writerName)}</span>
-                        <span>{formatValue(inquiry.category)}</span>
+                        <span>{formatCode(inquiry.category, inquiryTypeOptions)}</span>
                         <span>{formatCode(inquiry.status, inquiryStatusOptions)}</span>
                         <span>{formatCount(inquiry.viewCnt, '-', '')}</span>
                         <span>{formatDateTime(inquiry.answeredAt)}</span>
@@ -2415,7 +2498,7 @@ function AdminCsCreateModal({ type, form, saving, error, onChange, onClose, onSu
     );
 }
 
-function AdminCsDetailModal({ type, item, loading, error, onClose, onEdit, onDelete }) {
+function AdminCsDetailModal({ type, item, loading, error, editing, editForm, saving, onEditFormChange, onEditCancel, onEditSubmit, onClose, onEdit, onDelete }) {
     const isNotice = type === 'notice';
     const title = formatValue(item?.ttl);
     const body = isNotice ? item?.ntcTxt : item?.faqTxt;
@@ -2429,7 +2512,7 @@ function AdminCsDetailModal({ type, item, loading, error, onClose, onEdit, onDel
                         <span className="adminCsDetailType">{isNotice ? '공지사항' : 'FAQ'} 상세</span>
                         <h3 id="adminCsDetailTitle">{title}</h3>
                     </div>
-                    <button type="button" className="adminModalCloseBtn" onClick={onClose} aria-label="닫기">
+                    <button type="button" className="adminModalCloseBtn" onClick={onClose} aria-label="닫기" disabled={saving}>
                         ×
                     </button>
                 </div>
@@ -2437,50 +2520,93 @@ function AdminCsDetailModal({ type, item, loading, error, onClose, onEdit, onDel
                 {error && <div className="adminDashboardNotice">{error}</div>}
                 {loading && <div className="adminDashboardNotice">상세 정보를 불러오는 중입니다.</div>}
 
-                <dl className="adminCsDetailMeta">
-                    <div>
-                        <dt>번호</dt>
-                        <dd>{formatValue(id)}</dd>
-                    </div>
-                    {!isNotice && (
-                        <div>
-                            <dt>카테고리</dt>
-                            <dd>{formatFaqCategory(item?.faqCtgCd)}</dd>
+                {editing && isNotice ? (
+                    <form className="adminCsCreateForm" onSubmit={onEditSubmit}>
+                        <div className="adminField">
+                            <label>제목</label>
+                            <input
+                                type="text"
+                                name="ttl"
+                                value={editForm.ttl}
+                                onChange={onEditFormChange}
+                                placeholder="공지사항 제목을 입력하세요"
+                                disabled={saving}
+                            />
                         </div>
-                    )}
-                    <div>
-                        <dt>사용여부</dt>
-                        <dd>{formatValue(item?.useYn)}</dd>
-                    </div>
-                    <div>
-                        <dt>조회수</dt>
-                        <dd>{formatCount(item?.viewCnt, '-', '')}</dd>
-                    </div>
-                    <div>
-                        <dt>등록일</dt>
-                        <dd>{formatDateTime(item?.crtAt)}</dd>
-                    </div>
-                    <div>
-                        <dt>수정일</dt>
-                        <dd>{formatDateTime(item?.updAt)}</dd>
-                    </div>
-                </dl>
+                        <div className="adminField">
+                            <label>내용</label>
+                            <textarea
+                                name="ntcTxt"
+                                value={editForm.ntcTxt}
+                                onChange={onEditFormChange}
+                                placeholder="공지사항 내용을 입력하세요"
+                                disabled={saving}
+                            />
+                        </div>
+                        <div className="adminField">
+                            <label>사용여부</label>
+                            <select name="useYn" value={editForm.useYn} onChange={onEditFormChange} disabled={saving}>
+                                <option value="Y">공개 Y</option>
+                                <option value="N">비공개 N</option>
+                            </select>
+                        </div>
+                        <div className="adminCsDetailActions">
+                            <button type="button" className="adminSecondaryBtn" onClick={onEditCancel} disabled={saving}>
+                                취소
+                            </button>
+                            <button type="submit" className="adminPrimaryBtn" disabled={saving}>
+                                {saving ? '저장 중' : '저장'}
+                            </button>
+                        </div>
+                    </form>
+                ) : (
+                    <>
+                    <dl className="adminCsDetailMeta">
+                        <div>
+                            <dt>번호</dt>
+                            <dd>{formatValue(id)}</dd>
+                        </div>
+                        {!isNotice && (
+                            <div>
+                                <dt>카테고리</dt>
+                                <dd>{formatFaqCategory(item?.faqCtgCd)}</dd>
+                            </div>
+                        )}
+                        <div>
+                            <dt>사용여부</dt>
+                            <dd>{formatValue(item?.useYn)}</dd>
+                        </div>
+                        <div>
+                            <dt>조회수</dt>
+                            <dd>{formatCount(item?.viewCnt, '-', '')}</dd>
+                        </div>
+                        <div>
+                            <dt>등록일</dt>
+                            <dd>{formatDateTime(item?.crtAt)}</dd>
+                        </div>
+                        <div>
+                            <dt>수정일</dt>
+                            <dd>{formatDateTime(item?.updAt)}</dd>
+                        </div>
+                    </dl>
 
-                <div className="adminCsDetailContent">
-                    {formatMultilineText(body)}
-                </div>
+                    <div className="adminCsDetailContent">
+                        {formatMultilineText(body)}
+                    </div>
 
-                <div className="adminCsDetailActions">
-                    <button type="button" className="adminSecondaryBtn" onClick={onClose}>
-                        닫기
-                    </button>
-                    <button type="button" className="adminSecondaryBtn" onClick={onEdit} disabled={loading}>
-                        수정
-                    </button>
-                    <button type="button" className="adminDangerBtn" onClick={onDelete} disabled={loading}>
-                        삭제
-                    </button>
-                </div>
+                    <div className="adminCsDetailActions">
+                        <button type="button" className="adminSecondaryBtn" onClick={onClose}>
+                            닫기
+                        </button>
+                        <button type="button" className="adminSecondaryBtn" onClick={onEdit} disabled={loading}>
+                            수정
+                        </button>
+                        <button type="button" className="adminDangerBtn" onClick={onDelete} disabled={loading}>
+                            삭제
+                        </button>
+                    </div>
+                    </>
+                )}
             </section>
         </div>
     );
