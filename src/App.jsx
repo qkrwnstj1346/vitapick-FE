@@ -82,7 +82,7 @@ function App() {
                 setIsLoggedIn(false);
                 setUserInfo(null);
                 if (err.status === 502) {
-                    alert("id 또는 password 가 다릅니다, 다시하세요 ~~");
+                    alert("ID 또는 패스워드 오류입니다. 다시 시도해주세요.");
                 } else {
                     alert(`** onLoginSubmit 시스템 오류, err=${err}`);
                 }
