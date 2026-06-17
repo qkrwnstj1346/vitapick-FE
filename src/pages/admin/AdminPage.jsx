@@ -191,10 +191,6 @@ const dashboardPlaceholderData = {
     }
 };
 
-// Visual-only placeholder values. These are not business statistics.
-const placeholderLineChartPoints = '16,112 72,82 128,94 184,58 240,74 304,34';
-const placeholderBarHeights = ['42%', '66%', '54%', '78%', '48%', '72%'];
-
 function AdminPage() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -209,6 +205,10 @@ function AdminPage() {
     const [adminUsersStatusCd, setAdminUsersStatusCd] = useState('');
     const [adminUsersStartDate, setAdminUsersStartDate] = useState('');
     const [adminUsersEndDate, setAdminUsersEndDate] = useState('');
+    const [adminUsersQueryKeyword, setAdminUsersQueryKeyword] = useState('');
+    const [adminUsersQueryStatusCd, setAdminUsersQueryStatusCd] = useState('');
+    const [adminUsersQueryStartDate, setAdminUsersQueryStartDate] = useState('');
+    const [adminUsersQueryEndDate, setAdminUsersQueryEndDate] = useState('');
     const [adminUsersPage, setAdminUsersPage] = useState(0);
     const [adminUsersTotalPages, setAdminUsersTotalPages] = useState(0);
     const [adminUsersTotalElements, setAdminUsersTotalElements] = useState(0);
@@ -342,10 +342,10 @@ function AdminPage() {
                 const response = await getAdminUsers({
                     page: adminUsersPage,
                     size: adminUsersPageSize,
-                    keyword: adminUsersKeyword.trim() || undefined,
-                    statusCd: adminUsersStatusCd || undefined,
-                    startDate: adminUsersStartDate || undefined,
-                    endDate: adminUsersEndDate || undefined
+                    keyword: adminUsersQueryKeyword.trim() || undefined,
+                    statusCd: adminUsersQueryStatusCd || undefined,
+                    startDate: adminUsersQueryStartDate || undefined,
+                    endDate: adminUsersQueryEndDate || undefined
                 });
 
                 if (!isMounted) return;
@@ -372,7 +372,7 @@ function AdminPage() {
         return () => {
             isMounted = false;
         };
-    }, [activeTab, adminUsersEndDate, adminUsersKeyword, adminUsersPage, adminUsersStartDate, adminUsersStatusCd, isAdmin]);
+    }, [activeTab, adminUsersPage, adminUsersQueryEndDate, adminUsersQueryKeyword, adminUsersQueryStartDate, adminUsersQueryStatusCd, isAdmin]);
 
     useEffect(() => {
         if (!isAdmin || activeTab !== 'prd') return;
@@ -744,7 +744,7 @@ function AdminPage() {
                                 <p>{members.description}</p>
                             </div>
                         </div>
-                        <LineChartMock />
+                        <MonthlyLineChart data={members.monthlyNewUsers} />
                         <div className="adminMiniMetricList">
                             {members.metrics.map((item) => (
                                 <MetricCard key={item.label} label={item.label} value={item.value} note={item.note} />
@@ -759,17 +759,7 @@ function AdminPage() {
                                 <p>{orders.description}</p>
                             </div>
                         </div>
-                        <BarChartMock />
-                        <div className="adminDonutWrap">
-                            <div className="adminDonutChart">
-                                <span>API</span>
-                            </div>
-                            <div className="adminDonutLegend">
-                                {orders.statusLabels.map((item) => (
-                                    <span key={item}>{item}</span>
-                                ))}
-                            </div>
-                        </div>
+                        <MonthlyBarChart data={orders.monthlyPaidOrders} />
                     </section>
                 </div>
 
@@ -1276,12 +1266,29 @@ function AdminPage() {
 
     const handleAdminUsersSearch = (event) => {
         event.preventDefault();
+        setAdminUsersQueryKeyword(adminUsersKeyword);
+        setAdminUsersQueryStatusCd(adminUsersStatusCd);
+        setAdminUsersQueryStartDate(adminUsersStartDate);
+        setAdminUsersQueryEndDate(adminUsersEndDate);
         setAdminUsersPage(0);
     };
 
-    const handleAdminUsersFilterChange = (setter) => (event) => {
-        setter(event.target.value);
-        setAdminUsersPage(0);
+    const handleAdminUsersStartDateChange = (event) => {
+        const nextStartDate = event.target.value;
+
+        setAdminUsersStartDate(nextStartDate);
+        setAdminUsersEndDate((currentEndDate) => (
+            currentEndDate && nextStartDate && currentEndDate < nextStartDate ? '' : currentEndDate
+        ));
+        event.currentTarget.parentElement?.querySelector('input[aria-label="가입 종료일"]')?.focus();
+    };
+
+    const handleAdminUsersEndDateChange = (event) => {
+        const nextEndDate = event.target.value;
+
+        setAdminUsersEndDate(
+            adminUsersStartDate && nextEndDate && nextEndDate < adminUsersStartDate ? '' : nextEndDate
+        );
     };
 
     const renderUsers = () => (
@@ -1292,10 +1299,7 @@ function AdminPage() {
                     <input
                         type="text"
                         value={adminUsersKeyword}
-                        onChange={(event) => {
-                            setAdminUsersKeyword(event.target.value);
-                            setAdminUsersPage(0);
-                        }}
+                        onChange={(event) => setAdminUsersKeyword(event.target.value)}
                         placeholder="아이디 또는 닉네임을 입력하세요"
                     />
                 </div>
@@ -1303,7 +1307,7 @@ function AdminPage() {
                     <label>회원 상태</label>
                     <select
                         value={adminUsersStatusCd}
-                        onChange={handleAdminUsersFilterChange(setAdminUsersStatusCd)}
+                        onChange={(event) => setAdminUsersStatusCd(event.target.value)}
                     >
                         {statusCdOptions.map((option) => (
                             <option key={option.value || 'all-status'} value={option.value}>
@@ -1318,14 +1322,15 @@ function AdminPage() {
                         <input
                             type="date"
                             value={adminUsersStartDate}
-                            onChange={handleAdminUsersFilterChange(setAdminUsersStartDate)}
+                            onChange={handleAdminUsersStartDateChange}
                             aria-label="가입 시작일"
                         />
                         <span>~</span>
                         <input
                             type="date"
                             value={adminUsersEndDate}
-                            onChange={handleAdminUsersFilterChange(setAdminUsersEndDate)}
+                            min={adminUsersStartDate || undefined}
+                            onChange={handleAdminUsersEndDateChange}
                             aria-label="가입 종료일"
                         />
                     </div>
@@ -1764,13 +1769,12 @@ function AdminPage() {
     );
 }
 
-function MetricCard({ label, value, basis, note = 'API 연결 후 표시' }) {
+function MetricCard({ label, value, basis }) {
     return (
         <article className="adminMetricCard">
             <span>{label}</span>
             <strong>{value}</strong>
             {basis && <em>{basis}</em>}
-            <p>{note}</p>
         </article>
     );
 }
@@ -2209,29 +2213,99 @@ function AdminCsDetailModal({ type, item, loading, error, onClose, onEdit, onDel
     );
 }
 
-function LineChartMock() {
+function MonthlyLineChart({ data = [] }) {
+    const series = normalizeMonthlySeries(data);
+    const maxCount = getMaxCount(series);
+    const points = createLineChartPoints(series, maxCount);
+
     return (
         <div className="adminChartCard">
-            <svg className="adminLineChart" viewBox="0 0 320 140" role="img" aria-label="회원 가입 추이 연동 예정">
-                <polyline points={placeholderLineChartPoints} />
-                <line x1="16" y1="120" x2="304" y2="120" />
+            <svg className="adminLineChart" viewBox="0 0 720 160" role="img">
+                <line x1="36" y1="120" x2="684" y2="120" />
+                {points && <polyline points={points} />}
+                {series.map((item, index) => {
+                    const x = getChartX(index, series.length);
+                    const y = getChartY(item.count, maxCount);
+
+                    return (
+                        <g key={`${item.month}-${index}`}>
+                            <circle cx={x} cy={y} r="4" />
+                            <text x={x} y="148">{item.month}</text>
+                        </g>
+                    );
+                })}
             </svg>
-            <span>시각용 임시 차트 - API 연동 예정</span>
         </div>
     );
 }
 
-function BarChartMock() {
+function MonthlyBarChart({ data = [] }) {
+    const series = normalizeMonthlySeries(data);
+    const maxCount = getMaxCount(series);
+
     return (
-        <div className="adminChartCard">
-            <div className="adminBarChart" aria-label="일일 주문 건 수 연동 예정">
-                {placeholderBarHeights.map((height) => (
-                    <span key={height} style={{ height }} />
+        <div className="adminChartCard adminOrderChartCard">
+            <div className="adminBarChart" role="img">
+                {series.map((item, index) => (
+                    <div className="adminBarItem" key={`${item.month}-${index}`}>
+                        <span style={{ height: `${getRatioPercent(item.count, maxCount)}%` }} />
+                        <strong>{item.month}</strong>
+                    </div>
                 ))}
             </div>
-            <span>시각용 임시 차트 - API 연동 예정</span>
         </div>
     );
+}
+
+function normalizeMonthlySeries(data) {
+    if (!Array.isArray(data)) {
+        return [];
+    }
+
+    return data
+        .filter((item) => item && item.month !== undefined && item.month !== null)
+        .map((item) => ({
+            month: String(item.month),
+            count: toSafeCount(item.count)
+        }));
+}
+
+function getMaxCount(series) {
+    return Math.max(0, ...series.map((item) => item.count));
+}
+
+function getRatioPercent(value, maxCount) {
+    if (maxCount <= 0) {
+        return 0;
+    }
+
+    return Math.max(0, Math.min(100, (toSafeCount(value) / maxCount) * 100));
+}
+
+function createLineChartPoints(series, maxCount) {
+    if (!series.length) {
+        return '';
+    }
+
+    return series
+        .map((item, index) => `${getChartX(index, series.length)},${getChartY(item.count, maxCount)}`)
+        .join(' ');
+}
+
+function getChartX(index, length) {
+    if (length <= 1) {
+        return 360;
+    }
+
+    return 36 + (648 * index) / (length - 1);
+}
+
+function getChartY(value, maxCount) {
+    if (maxCount <= 0) {
+        return 120;
+    }
+
+    return 120 - (88 * toSafeCount(value)) / maxCount;
 }
 
 function EmptyState({ text }) {
@@ -2275,6 +2349,7 @@ function createDashboardData(summary) {
         },
         members: {
             ...dashboardPlaceholderData.members,
+            monthlyNewUsers: normalizeMonthlySeries(summary.monthlyNewUsers),
             metrics: [
                 {
                     ...dashboardPlaceholderData.members.metrics[0],
@@ -2289,6 +2364,10 @@ function createDashboardData(summary) {
                     value: formatCount(summary.memberStats?.withdrawnCount, dashboardPlaceholderData.members.metrics[2].value, '명'),
                 }
             ]
+        },
+        orders: {
+            ...dashboardPlaceholderData.orders,
+            monthlyPaidOrders: normalizeMonthlySeries(summary.monthlyPaidOrders)
         },
         inquiries: {
             ...dashboardPlaceholderData.inquiries,
@@ -2350,6 +2429,16 @@ function formatCount(value, fallback = '-', unit = '건') {
     }
 
     return `${numberValue.toLocaleString()}${unit}`;
+}
+
+function toSafeCount(value) {
+    const numberValue = Number(value);
+
+    if (!Number.isFinite(numberValue) || numberValue < 0) {
+        return 0;
+    }
+
+    return numberValue;
 }
 
 function formatRate(value, fallback = '-') {
