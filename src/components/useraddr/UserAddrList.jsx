@@ -185,7 +185,7 @@ function UserAddrList() {
                     </h2>
 
                     <p className="addrDesc">
-                        주문 시 사용할 배송지를 관리할 수 있습니다.
+                        배송지 정보를 등록하고 관리할 수 있습니다.
                     </p>
                 </div>
 

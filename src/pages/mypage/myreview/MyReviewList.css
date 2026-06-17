@@ -1,52 +1,64 @@
 /* 전체 영역 */
 .rvw-wrap {
-    max-width: 900px;
-    width: calc(100% - 48px);
-    margin: 40px auto 80px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* 로딩/에러 */
 .rvw-loading,
 .rvw-error {
+    padding: 70px 20px;
     text-align: center;
-    padding: 100px;
     font-size: 16px;
     color: #7FAF8B;
 }
 
 /* 헤더 */
 .rvw-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid #17251c;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 8px 16px;
+    margin-bottom: 28px;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
 /* 제목 */
 .rvw-title {
+    grid-column: 1;
+    margin: 0 0 8px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #24382a;
+}
+
+/* 설명 */
+.rvw-desc {
+    grid-column: 1;
     margin: 0;
-    font-size: 24px;
-    font-weight: 800;
-    color: #17251c;
+    font-size: 15px;
+    color: #7a857c;
 }
 
 /* 총 개수 */
 .rvw-count {
+    grid-column: 2;
+    grid-row: 1 / 3;
     margin: 0;
     font-size: 14px;
-    color: #999;
+    color: #7a857c;
 }
 
 /* 리뷰 없을 때 */
 .rvw-empty {
+    padding: 70px 20px;
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
     text-align: center;
-    padding: 80px;
-    color: #999;
-    font-size: 15px;
-    background-color: #F7FBF7;
-    border-radius: 16px;
+    color: #777;
+    font-size: 16px;
 }
 
 /* 리뷰 목록 */
@@ -60,18 +72,19 @@
 .rvw-item {
     padding: 24px;
     background-color: #ffffff;
-    border: 1px solid #E3EEE5;
-    border-radius: 16px;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 6px 18px rgba(127, 175, 139, 0.08);
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 /* 리뷰 카드 hover */
 .rvw-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(127, 175, 139, 0.15);
+    box-shadow: 0 10px 22px rgba(127, 175, 139, 0.13);
 }
 
 /* 상품 정보 영역 */
@@ -81,14 +94,14 @@
     gap: 16px;
     margin-bottom: 18px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #E3EEE5;
+    border-bottom: 1px solid #e8e8e8;
 }
 
 /* 상품 이미지 박스 */
 .rvw-item__img-box {
     width: 92px;
     height: 92px;
-    border-radius: 14px;
+    border-radius: 16px;
     background-color: #F7FBF7;
     display: flex;
     align-items: center;
@@ -114,7 +127,7 @@
 
 /* 브랜드 */
 .rvw-item__brand {
-    margin: 0 0 4px;
+    margin: 0 0 6px;
     font-size: 13px;
     color: #7FAF8B;
     font-weight: 700;
@@ -124,9 +137,10 @@
 .rvw-item__prdNm {
     margin: 0 0 6px;
     font-size: 16px;
-    color: #17251c;
-    font-weight: 800;
+    color: #24382a;
+    font-weight: 700;
     line-height: 1.4;
+    word-break: keep-all;
 }
 
 /* 가격 */
@@ -153,7 +167,7 @@
 
 /* 날짜 */
 .rvw-item__date {
-    color: #999;
+    color: #7a857c;
     font-size: 13px;
 }
 
@@ -175,13 +189,15 @@
     color: #333;
 }
 
+/* 판매자 답변 제목 */
 .rvw-item__reply strong {
     display: block;
     margin-bottom: 6px;
     color: #7FAF8B;
-    font-weight: 800;
+    font-weight: 700;
 }
 
+/* 판매자 답변 내용 */
 .rvw-item__reply p {
     margin: 0;
     line-height: 1.5;
@@ -205,35 +221,39 @@
 /* 버튼 공통 */
 .rvw-item__prd-btn,
 .rvw-item__detail-btn {
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: #ffffff;
-    font-size: 13px;
-    font-weight: 700;
+    height: 38px;
+    padding: 0 15px;
+    border-radius: 13px;
+    background-color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: 0.2s;
+    white-space: nowrap;
 }
 
 /* 상품 보기 버튼 */
 .rvw-item__prd-btn {
     border: 1px solid #7FAF8B;
-    color: #7FAF8B;
+    color: #4f7a57;
 }
 
 .rvw-item__prd-btn:hover {
     background-color: #7FAF8B;
-    color: #ffffff;
+    color: #fff;
 }
 
 /* 상세보기 버튼 */
 .rvw-item__detail-btn {
-    border: 1px solid #17251c;
-    color: #17251c;
+    border: 1px solid #d8e5da;
+    color: #4f5f52;
 }
 
 .rvw-item__detail-btn:hover {
-    background-color: #17251c;
-    color: #ffffff;
+    border-color: #AFCBB1;
+    background-color: #F7FBF7;
+    color: #4f7a57;
 }
 
 /* 페이지네이션 */
@@ -270,20 +290,38 @@
 .mypage-pagination span {
     font-size: 14px;
     font-weight: 700;
-    color: #17251c;
+    color: #24382a;
+}
+
+/* 태블릿 */
+@media (max-width: 1024px) {
+    .rvw-title {
+        font-size: 24px;
+    }
 }
 
 /* 모바일 */
 @media (max-width: 768px) {
-    .rvw-wrap {
-        width: calc(100% - 32px);
-        margin: 24px auto 60px;
+    .rvw-header {
+        grid-template-columns: 1fr;
+        align-items: flex-start;
+        gap: 0;
+        margin-bottom: 28px;
     }
 
-    .rvw-header {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 8px;
+    .rvw-title {
+        font-size: 24px;
+    }
+
+    .rvw-desc {
+        font-size: 15px;
+    }
+
+    .rvw-count {
+        grid-column: 1;
+        grid-row: auto;
+        margin-top: 8px;
+        font-size: 14px;
     }
 
     .rvw-item {
@@ -310,7 +348,82 @@
 
     .rvw-item__prd-btn,
     .rvw-item__detail-btn {
-        padding: 7px 12px;
+        height: 36px;
+        padding: 0 13px;
+        font-size: 13px;
+    }
+}
+
+/* 작은 모바일 */
+@media (max-width: 480px) {
+    .rvw-title {
+        font-size: 22px;
+    }
+
+    .rvw-desc {
+        font-size: 14px;
+    }
+
+    .rvw-count {
+        font-size: 13px;
+    }
+
+    .rvw-empty {
+        padding: 54px 16px;
+        border-radius: 16px;
+        font-size: 14px;
+    }
+
+    .rvw-item {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .rvw-item__product {
+        gap: 12px;
+    }
+
+    .rvw-item__img-box {
+        width: 72px;
+        height: 72px;
+        border-radius: 14px;
+    }
+
+    .rvw-item__brand {
         font-size: 12px;
+    }
+
+    .rvw-item__prdNm {
+        font-size: 15px;
+    }
+
+    .rvw-item__price {
+        font-size: 13px;
+    }
+
+    .rvw-item__top {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .rvw-item__cmt {
+        font-size: 14px;
+    }
+
+    .rvw-item__reply {
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+
+    .rvw-item__btns {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .rvw-item__prd-btn,
+    .rvw-item__detail-btn {
+        width: 100%;
     }
 }

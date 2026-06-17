@@ -39,7 +39,7 @@ function MyWithdraw(){
         <div className="mywithdraw-wrap">
             <h2>회원탈퇴</h2>
             <p>비밀번호를 입력하면 탈퇴가 진행됩니다.</p>
-            <form className="mywithdraw-from" onSubmit={handleSubmit(onSubmit)}>
+            <form className="mywithdraw-form" onSubmit={handleSubmit(onSubmit)}>
                 <input
                     type="password"
                     placeholder="비밀번호"

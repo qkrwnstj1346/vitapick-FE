@@ -86,6 +86,9 @@ export default function MyReviewList() {
 
             <div className='rvw-header'>
                 <h2 className='rvw-title'>내가 쓴 리뷰</h2>
+                <p className='rvw-desc'>
+                    작성한 상품 리뷰를 확인하고 관리할 수 있습니다.
+                </p>
                 <p className='rvw-count'>총 {rvwList.length}개</p>
             </div>
 

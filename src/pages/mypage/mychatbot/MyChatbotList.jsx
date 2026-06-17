@@ -43,6 +43,7 @@ function MyChatbotList() {
     return (
         <div className="mychat-wrap">
             <h2>AI 챗봇 상담 내역</h2>
+            <p>A.I 챗봇과 진행한 상담 내역을 확인할 수 있습니다</p>
 
             {roomList.length === 0 ? (
                 <p className="mychat-empty">상담 내역이 없습니다.</p>

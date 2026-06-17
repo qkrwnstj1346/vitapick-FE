@@ -192,6 +192,7 @@ export default function MyWishList() {
             {/* 헤더 */}
             <div className='wish-header'>
                 <h2 className='wish-title'>찜한 상품</h2>
+                <p className='wish-desc'>찜한 상품 목록을 확인할 수 있습니다.</p>
                 <p className='wish-count'>총 {wishList.length}개</p>
             </div>
 

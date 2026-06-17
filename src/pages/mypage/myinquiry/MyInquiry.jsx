@@ -85,6 +85,9 @@ function MyInquiry() {
                 <h2 className="my-inq-title">
                     1:1 문의
                 </h2>
+                <p className="my-inq-desc">
+                    작성한 문의 내역과 답변 상태를 확인할 수 있습니다.
+                </p>
 
                 {/* 문의 등록 버튼 */}
                 <button

@@ -1,4 +1,4 @@
-/* 전체 */
+/* 내 비타민 추천 전체 */
 .myCustomList {
     width: 100%;
 }
@@ -21,37 +21,20 @@
     color: #7a857c;
 }
 
-/* 빈 내역 */
-.myCustomEmpty {
-    padding: 70px 20px;
-    background-color: #fff;
-    border: 1px solid #e8e8e8;
-    border-radius: 20px;
-    text-align: center;
-}
-
-.myCustomEmpty p {
-    margin: 0;
-    font-size: 16px;
-    color: #777;
-}
-
-/* 테이블 영역 */
-.myCustomTableWrap {
-    width: 100%;
-    overflow-x: auto;
-    background-color: #fff;
-    border: 1px solid #e8e8e8;
-    border-radius: 20px;
-}
-
 /* 테이블 */
 .myCustomTable {
     width: 100%;
-    border-collapse: collapse;
     min-width: 720px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
 }
 
+/* 컬럼 */
 .myCustomTable th {
     padding: 18px 12px;
     background-color: #f6faf7;
@@ -62,38 +45,49 @@
     text-align: center;
 }
 
+/* 내용 */
 .myCustomTable td {
     padding: 18px 12px;
     border-bottom: 1px solid #f1f1f1;
     font-size: 14px;
     color: #555;
     text-align: center;
+    vertical-align: middle;
 }
 
 .myCustomTable tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* 제목 링크 제거 (버튼으로 대체) */
+/* 제목 링크 */
 .myCustomTable td a {
     text-decoration: none;
     color: inherit;
 }
 
-/* 버튼 공통 */
-.myCustomDetailBtn{
+/* 빈 내역 */
+.myCustomEmpty td {
+    padding: 70px 20px;
+    font-size: 16px;
+    color: #777;
+    text-align: center;
+}
+
+/* 버튼 */
+.myCustomDetailBtn {
     border: none;
     border-radius: 10px;
     padding: 9px 14px;
+    background-color: #7FAF8B;
+    color: #fff;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     transition: 0.2s;
 }
 
-.myCustomDetailBtn {
-    background-color: #7FAF8B;
-    color: #fff;
+/* 첫 번째 버튼만 간격 */
+.myCustomDetailBtn:first-child {
     margin-right: 6px;
 }
 
