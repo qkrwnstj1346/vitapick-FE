@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import Pagination from '../../components/layout/Pagination';
@@ -2258,22 +2258,18 @@ function createDashboardData(summary) {
                 {
                     ...dashboardPlaceholderData.sales.metrics[0],
                     value: formatCurrency(summary.todaySalesAmt, dashboardPlaceholderData.sales.metrics[0].value),
-                    note: 'summary API 기준'
                 },
                 {
                     ...dashboardPlaceholderData.sales.metrics[1],
                     value: formatCurrency(summary.monthSalesAmt, dashboardPlaceholderData.sales.metrics[1].value),
-                    note: 'summary API 기준'
                 },
                 {
                     ...dashboardPlaceholderData.sales.metrics[2],
                     value: formatCount(summary.todayPaidOrderCount, dashboardPlaceholderData.sales.metrics[2].value),
-                    note: 'summary API 기준'
                 },
                 {
                     ...dashboardPlaceholderData.sales.metrics[3],
                     value: summary.popularCategory?.catNm || dashboardPlaceholderData.sales.metrics[3].value,
-                    note: 'summary API 기준'
                 }
             ]
         },
@@ -2283,17 +2279,14 @@ function createDashboardData(summary) {
                 {
                     ...dashboardPlaceholderData.members.metrics[0],
                     value: formatCount(summary.memberStats?.totalCount, dashboardPlaceholderData.members.metrics[0].value, '명'),
-                    note: 'summary API 기준'
                 },
                 {
                     ...dashboardPlaceholderData.members.metrics[1],
                     value: formatCount(summary.memberStats?.activeCount, dashboardPlaceholderData.members.metrics[1].value, '명'),
-                    note: 'summary API 기준'
                 },
                 {
                     ...dashboardPlaceholderData.members.metrics[2],
                     value: formatCount(summary.memberStats?.withdrawnCount, dashboardPlaceholderData.members.metrics[2].value, '명'),
-                    note: 'summary API 기준'
                 }
             ]
         },
@@ -2303,22 +2296,18 @@ function createDashboardData(summary) {
                 {
                     ...dashboardPlaceholderData.inquiries.metrics[0],
                     value: formatCount(summary.inquiryStats?.waitingCount, dashboardPlaceholderData.inquiries.metrics[0].value),
-                    note: 'summary API 기준'
                 },
                 {
                     ...dashboardPlaceholderData.inquiries.metrics[1],
                     value: formatCount(summary.inquiryStats?.answeredCount, dashboardPlaceholderData.inquiries.metrics[1].value),
-                    note: 'summary API 기준'
                 },
                 {
                     ...dashboardPlaceholderData.inquiries.metrics[2],
                     value: formatCount(summary.inquiryStats?.todayNewCount, dashboardPlaceholderData.inquiries.metrics[2].value),
-                    note: 'summary API 기준'
                 },
                 {
                     ...dashboardPlaceholderData.inquiries.metrics[3],
                     value: formatRate(summary.inquiryStats?.answerRate, dashboardPlaceholderData.inquiries.metrics[3].value),
-                    note: 'summary API 기준'
                 }
             ]
         },
