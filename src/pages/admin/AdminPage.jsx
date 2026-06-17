@@ -7,7 +7,7 @@ import { createFaq, createNotice, deleteFaq, deleteNotice, getFaqDetail, getNoti
 import { getAdminDashboardSummary } from '../../service/admin/adminDashboardApi';
 import { getAdminOrders } from '../../service/admin/adminOrdersApi';
 import { getAdminProducts } from '../../service/admin/adminProductsApi';
-import { getAdminReviews } from '../../service/admin/adminReviewsApi';
+import { deleteAdminReviewReply, getAdminReviewDetail, getAdminReviews, saveAdminReviewReply } from '../../service/admin/adminReviewsApi';
 import { getAdminUsers } from '../../service/admin/adminUsersApi';
 import './Admin.css';
 
@@ -42,6 +42,11 @@ const productCategoryOptions = [
 ];
 const orderStatusOptions = [
     { value: 'PAID', label: '결제완료' }
+];
+const orderPaymentMethodOptions = [
+    { value: '', label: '전체' },
+    { value: 'CARD', label: '카드결제' },
+    { value: 'BANK', label: '무통장 입금' }
 ];
 const reviewRatingOptions = [
     { value: '', label: '전체' },
@@ -228,9 +233,13 @@ function AdminPage() {
     const [adminOrdersLoading, setAdminOrdersLoading] = useState(false);
     const [adminOrdersError, setAdminOrdersError] = useState('');
     const [adminOrdersKeyword, setAdminOrdersKeyword] = useState('');
-    const [adminOrdersCategoryId, setAdminOrdersCategoryId] = useState('');
+    const [adminOrdersPayMthdCd, setAdminOrdersPayMthdCd] = useState('');
     const [adminOrdersStartDate, setAdminOrdersStartDate] = useState('');
     const [adminOrdersEndDate, setAdminOrdersEndDate] = useState('');
+    const [adminOrdersQueryKeyword, setAdminOrdersQueryKeyword] = useState('');
+    const [adminOrdersQueryPayMthdCd, setAdminOrdersQueryPayMthdCd] = useState('');
+    const [adminOrdersQueryStartDate, setAdminOrdersQueryStartDate] = useState('');
+    const [adminOrdersQueryEndDate, setAdminOrdersQueryEndDate] = useState('');
     const [adminOrdersPage, setAdminOrdersPage] = useState(0);
     const [adminOrdersTotalPages, setAdminOrdersTotalPages] = useState(0);
     const [adminOrdersTotalElements, setAdminOrdersTotalElements] = useState(0);
@@ -241,9 +250,18 @@ function AdminPage() {
     const [adminReviewsRating, setAdminReviewsRating] = useState('');
     const [adminReviewsStartDate, setAdminReviewsStartDate] = useState('');
     const [adminReviewsEndDate, setAdminReviewsEndDate] = useState('');
+    const [adminReviewsQueryKeyword, setAdminReviewsQueryKeyword] = useState('');
+    const [adminReviewsQueryRating, setAdminReviewsQueryRating] = useState('');
+    const [adminReviewsQueryStartDate, setAdminReviewsQueryStartDate] = useState('');
+    const [adminReviewsQueryEndDate, setAdminReviewsQueryEndDate] = useState('');
     const [adminReviewsPage, setAdminReviewsPage] = useState(0);
     const [adminReviewsTotalPages, setAdminReviewsTotalPages] = useState(0);
     const [adminReviewsTotalElements, setAdminReviewsTotalElements] = useState(0);
+    const [adminReviewDetailModal, setAdminReviewDetailModal] = useState(null);
+    const [adminReviewDetailLoading, setAdminReviewDetailLoading] = useState(false);
+    const [adminReviewDetailSaving, setAdminReviewDetailSaving] = useState(false);
+    const [adminReviewDetailError, setAdminReviewDetailError] = useState('');
+    const [adminReviewReplyText, setAdminReviewReplyText] = useState('');
     const [adminCsActiveTab, setAdminCsActiveTab] = useState('notices');
     const [adminCsNotices, setAdminCsNotices] = useState([]);
     const [adminCsNoticesLoading, setAdminCsNoticesLoading] = useState(false);
@@ -434,10 +452,10 @@ function AdminPage() {
                 const response = await getAdminOrders({
                     page: adminOrdersPage,
                     size: adminOrdersPageSize,
-                    keyword: adminOrdersKeyword.trim() || undefined,
-                    categoryId: adminOrdersCategoryId || undefined,
-                    startDate: adminOrdersStartDate || undefined,
-                    endDate: adminOrdersEndDate || undefined
+                    keyword: adminOrdersQueryKeyword.trim() || undefined,
+                    payMthdCd: adminOrdersQueryPayMthdCd || undefined,
+                    startDate: adminOrdersQueryStartDate || undefined,
+                    endDate: adminOrdersQueryEndDate || undefined
                 });
 
                 if (!isMounted) return;
@@ -466,11 +484,11 @@ function AdminPage() {
         };
     }, [
         activeTab,
-        adminOrdersCategoryId,
-        adminOrdersEndDate,
-        adminOrdersKeyword,
         adminOrdersPage,
-        adminOrdersStartDate,
+        adminOrdersQueryEndDate,
+        adminOrdersQueryKeyword,
+        adminOrdersQueryPayMthdCd,
+        adminOrdersQueryStartDate,
         isAdmin
     ]);
 
@@ -487,10 +505,10 @@ function AdminPage() {
                 const response = await getAdminReviews({
                     page: adminReviewsPage,
                     size: adminReviewsPageSize,
-                    keyword: adminReviewsKeyword.trim() || undefined,
-                    rating: adminReviewsRating || undefined,
-                    startDate: adminReviewsStartDate || undefined,
-                    endDate: adminReviewsEndDate || undefined
+                    keyword: adminReviewsQueryKeyword.trim() || undefined,
+                    rating: adminReviewsQueryRating || undefined,
+                    startDate: adminReviewsQueryStartDate || undefined,
+                    endDate: adminReviewsQueryEndDate || undefined
                 });
 
                 if (!isMounted) return;
@@ -519,11 +537,11 @@ function AdminPage() {
         };
     }, [
         activeTab,
-        adminReviewsEndDate,
-        adminReviewsKeyword,
         adminReviewsPage,
-        adminReviewsRating,
-        adminReviewsStartDate,
+        adminReviewsQueryEndDate,
+        adminReviewsQueryKeyword,
+        adminReviewsQueryRating,
+        adminReviewsQueryStartDate,
         isAdmin
     ]);
 
@@ -1486,12 +1504,29 @@ function AdminPage() {
 
     const handleAdminOrdersSearch = (event) => {
         event.preventDefault();
+        setAdminOrdersQueryKeyword(adminOrdersKeyword);
+        setAdminOrdersQueryPayMthdCd(adminOrdersPayMthdCd);
+        setAdminOrdersQueryStartDate(adminOrdersStartDate);
+        setAdminOrdersQueryEndDate(adminOrdersEndDate);
         setAdminOrdersPage(0);
     };
 
-    const handleAdminOrdersFilterChange = (setter) => (event) => {
-        setter(event.target.value);
-        setAdminOrdersPage(0);
+    const handleAdminOrdersStartDateChange = (event) => {
+        const nextStartDate = event.target.value;
+
+        setAdminOrdersStartDate(nextStartDate);
+        setAdminOrdersEndDate((currentEndDate) => (
+            currentEndDate && nextStartDate && currentEndDate < nextStartDate ? '' : currentEndDate
+        ));
+        event.currentTarget.parentElement?.querySelector('input[aria-label="주문 종료일"]')?.focus();
+    };
+
+    const handleAdminOrdersEndDateChange = (event) => {
+        const nextEndDate = event.target.value;
+
+        setAdminOrdersEndDate(
+            adminOrdersStartDate && nextEndDate && nextEndDate < adminOrdersStartDate ? '' : nextEndDate
+        );
     };
 
     const renderOrd = () => (
@@ -1502,20 +1537,17 @@ function AdminPage() {
                     <input
                         type="text"
                         value={adminOrdersKeyword}
-                        onChange={(event) => {
-                            setAdminOrdersKeyword(event.target.value);
-                            setAdminOrdersPage(0);
-                        }}
+                        onChange={(event) => setAdminOrdersKeyword(event.target.value)}
                         placeholder="주문번호, 상품명, 구매자를 입력하세요"
                     />
                 </div>
                 <div className="adminField">
-                    <label>카테고리</label>
+                    <label>결제수단</label>
                     <select
-                        value={adminOrdersCategoryId}
-                        onChange={handleAdminOrdersFilterChange(setAdminOrdersCategoryId)}
+                        value={adminOrdersPayMthdCd}
+                        onChange={(event) => setAdminOrdersPayMthdCd(event.target.value)}
                     >
-                        {productCategoryOptions.map((option) => (
+                        {orderPaymentMethodOptions.map((option) => (
                             <option key={option.value || 'all-order-category'} value={option.value}>
                                 {option.label}
                             </option>
@@ -1528,14 +1560,15 @@ function AdminPage() {
                         <input
                             type="date"
                             value={adminOrdersStartDate}
-                            onChange={handleAdminOrdersFilterChange(setAdminOrdersStartDate)}
+                            onChange={handleAdminOrdersStartDateChange}
                             aria-label="주문 시작일"
                         />
                         <span>~</span>
                         <input
                             type="date"
                             value={adminOrdersEndDate}
-                            onChange={handleAdminOrdersFilterChange(setAdminOrdersEndDate)}
+                            min={adminOrdersStartDate || undefined}
+                            onChange={handleAdminOrdersEndDateChange}
                             aria-label="주문 종료일"
                         />
                     </div>
@@ -1592,12 +1625,111 @@ function AdminPage() {
 
     const handleAdminReviewsSearch = (event) => {
         event.preventDefault();
+        setAdminReviewsQueryKeyword(adminReviewsKeyword);
+        setAdminReviewsQueryRating(adminReviewsRating);
+        setAdminReviewsQueryStartDate(adminReviewsStartDate);
+        setAdminReviewsQueryEndDate(adminReviewsEndDate);
         setAdminReviewsPage(0);
     };
 
-    const handleAdminReviewsFilterChange = (setter) => (event) => {
-        setter(event.target.value);
-        setAdminReviewsPage(0);
+    const handleAdminReviewsStartDateChange = (event) => {
+        const nextStartDate = event.target.value;
+
+        setAdminReviewsStartDate(nextStartDate);
+        setAdminReviewsEndDate((currentEndDate) => (
+            currentEndDate && nextStartDate && currentEndDate < nextStartDate ? '' : currentEndDate
+        ));
+        event.currentTarget.parentElement?.querySelector('input[aria-label="등록 종료일"]')?.focus();
+    };
+
+    const handleAdminReviewsEndDateChange = (event) => {
+        const nextEndDate = event.target.value;
+
+        setAdminReviewsEndDate(
+            adminReviewsStartDate && nextEndDate && nextEndDate < adminReviewsStartDate ? '' : nextEndDate
+        );
+    };
+
+    const closeAdminReviewDetailModal = () => {
+        if (adminReviewDetailSaving) return;
+        setAdminReviewDetailModal(null);
+        setAdminReviewDetailError('');
+        setAdminReviewReplyText('');
+    };
+
+    const handleAdminReviewDetailOpen = async (review) => {
+        const reviewId = review?.reviewId;
+
+        if (!reviewId) return;
+
+        setAdminReviewDetailModal(review);
+        setAdminReviewReplyText(review.replyTxt || '');
+        setAdminReviewDetailLoading(true);
+        setAdminReviewDetailError('');
+
+        try {
+            const detail = await getAdminReviewDetail(reviewId);
+            const nextDetail = detail || review;
+            setAdminReviewDetailModal(nextDetail);
+            setAdminReviewReplyText(nextDetail.replyTxt || '');
+        } catch {
+            setAdminReviewDetailModal(review);
+            setAdminReviewDetailError('상세 정보를 불러오지 못했습니다.');
+        } finally {
+            setAdminReviewDetailLoading(false);
+        }
+    };
+
+    const handleAdminReviewReplySave = async () => {
+        const reviewId = adminReviewDetailModal?.reviewId;
+
+        if (!reviewId) return;
+
+        setAdminReviewDetailSaving(true);
+        setAdminReviewDetailError('');
+
+        try {
+            const detail = await saveAdminReviewReply(reviewId, { replyTxt: adminReviewReplyText });
+            const nextReplyText = detail?.replyTxt ?? adminReviewReplyText;
+            setAdminReviewDetailModal((current) => ({
+                ...current,
+                ...(detail || {}),
+                replyTxt: nextReplyText
+            }));
+            setAdminReviews((reviews) => reviews.map((review) => (
+                review.reviewId === reviewId ? { ...review, replyTxt: nextReplyText } : review
+            )));
+            setAdminReviewReplyText(nextReplyText);
+        } catch {
+            setAdminReviewDetailError('답글 저장에 실패했습니다.');
+        } finally {
+            setAdminReviewDetailSaving(false);
+        }
+    };
+
+    const handleAdminReviewReplyDelete = async () => {
+        const reviewId = adminReviewDetailModal?.reviewId;
+
+        if (!reviewId) return;
+
+        setAdminReviewDetailSaving(true);
+        setAdminReviewDetailError('');
+
+        try {
+            await deleteAdminReviewReply(reviewId);
+            setAdminReviewDetailModal((current) => ({
+                ...current,
+                replyTxt: ''
+            }));
+            setAdminReviews((reviews) => reviews.map((review) => (
+                review.reviewId === reviewId ? { ...review, replyTxt: '' } : review
+            )));
+            setAdminReviewReplyText('');
+        } catch {
+            setAdminReviewDetailError('답글 삭제에 실패했습니다.');
+        } finally {
+            setAdminReviewDetailSaving(false);
+        }
     };
 
     const renderRvw = () => (
@@ -1608,10 +1740,7 @@ function AdminPage() {
                     <input
                         type="text"
                         value={adminReviewsKeyword}
-                        onChange={(event) => {
-                            setAdminReviewsKeyword(event.target.value);
-                            setAdminReviewsPage(0);
-                        }}
+                        onChange={(event) => setAdminReviewsKeyword(event.target.value)}
                         placeholder="상품명, 작성자를 입력하세요"
                     />
                 </div>
@@ -1619,7 +1748,7 @@ function AdminPage() {
                     <label>평점</label>
                     <select
                         value={adminReviewsRating}
-                        onChange={handleAdminReviewsFilterChange(setAdminReviewsRating)}
+                        onChange={(event) => setAdminReviewsRating(event.target.value)}
                     >
                         {reviewRatingOptions.map((option) => (
                             <option key={option.value || 'all-review-rating'} value={option.value}>
@@ -1634,14 +1763,15 @@ function AdminPage() {
                         <input
                             type="date"
                             value={adminReviewsStartDate}
-                            onChange={handleAdminReviewsFilterChange(setAdminReviewsStartDate)}
+                            onChange={handleAdminReviewsStartDateChange}
                             aria-label="등록 시작일"
                         />
                         <span>~</span>
                         <input
                             type="date"
                             value={adminReviewsEndDate}
-                            onChange={handleAdminReviewsFilterChange(setAdminReviewsEndDate)}
+                            min={adminReviewsStartDate || undefined}
+                            onChange={handleAdminReviewsEndDateChange}
                             aria-label="등록 종료일"
                         />
                     </div>
@@ -1672,7 +1802,7 @@ function AdminPage() {
 
                 {!adminReviewsError && adminReviews.length > 0 && (
                     <>
-                        <AdminReviewsTable reviews={adminReviews} />
+                        <AdminReviewsTable reviews={adminReviews} onReviewOpen={handleAdminReviewDetailOpen} />
                         <div className="adminPagination">
                             <button
                                 type="button"
@@ -1693,6 +1823,19 @@ function AdminPage() {
                     </>
                 )}
             </section>
+            {adminReviewDetailModal && (
+                <AdminReviewDetailModal
+                    review={adminReviewDetailModal}
+                    replyText={adminReviewReplyText}
+                    loading={adminReviewDetailLoading}
+                    saving={adminReviewDetailSaving}
+                    error={adminReviewDetailError}
+                    onReplyChange={(event) => setAdminReviewReplyText(event.target.value)}
+                    onReplySave={handleAdminReviewReplySave}
+                    onReplyDelete={handleAdminReviewReplyDelete}
+                    onClose={closeAdminReviewDetailModal}
+                />
+            )}
         </>
     );
 
@@ -1907,7 +2050,7 @@ function AdminOrdersTable({ orders }) {
                 <span>구매자 ID</span>
                 <span>구매자명</span>
                 <span>결제금액</span>
-                <span>상태</span>
+                <span>결제수단</span>
                 <span>주문일</span>
                 <span>수정일</span>
             </div>
@@ -1919,7 +2062,7 @@ function AdminOrdersTable({ orders }) {
                         <span>{formatValue(order.buyerId)}</span>
                         <span>{formatValue(order.buyerName)}</span>
                         <span>{formatCurrency(order.totalPrice)}</span>
-                        <span>{formatCode(order.orderStatus, orderStatusOptions)}</span>
+                        <span>{formatCode(order.payMthdCd, orderPaymentMethodOptions)}</span>
                         <span>{formatDateTime(order.createdAt)}</span>
                         <span>{formatDateTime(order.updatedAt)}</span>
                     </div>
@@ -1929,7 +2072,7 @@ function AdminOrdersTable({ orders }) {
     );
 }
 
-function AdminReviewsTable({ reviews }) {
+function AdminReviewsTable({ reviews, onReviewOpen }) {
     return (
         <div className="adminReviewsTable">
             <div className="adminReviewsHead">
@@ -1940,7 +2083,6 @@ function AdminReviewsTable({ reviews }) {
                 <span>작성자명</span>
                 <span>평점</span>
                 <span>내용</span>
-                <span>표시여부</span>
                 <span>작성일</span>
                 <span>수정일</span>
             </div>
@@ -1953,10 +2095,9 @@ function AdminReviewsTable({ reviews }) {
                         <span>{formatValue(review.writerId)}</span>
                         <span>{formatValue(review.writerName)}</span>
                         <span>{formatRating(review.rating)}</span>
-                        <span className="adminReviewContent" title={formatValue(review.content)}>
+                        <button type="button" className="adminReviewContent" title={formatValue(review.content)} onClick={() => onReviewOpen(review)}>
                             {formatValue(review.content)}
-                        </span>
-                        <span>{formatCode(review.useYn, reviewUseYnOptions)}</span>
+                        </button>
                         <span>{formatDateTime(review.createdAt)}</span>
                         <span>{formatDateTime(review.updatedAt)}</span>
                     </div>
@@ -2059,6 +2200,81 @@ function AdminCsInquiriesTable({ inquiries }) {
                     </div>
                 ))}
             </div>
+        </div>
+    );
+}
+
+function AdminReviewDetailModal({ review, replyText, loading, saving, error, onReplyChange, onReplySave, onReplyDelete, onClose }) {
+    return (
+        <div className="adminModalOverlay" role="presentation" onClick={onClose}>
+            <section className="adminCsDetailModal adminReviewDetailModal" role="dialog" aria-modal="true" aria-labelledby="adminReviewDetailTitle" onClick={(event) => event.stopPropagation()}>
+                <div className="adminCsDetailHeader">
+                    <div>
+                        <span className="adminCsDetailType">리뷰 관리</span>
+                        <h3 id="adminReviewDetailTitle">{formatValue(review?.productName)}</h3>
+                    </div>
+                    <button type="button" className="adminModalCloseBtn" onClick={onClose} aria-label="닫기" disabled={saving}>
+                        ×
+                    </button>
+                </div>
+
+                {error && <div className="adminDashboardNotice">{error}</div>}
+                {loading && <div className="adminDashboardNotice">상세 정보를 불러오는 중입니다.</div>}
+
+                <dl className="adminCsDetailMeta">
+                    <div>
+                        <dt>리뷰번호</dt>
+                        <dd>{formatValue(review?.reviewId)}</dd>
+                    </div>
+                    <div>
+                        <dt>상품명</dt>
+                        <dd>{formatValue(review?.productName)}</dd>
+                    </div>
+                    <div>
+                        <dt>작성자 ID</dt>
+                        <dd>{formatValue(review?.writerId)}</dd>
+                    </div>
+                    <div>
+                        <dt>작성자명</dt>
+                        <dd>{formatValue(review?.writerName)}</dd>
+                    </div>
+                    <div>
+                        <dt>평점</dt>
+                        <dd>{formatRating(review?.rating)}</dd>
+                    </div>
+                    <div>
+                        <dt>등록일</dt>
+                        <dd>{formatDateTime(review?.createdAt)}</dd>
+                    </div>
+                </dl>
+
+                <div className="adminCsDetailContent adminReviewDetailContent">
+                    <strong>리뷰내용</strong>
+                    {formatMultilineText(review?.content)}
+                </div>
+
+                <div className="adminReviewReplyBox">
+                    <label htmlFor="adminReviewReplyText">답글</label>
+                    <textarea
+                        id="adminReviewReplyText"
+                        value={replyText}
+                        onChange={onReplyChange}
+                        disabled={loading || saving}
+                    />
+                </div>
+
+                <div className="adminCsDetailActions">
+                    <button type="button" className="adminSecondaryBtn" onClick={onClose} disabled={saving}>
+                        닫기
+                    </button>
+                    <button type="button" className="adminSecondaryBtn" onClick={onReplyDelete} disabled={loading || saving}>
+                        삭제
+                    </button>
+                    <button type="button" className="adminPrimaryBtn" onClick={onReplySave} disabled={loading || saving}>
+                        답글
+                    </button>
+                </div>
+            </section>
         </div>
     );
 }
