@@ -820,8 +820,8 @@
 .adminReviewsHead,
 .adminReviewsRow {
     display: grid;
-    grid-template-columns: 90px 90px minmax(160px, 1.2fr) minmax(120px, 1fr) minmax(110px, 1fr) 80px minmax(220px, 1.6fr) 90px minmax(140px, 1fr) minmax(140px, 1fr);
-    min-width: 1240px;
+    grid-template-columns: 90px 90px minmax(160px, 1.2fr) minmax(120px, 1fr) minmax(110px, 1fr) 80px minmax(220px, 1.6fr) minmax(140px, 1fr) minmax(140px, 1fr);
+    min-width: 1150px;
 }
 
 .adminReviewsHead {
@@ -835,9 +835,11 @@
 .adminReviewsRow span {
     display: flex;
     align-items: center;
+    justify-content: center;
     min-width: 0;
     padding: 14px 16px;
     border-bottom: 1px solid #e5efe9;
+    text-align: center;
 }
 
 .adminReviewsRow {
@@ -852,8 +854,28 @@
 .adminReviewsRow .adminReviewContent {
     display: block;
     overflow: hidden;
+    width: 100%;
+    min-width: 0;
+    padding: 14px 16px;
+    border: 0;
+    border-bottom: 1px solid #e5efe9;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: pointer;
+}
+
+.adminReviewsRow .adminReviewContent:hover,
+.adminReviewsRow .adminReviewContent:focus-visible {
+    color: #3d8b55;
+    text-decoration: underline;
+}
+
+.adminReviewsBody .adminReviewsRow:last-child .adminReviewContent {
+    border-bottom: 0;
 }
 
 .adminCsInquiryFilterCard {
@@ -1136,6 +1158,42 @@
 
 .adminCsCreateForm .adminDashboardNotice {
     margin: 0;
+}
+
+.adminReviewDetailContent strong {
+    color: #4f665b;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.adminReviewReplyBox {
+    display: grid;
+    gap: 8px;
+    padding: 0 26px 24px;
+}
+
+.adminReviewReplyBox label {
+    color: #4f665b;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.adminReviewReplyBox textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    border: 1px solid #dbe9e0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #2d3b34;
+    font: inherit;
+    line-height: 1.6;
+}
+
+.adminReviewReplyBox textarea:focus {
+    outline: none;
+    border-color: #6bb27b;
+    box-shadow: 0 0 0 3px rgba(107, 178, 123, 0.16);
 }
 
 .adminCsDetailActions {
