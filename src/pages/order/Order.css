@@ -51,6 +51,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
     margin-bottom: 20px;
 }
 
@@ -60,6 +61,7 @@
 
 /* 배송지 버튼 */
 .addAddrBtn {
+    flex-shrink: 0;
     border: none;
     border-radius: 12px;
     background-color: #7FAF8B;
@@ -90,6 +92,7 @@
     font-size: 14px;
     color: #555;
     line-height: 1.5;
+    word-break: keep-all;
 }
 
 /* 배송지 없음 */
@@ -112,6 +115,7 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 8px;
+    flex-wrap: wrap;
 }
 
 .addrNameRow strong {
@@ -133,23 +137,17 @@
     width: 100%;
     height: 50px;
     padding: 0 42px 0 16px;
-
     border: 1px solid #d8e5da;
     border-radius: 14px;
-
     background-color: #fff;
     color: #333;
-
     font-size: 14px;
     font-weight: 500;
     font-family: inherit;
-
     outline: none;
     box-sizing: border-box;
-
     cursor: pointer;
     transition: 0.2s;
-
     appearance: none;
     background-image: linear-gradient(45deg, transparent 50%, #333 50%),
         linear-gradient(135deg, #333 50%, transparent 50%);
@@ -177,26 +175,19 @@
 
 .orderRequestTextarea {
     display: block;
-
     width: 100%;
     min-height: 100px;
-
     margin-top: 12px;
     padding: 16px;
-
     border: 1px solid #d8e5da;
     border-radius: 14px;
-
     background-color: #fff;
     color: #333;
-
     resize: vertical;
     box-sizing: border-box;
-
     font-size: 14px;
     line-height: 1.6;
     font-family: inherit;
-
     outline: none;
     transition: 0.2s;
 }
@@ -256,6 +247,7 @@
     margin-bottom: 6px;
     font-size: 17px;
     color: #333;
+    word-break: keep-all;
 }
 
 .orderItemInfo p {
@@ -274,6 +266,7 @@
     font-size: 17px;
     font-weight: 700;
     color: #333;
+    white-space: nowrap;
 }
 
 /* 결제수단 */
@@ -287,6 +280,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0;
     padding: 16px 18px;
     border: 1px solid #e5e5e5;
     border-radius: 14px;
@@ -319,6 +313,7 @@
     position: sticky;
     top: 100px;
     width: 340px;
+    flex-shrink: 0;
     padding: 28px;
     border: 1px solid #e8e8e8;
     border-radius: 20px;
@@ -338,6 +333,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
     margin: 22px 0;
     padding-top: 20px;
     border-top: 1px solid #eee;
@@ -353,6 +349,7 @@
     font-size: 24px;
     font-weight: 800;
     color: #4f7a57;
+    white-space: nowrap;
 }
 
 /* 주문 버튼 */
@@ -389,6 +386,7 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 /* 배송지 모달 */
@@ -406,7 +404,7 @@
 
 /* 모달 제목 */
 .addrModalTitle {
-    margin: 0 0 22px;
+    margin: 0 40px 22px 0;
     font-size: 22px;
     font-weight: 700;
     color: #333;
@@ -461,6 +459,7 @@
     font-size: 14px;
     color: #555;
     line-height: 1.5;
+    word-break: keep-all;
 }
 
 /* 배송지 선택 버튼 */
@@ -484,8 +483,17 @@
 
 /* 태블릿 */
 @media (max-width: 1024px) {
+    .orderPage {
+        padding: 36px 24px 110px;
+    }
+
     .orderContent {
         flex-direction: column;
+        gap: 24px;
+    }
+
+    .orderLeft {
+        width: 100%;
     }
 
     .orderSummary {
@@ -501,6 +509,7 @@
     }
 
     .orderTitle {
+        margin-bottom: 22px;
         font-size: 28px;
     }
 
@@ -508,6 +517,11 @@
     .orderSummary {
         padding: 22px;
         border-radius: 18px;
+    }
+
+    .orderSection h3,
+    .orderSummary h3 {
+        font-size: 20px;
     }
 
     .orderSectionTop {
@@ -520,8 +534,17 @@
         width: 100%;
     }
 
+    .selectedAddrBox {
+        padding: 18px;
+    }
+
     .payMethodBox {
         flex-direction: column;
+    }
+
+    .payMethodBox label {
+        width: 100%;
+        padding: 15px 16px;
     }
 
     .orderItem {
@@ -534,13 +557,27 @@
         height: 74px;
     }
 
+    .orderItemInfo strong {
+        font-size: 16px;
+    }
+
     .orderItemPrice {
         margin-left: auto;
+        padding-top: 2px;
+        font-size: 16px;
         text-align: right;
     }
 
+    .addrModalBg {
+        align-items: flex-end;
+        padding: 16px;
+    }
+
     .addrModalBox {
+        max-width: 100%;
+        max-height: 86vh;
         padding: 24px;
+        border-radius: 20px 20px 0 0;
     }
 
     .addrCard {
@@ -562,23 +599,71 @@
         font-size: 24px;
     }
 
+    .orderContent {
+        gap: 20px;
+    }
+
+    .orderSection,
+    .orderSummary {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .orderSection {
+        margin-bottom: 20px;
+    }
+
     .orderSection h3,
     .orderSummary h3 {
-        font-size: 20px;
+        font-size: 19px;
+    }
+
+    .emptyAddrBox {
+        padding: 30px 16px;
+    }
+
+    .orderRequestSelect {
+        height: 48px;
+        font-size: 13px;
+    }
+
+    .orderRequestTextarea {
+        min-height: 90px;
+        padding: 14px;
+        font-size: 13px;
     }
 
     .orderItem {
-        gap: 10px;
+        display: grid;
+        grid-template-columns: 66px 1fr;
+        gap: 10px 12px;
+        align-items: flex-start;
+        padding: 16px 0;
     }
 
     .orderItemImg {
         width: 66px;
         height: 66px;
         border-radius: 12px;
+        grid-row: span 2;
     }
 
-    .addrNameRow {
-        flex-wrap: wrap;
+    .orderItemInfo strong {
+        font-size: 15px;
+        line-height: 1.35;
+    }
+
+    .orderItemInfo p,
+    .orderItemInfo span {
+        font-size: 13px;
+    }
+
+    .orderItemPrice {
+        grid-column: 2;
+        margin-left: 0;
+        padding-top: 0;
+        font-size: 15px;
+        text-align: left;
     }
 
     .summaryTotal {
@@ -589,18 +674,53 @@
 
     .summaryTotal strong {
         font-size: 22px;
+        white-space: normal;
+    }
+
+    .orderBtn {
+        height: 50px;
+        font-size: 16px;
     }
 
     .addrModalBg {
-        padding: 12px;
+        padding: 10px;
     }
 
     .addrModalBox {
         padding: 22px 18px;
-        border-radius: 18px;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .addrModalTitle {
+        font-size: 20px;
     }
 
     .addrCard {
         padding: 16px;
+    }
+}
+
+/* 아주 작은 모바일 */
+@media (max-width: 360px) {
+    .orderPage {
+        padding: 24px 12px 80px;
+    }
+
+    .orderSection,
+    .orderSummary {
+        padding: 16px;
+    }
+
+    .orderItem {
+        grid-template-columns: 58px 1fr;
+    }
+
+    .orderItemImg {
+        width: 58px;
+        height: 58px;
+    }
+
+    .summaryTotal strong {
+        font-size: 20px;
     }
 }

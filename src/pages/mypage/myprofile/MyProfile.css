@@ -60,6 +60,7 @@
     color: #333;
     outline: none;
     background-color: #fff;
+    min-width: 0;
 }
 
 .myProfileField input:focus,
@@ -115,35 +116,60 @@
     .myProfileForm {
         padding: 28px;
     }
-}
-
-/* 모바일 */
-@media (max-width: 768px) {
-    .myProfileHeader h2 {
-        font-size: 24px;
-    }
 
     .myProfileField {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
+        display: block;
+        margin-bottom: 16px;
     }
 
     .myProfileField label {
+        display: block;
         width: 100%;
+        margin-bottom: 8px;
+        font-size: 14px;
     }
 
     .myProfileField input,
     .myProfileField select {
+        display: block;
         width: 100%;
+        height: 45px;
+        font-size: 14px;
     }
 
     .myProfileError {
-        margin-left: 0;
+        margin: -6px 0 14px;
+        font-size: 13px;
     }
 
     .myProfileButtons button {
         width: 100%;
+        min-width: 0;
+    }
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .myProfileHeader {
+        margin-bottom: 22px;
+    }
+
+    .myProfileHeader h2 {
+        font-size: 24px;
+    }
+
+    .myProfileHeader p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .myProfileForm {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    .myProfileButtons {
+        margin-top: 24px;
     }
 }
 
@@ -151,6 +177,7 @@
 @media (max-width: 480px) {
     .myProfileForm {
         padding: 22px 18px;
+        border-radius: 16px;
     }
 
     .myProfileHeader h2 {
@@ -161,9 +188,21 @@
         font-size: 14px;
     }
 
+    .myProfileField {
+        margin-bottom: 15px;
+    }
+
     .myProfileField input,
     .myProfileField select {
         height: 44px;
+        padding: 0 12px;
         font-size: 14px;
+        border-radius: 11px;
+    }
+
+    .myProfileButtons button {
+        height: 45px;
+        font-size: 14px;
+        border-radius: 12px;
     }
 }

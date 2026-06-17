@@ -1,18 +1,17 @@
 /* 상품평 영역 */
 .detail_rvw {
-    padding: 28px 0 42px;
+    padding: 32px 0 48px;
     box-sizing: border-box;
 }
 
-/* 평균 평점 박스 */
+/* 평균 평점 */
 .rvw_summary {
     text-align: center;
-    padding: 30px 20px;
+    padding: 32px 24px;
     border: 1px solid #E3EEE5;
     border-radius: 18px;
-    margin-bottom: 20px;
     background-color: #F7FBF7;
-    box-sizing: border-box;
+    margin-bottom: 20px;
 }
 
 .rvw_summary strong {
@@ -22,38 +21,45 @@
 }
 
 .rvw_summary p {
-    margin: 8px 0 0;
-    color: #8A928B;
+    margin-top: 8px;
     font-size: 14px;
+    color: #8A928B;
 }
 
 /* 리뷰 작성 버튼 */
 .rvw_write_btn {
     width: 100%;
-    height: 46px;
+    height: 48px;
+    margin-bottom: 24px;
+
     border: 1px solid #7FAF8B;
-    border-radius: 12px;
+    border-radius: 14px;
+
     background-color: #FFFFFF;
     color: #6E9D79;
+
     font-size: 15px;
     font-weight: 700;
+
     cursor: pointer;
-    margin-bottom: 22px;
+    transition: all 0.2s ease;
+}
+
+.rvw_write_btn:hover {
+    background-color: #F1F7F2;
 }
 
 /* 리뷰 작성 폼 */
 .rvw_form {
-    padding: 20px;
+    padding: 22px;
     border: 1px solid #E3EEE5;
-    border-radius: 16px;
-    margin-bottom: 22px;
+    border-radius: 18px;
     background-color: #FFFFFF;
-    box-sizing: border-box;
+    margin-bottom: 24px;
 }
 
-/* 리뷰 수정 폼 */
 .rvw_edit_form {
-    padding: 12px 0 4px;
+    padding-top: 4px;
 }
 
 /* 별점 선택 */
@@ -62,31 +68,30 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 14px;
-    flex-wrap: wrap;
 }
 
 .rvw_rating_select p {
     margin: 0;
     font-size: 14px;
     font-weight: 600;
-    color: #3F4A42;
 }
 
 /* 리뷰 입력창 */
 .rvw_textarea {
     width: 100%;
-    min-height: 96px;
-    padding: 13px 15px;
+    min-height: 100px;
+
+    padding: 14px;
+
     border: 1px solid #D7E6DA;
     border-radius: 12px;
-    background-color: #FFFFFF;
+
     font-size: 14px;
-    color: #333333;
     line-height: 1.6;
+
     resize: vertical;
     outline: none;
     box-sizing: border-box;
-    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
 }
 
 .rvw_textarea:focus {
@@ -94,153 +99,214 @@
     box-shadow: 0 0 0 3px rgba(127, 175, 139, 0.12);
 }
 
-/* 작성 완료 / 수정 완료 버튼 */
+/* 등록 버튼 */
 .rvw_submit_btn {
     width: 100%;
     height: 46px;
+
+    margin-top: 10px;
+
     border: none;
     border-radius: 12px;
+
     background-color: #7FAF8B;
     color: #FFFFFF;
+
     font-size: 15px;
     font-weight: 700;
+
     cursor: pointer;
-    margin-top: 10px;
+    transition: all 0.2s ease;
 }
 
-/* 수정 취소 버튼 */
+.rvw_submit_btn:hover {
+    background-color: #6C9C78;
+}
+
+/* 취소 버튼 */
 .rvw_cancel_btn {
     width: 100%;
     height: 42px;
+
+    margin-top: 8px;
+
     border: 1px solid #D7E6DA;
     border-radius: 12px;
+
     background-color: #FFFFFF;
-    color: #5E6B61;
+    color: #666666;
+
     font-size: 14px;
     font-weight: 700;
+
     cursor: pointer;
-    margin-top: 8px;
+    transition: all 0.2s ease;
+}
+
+.rvw_cancel_btn:hover {
+    background-color: #F7FBF7;
 }
 
 /* 리뷰 없을 때 */
 .rvw_empty {
     text-align: center;
-    color: #8A928B;
-    padding: 34px 16px;
-    font-size: 14px;
-    background-color: #F7FBF7;
+    padding: 40px;
     border: 1px solid #E3EEE5;
     border-radius: 16px;
-    box-sizing: border-box;
+    background-color: #FFFFFF;
+    color: #8A928B;
 }
 
-/* 리뷰 아이템 - 문의 카드형 */
+/* 리뷰 카드 */
 .rvw_item {
     position: relative;
-    padding: 0;
-    border: 1px solid #E3EEE5;
-    border-radius: 14px;
-    background-color: #FFFFFF;
+
+    min-height: 92px;
+    padding: 18px 144px 18px 20px;
     margin-bottom: 14px;
-    overflow: hidden;
+
+    background-color: #FFFFFF;
+
+    border: 1px solid #E3EEE5;
+    border-radius: 18px;
+
+    box-shadow: 0 5px 16px rgba(127, 175, 139, 0.08);
+
     box-sizing: border-box;
+    overflow: hidden;
+
+    transition: all 0.2s ease;
 }
 
-/* 리뷰 카드 상단 */
-.rvw_item::before {
-    content: "";
-    display: block;
-    height: 48px;
-    background-color: #F7FBF7;
-    border-bottom: 1px solid #E3EEE5;
+.rvw_item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 22px rgba(127, 175, 139, 0.12);
+}
+
+/* 리뷰 작성자 */
+.rvw_writer {
+    margin: 8px 0 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #7FAF8B;
 }
 
 /* 별점 */
 .rvw_star {
-    position: absolute;
-    top: 15px;
-    left: 20px;
+    display: inline-block;
+
     color: #F6C343;
+
     font-size: 15px;
+    font-weight: 700;
     line-height: 1;
+
+    margin-right: 10px;
+
+    vertical-align: middle;
 }
 
 /* 날짜 */
 .rvw_date {
-    position: absolute;
-    top: 15px;
-    left: 118px;
+    display: inline-block;
+
     color: #8A928B;
+
     font-size: 13px;
+    line-height: 1;
+
+    vertical-align: middle;
 }
 
 /* 리뷰 내용 */
 .rvw_cmt {
-    margin: 0;
-    padding: 22px 20px 24px;
-    min-height: 72px;
+    margin: 12px 0 0;
+
     font-size: 14px;
     color: #333333;
     line-height: 1.7;
-    word-break: keep-all;
-    box-sizing: border-box;
+
+    word-break: break-word;
 }
 
-/* 리뷰 수정 / 삭제 버튼 공통 */
-.rvw_edit_btn,
+/* 수정 버튼 */
+.rvw_edit_btn {
+    position: absolute;
+    top: 18px;
+    right: 82px;
+
+    width: 54px;
+    height: 30px;
+
+    border: none;
+    border-radius: 10px;
+
+    background-color: #F1F7F2;
+    color: #6E9D79;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 삭제 버튼 */
 .rvw_delete_btn {
     position: absolute;
-    top: 9px;
-    min-width: 52px;
+    top: 18px;
+    right: 18px;
+
+    width: 54px;
     height: 30px;
-    padding: 0 12px;
-    border: 1px solid #D7E6DA;
-    border-radius: 999px;
-    background-color: #FFFFFF;
-    color: #666666;
+
+    border: none;
+    border-radius: 10px;
+
+    background-color: #FFF5F5;
+    color: #E85D5D;
+
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
+
     cursor: pointer;
-}
-
-.rvw_edit_btn {
-    right: 76px;
-}
-
-.rvw_delete_btn {
-    right: 16px;
+    transition: all 0.2s ease;
 }
 
 .rvw_edit_btn:hover {
-    border-color: #7FAF8B;
-    color: #6E9D79;
+    background-color: #DDEEDF;
 }
 
 .rvw_delete_btn:hover {
-    border-color: #FF6B6B;
-    color: #FF4D4F;
+    background-color: #FFE3E3;
 }
 
-/* 관리자 답글 박스 */
+/* 관리자 답글 */
 .rvw_reply_box {
-    margin: 0 20px 20px;
+    margin-top: 16px;
+
     padding: 14px 16px;
+
     background-color: #F8FBF8;
+
     border: 1px solid #E3EEE5;
     border-left: 4px solid #7FAF8B;
+
     border-radius: 12px;
-    box-sizing: border-box;
 }
 
 .rvw_reply_box strong {
     display: inline-block;
+
+    margin-right: 8px;
+
     font-size: 14px;
     color: #17251c;
-    margin-right: 8px;
 }
 
 .rvw_reply_box p {
     margin: 8px 0 0;
+
     font-size: 14px;
     color: #333333;
     line-height: 1.6;
@@ -251,12 +317,13 @@
     color: #8A928B;
 }
 
+/* 관리자 버튼 영역 */
 .rvw_reply_admin_area {
-    margin-top: 10px;
     display: flex;
-    align-items: center;
     gap: 8px;
     flex-wrap: wrap;
+
+    margin-top: 12px;
 }
 
 .rvw_reply_form {
@@ -264,23 +331,24 @@
     margin-top: 12px;
 }
 
-/* 답글 버튼 공통 */
+/* 답글 버튼 */
 .rvw_reply_btn,
 .rvw_reply_edit_btn,
 .rvw_reply_delete_btn {
     min-width: 78px;
     height: 32px;
-    padding: 0 12px;
+
     border: 1px solid #D7E6DA;
     border-radius: 999px;
+
     background-color: #FFFFFF;
     color: #666666;
+
     font-size: 12px;
     font-weight: 700;
-    line-height: 32px;
-    text-align: center;
+
     cursor: pointer;
-    box-sizing: border-box;
+    transition: all 0.2s ease;
 }
 
 .rvw_reply_btn {
@@ -288,37 +356,142 @@
     color: #6E9D79;
 }
 
+.rvw_reply_btn:hover,
+.rvw_reply_edit_btn:hover {
+    background-color: #F1F7F2;
+    color: #6E9D79;
+}
 
-/* 모바일 */
+.rvw_reply_delete_btn:hover {
+    background-color: #FFF5F5;
+    color: #E85D5D;
+}
+
+/* 태블릿 */
 @media (max-width: 768px) {
 
-    .rvw_item::before {
-        height: 46px;
+    .detail_rvw {
+        padding: 28px 0 42px;
     }
 
-    .rvw_star {
-        left: 16px;
-        font-size: 14px;
+    .rvw_summary {
+        padding: 28px 20px;
     }
 
-    .rvw_date {
-        left: 106px;
-        font-size: 12px;
+    .rvw_item {
+        padding: 18px;
     }
 
     .rvw_edit_btn,
     .rvw_delete_btn {
         position: static;
-        margin: 0 0 16px 16px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 54px;
+        height: 30px;
+
+        margin-top: 14px;
+        margin-right: 6px;
+    }
+}
+
+/* 모바일 */
+@media (max-width: 480px) {
+
+    .detail_rvw {
+        padding: 24px 0 36px;
     }
 
-    .rvw_cmt {
-        padding: 20px 16px 18px;
-        min-height: 64px;
+    .rvw_summary {
+        padding: 24px 16px;
+    }
+
+    .rvw_summary strong {
+        font-size: 24px;
+    }
+
+    .rvw_summary p {
         font-size: 13px;
     }
 
+    .rvw_write_btn,
+    .rvw_submit_btn {
+        height: 44px;
+        font-size: 14px;
+    }
+
+    .rvw_cancel_btn {
+        height: 40px;
+        font-size: 13px;
+    }
+
+    .rvw_form {
+        padding: 18px;
+    }
+
+    .rvw_rating_select {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .rvw_textarea {
+        min-height: 90px;
+        font-size: 13px;
+    }
+
+    .rvw_empty {
+        padding: 32px 20px;
+        font-size: 13px;
+    }
+
+    .rvw_item {
+        min-height: auto;
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .rvw_star {
+        font-size: 14px;
+    }
+
+    .rvw_date {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+    }
+
+    .rvw_cmt {
+        margin-top: 12px;
+        font-size: 13px;
+    }
+
+    .rvw_edit_btn,
+    .rvw_delete_btn {
+        width: 52px;
+        height: 30px;
+        font-size: 12px;
+    }
+
     .rvw_reply_box {
-        margin: 0 16px 16px;
+        padding: 14px;
+    }
+
+    .rvw_reply_box strong {
+        font-size: 13px;
+    }
+
+    .rvw_reply_box p {
+        font-size: 13px;
+    }
+
+    .rvw_reply_btn,
+    .rvw_reply_edit_btn,
+    .rvw_reply_delete_btn {
+        min-width: 72px;
+        height: 30px;
+        font-size: 11px;
     }
 }

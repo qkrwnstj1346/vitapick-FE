@@ -148,7 +148,7 @@ function OrderComplete() {
                     <button
                         type="button"
                         className="completeOrderBtn"
-                        onClick={() => navigate('/mypage')}
+                        onClick={() => navigate(`/mypage/myorder/${ordNo}`)}
                     >
                         주문내역 보기
                     </button>
