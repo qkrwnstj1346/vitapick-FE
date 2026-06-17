@@ -568,6 +568,17 @@
     stroke-width: 2;
 }
 
+.adminLineChart circle {
+    fill: #4f9b66;
+}
+
+.adminLineChart text {
+    fill: #687970;
+    font-size: 11px;
+    font-weight: 800;
+    text-anchor: middle;
+}
+
 .adminBarChart {
     display: flex;
     align-items: end;
@@ -583,49 +594,26 @@
     background: linear-gradient(180deg, #6fb682 0%, #d8efdf 100%);
 }
 
-.adminDonutWrap {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 22px;
-    align-items: center;
-    margin-top: 18px;
-}
-
-.adminDonutChart {
+.adminBarItem {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background:
-        radial-gradient(circle, #ffffff 0 42%, transparent 43%),
-        conic-gradient(#69aa7c 0 28%, #a9d8b6 28% 52%, #d6eadb 52% 76%, #eef6f0 76% 100%);
-    color: #4c9b64;
-    font-weight: 900;
+    flex: 1;
+    min-width: 18px;
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 8px;
+    text-align: center;
 }
 
-.adminDonutLegend {
-    display: grid;
-    gap: 10px;
+.adminBarChart .adminBarItem span {
+    flex: 0 0 auto;
+    min-height: 0;
 }
 
-.adminDonutLegend span {
-    position: relative;
-    padding-left: 18px;
+.adminBarItem strong {
     color: #687970;
-    font-size: 14px;
-}
-
-.adminDonutLegend span::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 7px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #69aa7c;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 .adminTopProductsSection {
