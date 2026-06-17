@@ -1,8 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
 
 import ScrollTop from './ScrollTop';
-import Login from '../../pages/users/Login';
 import Home from '../../pages/home/Home';
+import HealthInfo from '../../pages/gnb/HealthInfo';
+import Event from '../../pages/gnb/Event'
+
+import Login from '../../pages/users/Login';
 import Join from '../../pages/users/Join';
 import FindId from '../../pages/users/FindId';
 import FindPwd from '../../pages/users/FindPwd';
@@ -74,6 +77,18 @@ function Main({ onLoginSubmit, isLoggedIn }) {
                 <Route
                     path="/v1/auth/join"
                     element={<Join />}
+                />
+
+                {/* 건강정보 */}
+                <Route
+                    path="/healthInfo"
+                    element={<HealthInfo />}
+                />
+
+                {/* 이벤트 */}
+                <Route
+                    path="/event"
+                    element={<Event />}
                 />
 
                 {/* 마이페이지-내정보 */}
