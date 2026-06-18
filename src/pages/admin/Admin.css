@@ -585,6 +585,33 @@
     fill: #4f9b66;
 }
 
+.adminLinePoint {
+    cursor: default;
+}
+
+.adminLineTooltip {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.16s ease;
+}
+
+.adminLinePoint:hover .adminLineTooltip,
+.adminLinePoint:focus .adminLineTooltip {
+    opacity: 1;
+}
+
+.adminLineTooltip rect {
+    fill: #ffffff;
+    stroke: #cfe5d6;
+    filter: drop-shadow(0 8px 14px rgba(54, 82, 65, 0.16));
+}
+
+.adminLineChart .adminLineTooltip text {
+    fill: #2f8350;
+    font-size: 11px;
+    font-weight: 900;
+}
+
 .adminLineChart text {
     fill: #687970;
     font-size: 11px;
@@ -609,6 +636,7 @@
 }
 
 .adminBarItem {
+    position: relative;
     display: flex;
     width: 34px;
     min-width: 34px;
@@ -618,6 +646,32 @@
     justify-content: flex-end;
     gap: 8px;
     text-align: center;
+}
+
+.adminBarItem em {
+    position: absolute;
+    bottom: calc(100% - 24px);
+    left: 50%;
+    z-index: 1;
+    width: max-content;
+    padding: 6px 9px;
+    border: 1px solid #cfe5d6;
+    border-radius: 999px;
+    background-color: #ffffff;
+    color: #2f8350;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 900;
+    box-shadow: 0 8px 14px rgba(54, 82, 65, 0.16);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -6px);
+    transition: opacity 0.16s ease;
+}
+
+.adminBarItem:hover em,
+.adminBarItem:focus-within em {
+    opacity: 1;
 }
 
 .adminBarChart .adminBarItem span {
@@ -1080,6 +1134,14 @@
 .adminCsInquiriesRow {
     color: #53665d;
     font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.adminCsInquiriesRow:focus-visible {
+    outline: none;
+    background-color: #f0faf4;
+    box-shadow: inset 4px 0 0 #6eaf80;
 }
 
 .adminCsInquiriesBody .adminCsInquiriesRow:last-child span {
@@ -1246,6 +1308,11 @@
     color: #4f665b;
     font-size: 13px;
     font-weight: 900;
+}
+
+.adminCsInquiryAnswerContent {
+    min-height: 100px;
+    border-top: 1px solid #e5efe9;
 }
 
 .adminReviewDetailMessage {

@@ -1,8 +1,8 @@
 ﻿import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import Pagination from '../../components/layout/Pagination';
-import { createAdminCsFaq, getAdminCsFaqs, getAdminCsInquiries, getAdminCsNotices } from '../../service/admin/adminCsCenterApi';
+import { createAdminCsFaq, getAdminCsFaqs, getAdminCsInquiries, getAdminCsInquiryDetail, getAdminCsNotices, saveAdminCsInquiryAnswer, updateAdminCsFaq } from '../../service/admin/adminCsCenterApi';
 import { createNotice, deleteFaq, deleteNotice, getFaqDetail, getNoticeDetail, updateNotice } from '../../service/cscenter/csCenterApi';
 import { getAdminDashboardSummary } from '../../service/admin/adminDashboardApi';
 import { getAdminOrders } from '../../service/admin/adminOrdersApi';
@@ -78,11 +78,11 @@ const adminCsSortOptions = [
     { value: 'oldest', label: '오래된 순' }
 ];
 const adminCsFaqCategoryOptions = [
-    { value: '주문', label: '주문' },
-    { value: '배송', label: '배송' },
-    { value: '상품', label: '상품' },
-    { value: '회원', label: '회원' },
-    { value: '기타', label: '기타' }
+    { value: 'ORDER', label: '주문' },
+    { value: 'DELIVERY', label: '배송' },
+    { value: 'PRODUCT', label: '상품' },
+    { value: 'MEMBER', label: '회원' },
+    { value: 'ETC', label: '기타' }
 ];
 const adminCsFaqCategoryFilterOptions = [
     { value: '', label: '전체' },
@@ -168,7 +168,7 @@ const dashboardPlaceholderData = {
         metrics: [
             { label: '전체 회원', value: '-' },
             { label: '활성 회원', value: '-' },
-            { label: '휴면/탈퇴 회원', value: '-' }
+            { label: '탈퇴 회원', value: '-' }
         ]
     },
     orders: {
@@ -202,11 +202,12 @@ const dashboardPlaceholderData = {
 
 function AdminPage() {
     const location = useLocation();
-    const navigate = useNavigate();
+    // 관리자 현재 탭과 대시보드 상태를 관리한다.
     const [activeTab, setActiveTab] = useState(() => getAdminTabFromPath(location.pathname));
     const [dashboardData, setDashboardData] = useState(dashboardPlaceholderData);
     const [dashboardLoading, setDashboardLoading] = useState(false);
     const [dashboardError, setDashboardError] = useState('');
+    // 관리자 회원 목록과 검색 조건 상태를 관리한다.
     const [adminUsers, setAdminUsers] = useState([]);
     const [adminUsersLoading, setAdminUsersLoading] = useState(false);
     const [adminUsersError, setAdminUsersError] = useState('');
@@ -221,6 +222,7 @@ function AdminPage() {
     const [adminUsersPage, setAdminUsersPage] = useState(0);
     const [adminUsersTotalPages, setAdminUsersTotalPages] = useState(0);
     const [adminUsersTotalElements, setAdminUsersTotalElements] = useState(0);
+    // 관리자 상품 목록과 검색 조건 상태를 관리한다.
     const [adminProducts, setAdminProducts] = useState([]);
     const [adminProductsLoading, setAdminProductsLoading] = useState(false);
     const [adminProductsError, setAdminProductsError] = useState('');
@@ -233,6 +235,7 @@ function AdminPage() {
     const [adminProductsPage, setAdminProductsPage] = useState(0);
     const [adminProductsTotalPages, setAdminProductsTotalPages] = useState(0);
     const [adminProductsTotalElements, setAdminProductsTotalElements] = useState(0);
+    // 관리자 주문 목록과 검색 조건 상태를 관리한다.
     const [adminOrders, setAdminOrders] = useState([]);
     const [adminOrdersLoading, setAdminOrdersLoading] = useState(false);
     const [adminOrdersError, setAdminOrdersError] = useState('');
@@ -247,6 +250,7 @@ function AdminPage() {
     const [adminOrdersPage, setAdminOrdersPage] = useState(0);
     const [adminOrdersTotalPages, setAdminOrdersTotalPages] = useState(0);
     const [adminOrdersTotalElements, setAdminOrdersTotalElements] = useState(0);
+    // 관리자 리뷰 목록과 답글 모달 상태를 관리한다.
     const [adminReviews, setAdminReviews] = useState([]);
     const [adminReviewsLoading, setAdminReviewsLoading] = useState(false);
     const [adminReviewsError, setAdminReviewsError] = useState('');
@@ -267,6 +271,7 @@ function AdminPage() {
     const [adminReviewDetailError, setAdminReviewDetailError] = useState('');
     const [adminReviewDetailMessage, setAdminReviewDetailMessage] = useState('');
     const [adminReviewReplyText, setAdminReviewReplyText] = useState('');
+    // 고객센터 공지사항 목록 상태를 관리한다.
     const [adminCsActiveTab, setAdminCsActiveTab] = useState('notices');
     const [adminCsNotices, setAdminCsNotices] = useState([]);
     const [adminCsNoticesLoading, setAdminCsNoticesLoading] = useState(false);
@@ -277,6 +282,7 @@ function AdminPage() {
     const [adminCsNoticesTotalPages, setAdminCsNoticesTotalPages] = useState(0);
     const [adminCsNoticesTotalElements, setAdminCsNoticesTotalElements] = useState(0);
     const [adminCsNoticesRefreshKey, setAdminCsNoticesRefreshKey] = useState(0);
+    // 고객센터 FAQ 목록 상태를 관리한다.
     const [adminCsFaqs, setAdminCsFaqs] = useState([]);
     const [adminCsFaqsLoading, setAdminCsFaqsLoading] = useState(false);
     const [adminCsFaqsError, setAdminCsFaqsError] = useState('');
@@ -287,6 +293,7 @@ function AdminPage() {
     const [adminCsFaqsTotalPages, setAdminCsFaqsTotalPages] = useState(0);
     const [adminCsFaqsTotalElements, setAdminCsFaqsTotalElements] = useState(0);
     const [adminCsFaqsRefreshKey, setAdminCsFaqsRefreshKey] = useState(0);
+    // 고객센터 1:1 문의 목록과 상세 모달 상태를 관리한다.
     const [adminCsInquiries, setAdminCsInquiries] = useState([]);
     const [adminCsInquiriesLoading, setAdminCsInquiriesLoading] = useState(false);
     const [adminCsInquiriesError, setAdminCsInquiriesError] = useState('');
@@ -303,6 +310,14 @@ function AdminPage() {
     const [adminCsInquiriesPage, setAdminCsInquiriesPage] = useState(0);
     const [adminCsInquiriesTotalPages, setAdminCsInquiriesTotalPages] = useState(0);
     const [adminCsInquiriesTotalElements, setAdminCsInquiriesTotalElements] = useState(0);
+    const [adminCsInquiriesRefreshKey, setAdminCsInquiriesRefreshKey] = useState(0);
+    const [adminCsInquiryDetailModal, setAdminCsInquiryDetailModal] = useState(null);
+    const [adminCsInquiryDetailLoading, setAdminCsInquiryDetailLoading] = useState(false);
+    const [adminCsInquiryDetailSaving, setAdminCsInquiryDetailSaving] = useState(false);
+    const [adminCsInquiryDetailError, setAdminCsInquiryDetailError] = useState('');
+    const [adminCsInquiryDetailMessage, setAdminCsInquiryDetailMessage] = useState('');
+    const [adminCsInquiryAnswerText, setAdminCsInquiryAnswerText] = useState('');
+    // 고객센터 공지사항/FAQ 상세 모달 상태를 관리한다.
     const [adminCsDetailModal, setAdminCsDetailModal] = useState(null);
     const [adminCsDetailLoading, setAdminCsDetailLoading] = useState(false);
     const [adminCsDetailError, setAdminCsDetailError] = useState('');
@@ -310,6 +325,8 @@ function AdminPage() {
     const [adminCsEditForm, setAdminCsEditForm] = useState({
         ttl: '',
         ntcTxt: '',
+        faqTxt: '',
+        faqCtgCd: 'ORDER',
         useYn: 'Y'
     });
     const [adminCsEditSaving, setAdminCsEditSaving] = useState(false);
@@ -318,13 +335,14 @@ function AdminPage() {
         ttl: '',
         ntcTxt: '',
         faqTxt: '',
-        faqCtgCd: '주문',
+        faqCtgCd: 'ORDER',
         useYn: 'Y'
     });
     const [adminCsCreateSaving, setAdminCsCreateSaving] = useState(false);
     const [adminCsCreateError, setAdminCsCreateError] = useState('');
     const isAdmin = sessionStorage.getItem('roleCd') === 'ADMIN'
 
+    // 리뷰 모달 성공 메시지를 자동으로 닫는다.
     useEffect(() => {
         if (!adminReviewDetailMessage) return undefined;
 
@@ -335,10 +353,23 @@ function AdminPage() {
         return () => window.clearTimeout(timerId);
     }, [adminReviewDetailMessage]);
 
+    // 문의 모달 성공 메시지를 자동으로 닫는다.
+    useEffect(() => {
+        if (!adminCsInquiryDetailMessage) return undefined;
+
+        const timerId = window.setTimeout(() => {
+            setAdminCsInquiryDetailMessage('');
+        }, 1800);
+
+        return () => window.clearTimeout(timerId);
+    }, [adminCsInquiryDetailMessage]);
+
+    // 현재 URL 경로에 맞춰 관리자 탭을 동기화한다.
     useEffect(() => {
         setActiveTab(getAdminTabFromPath(location.pathname));
     }, [location.pathname]);
 
+    // 고객센터 진입 시 기본 탭을 공지사항으로 초기화한다.
     useEffect(() => {
         if (activeTab !== 'cscenter') return;
 
@@ -346,6 +377,7 @@ function AdminPage() {
         setAdminCsNoticesPage(0);
     }, [activeTab]);
 
+    // 관리자 대시보드 요약 데이터를 조회한다.
     useEffect(() => {
         if (!isAdmin) return;
 
@@ -378,6 +410,7 @@ function AdminPage() {
         };
     }, [isAdmin]);
 
+    // 관리자 회원 목록을 조회한다.
     useEffect(() => {
         if (!isAdmin || activeTab !== 'users') return;
 
@@ -423,6 +456,7 @@ function AdminPage() {
         };
     }, [activeTab, adminUsersPage, adminUsersQueryEndDate, adminUsersQueryKeyword, adminUsersQueryStartDate, adminUsersQueryStatusCd, isAdmin]);
 
+    // 관리자 상품 목록을 조회한다.
     useEffect(() => {
         if (!isAdmin || activeTab !== 'prd') return;
 
@@ -467,6 +501,7 @@ function AdminPage() {
         };
     }, [activeTab, adminProductsPage, adminProductsQueryCategoryId, adminProductsQueryKeyword, adminProductsQueryStatus, isAdmin]);
 
+    // 관리자 주문 목록을 조회한다.
     useEffect(() => {
         if (!isAdmin || activeTab !== 'ord') return;
 
@@ -520,6 +555,7 @@ function AdminPage() {
         isAdmin
     ]);
 
+    // 관리자 리뷰 목록을 조회한다.
     useEffect(() => {
         if (!isAdmin || activeTab !== 'rvw') return;
 
@@ -573,6 +609,7 @@ function AdminPage() {
         isAdmin
     ]);
 
+    // 고객센터 공지사항 목록을 조회한다.
     useEffect(() => {
         if (!isAdmin || activeTab !== 'cscenter' || adminCsActiveTab !== 'notices') return;
 
@@ -625,6 +662,7 @@ function AdminPage() {
         };
     }, [activeTab, adminCsActiveTab, adminCsNoticesPage, adminCsNoticesRefreshKey, adminCsNoticesSort, adminCsNoticesUseYn, isAdmin]);
 
+    // 고객센터 FAQ 목록을 조회한다.
     useEffect(() => {
         if (!isAdmin || activeTab !== 'cscenter' || adminCsActiveTab !== 'faqs') return;
 
@@ -678,6 +716,7 @@ function AdminPage() {
         };
     }, [activeTab, adminCsActiveTab, adminCsFaqsCategory, adminCsFaqsPage, adminCsFaqsRefreshKey, adminCsFaqsSort, adminCsFaqsUseYn, isAdmin]);
 
+    // 고객센터 1:1 문의 목록을 조회한다.
     useEffect(() => {
         if (!isAdmin || activeTab !== 'cscenter' || adminCsActiveTab !== 'inquiries') return;
 
@@ -732,6 +771,7 @@ function AdminPage() {
         adminCsInquiriesQueryStartDate,
         adminCsInquiriesQueryStatus,
         adminCsInquiriesQueryType,
+        adminCsInquiriesRefreshKey,
         isAdmin
     ]);
 
@@ -746,6 +786,7 @@ function AdminPage() {
         );
     }
 
+    // 관리자 대시보드 화면을 렌더링한다.
     const renderDashboard = () => {
         const { sales, members, orders, inquiries, productSalesTop5 } = dashboardData;
 
@@ -842,6 +883,7 @@ function AdminPage() {
         );
     };
 
+    // 아직 연결되지 않은 필터 안내 화면을 렌더링한다.
     const renderFilterMock = (type) => (
         <section className="adminFilterCard">
             <div className="adminField">
@@ -862,6 +904,7 @@ function AdminPage() {
         </section>
     );
 
+    // 고객센터 문의 검색 조건을 적용한다.
     const handleAdminCsInquiriesSearch = (event) => {
         event.preventDefault();
         setAdminCsInquiriesQueryKeyword(adminCsInquiriesKeyword);
@@ -872,15 +915,95 @@ function AdminPage() {
         setAdminCsInquiriesPage(0);
     };
 
+    // 고객센터 문의 필터 값을 변경한다.
     const handleAdminCsInquiriesFilterChange = (setter) => (event) => {
         setter(event.target.value);
     };
 
+    // 고객센터 문의 상세 모달을 닫는다.
+    const closeAdminCsInquiryDetailModal = () => {
+        if (adminCsInquiryDetailSaving) return;
+        setAdminCsInquiryDetailModal(null);
+        setAdminCsInquiryDetailError('');
+        setAdminCsInquiryDetailMessage('');
+        setAdminCsInquiryAnswerText('');
+    };
+
+    // 고객센터 문의 상세 모달을 연다.
+    const handleAdminCsInquiryDetailOpen = async (inquiry) => {
+        const inquiryId = inquiry?.inquiryId ?? inquiry?.inqId;
+
+        setAdminCsInquiryDetailModal(inquiry);
+        setAdminCsInquiryAnswerText(inquiry.ansTxt || '');
+        setAdminCsInquiryDetailError('');
+        setAdminCsInquiryDetailMessage('');
+
+        if (!inquiryId) {
+            setAdminCsInquiryDetailError('상세 정보를 불러오지 못했습니다.');
+            return;
+        }
+
+        setAdminCsInquiryDetailLoading(true);
+
+        try {
+            const detail = await getAdminCsInquiryDetail(inquiryId);
+            const nextDetail = {
+                ...inquiry,
+                ...(detail || {})
+            };
+            setAdminCsInquiryDetailModal(nextDetail);
+            setAdminCsInquiryAnswerText(nextDetail.ansTxt || '');
+            setAdminCsInquiryDetailError('');
+        } catch {
+            setAdminCsInquiryDetailModal(inquiry);
+            setAdminCsInquiryDetailError('상세 정보를 불러오지 못했습니다.');
+        } finally {
+            setAdminCsInquiryDetailLoading(false);
+        }
+    };
+
+    // 고객센터 문의 답변 저장을 처리한다.
+    const handleAdminCsInquiryAnswerSave = async () => {
+        const inquiryId = adminCsInquiryDetailModal?.inquiryId ?? adminCsInquiryDetailModal?.inqId;
+        const ansTxt = adminCsInquiryAnswerText.trim();
+
+        if (!inquiryId) return;
+
+        if (!ansTxt) {
+            setAdminCsInquiryDetailError('답변 내용을 입력해 주세요.');
+            return;
+        }
+
+        setAdminCsInquiryDetailSaving(true);
+        setAdminCsInquiryDetailError('');
+        setAdminCsInquiryDetailMessage('');
+
+        try {
+            const detail = await saveAdminCsInquiryAnswer(inquiryId, { ansTxt });
+            const nextDetail = {
+                ...adminCsInquiryDetailModal,
+                ...(detail || {}),
+                ansTxt: detail?.ansTxt ?? ansTxt
+            };
+
+            setAdminCsInquiryDetailModal(nextDetail);
+            setAdminCsInquiryAnswerText(nextDetail.ansTxt || '');
+            setAdminCsInquiriesRefreshKey((key) => key + 1);
+            setAdminCsInquiryDetailMessage('답변이 저장 되었습니다.');
+        } catch {
+            setAdminCsInquiryDetailError('답변 저장에 실패했습니다.');
+        } finally {
+            setAdminCsInquiryDetailSaving(false);
+        }
+    };
+
+    // 고객센터 목록 필터 변경 시 첫 페이지로 이동한다.
     const handleAdminCsFilterChange = (setter, resetPage) => (event) => {
         setter(event.target.value);
         resetPage(0);
     };
 
+    // 고객센터 등록 모달을 연다.
     const openAdminCsCreateModal = (type) => {
         setAdminCsCreateModal(type);
         setAdminCsCreateError('');
@@ -888,17 +1011,19 @@ function AdminPage() {
             ttl: '',
             ntcTxt: '',
             faqTxt: '',
-            faqCtgCd: '주문',
+            faqCtgCd: 'ORDER',
             useYn: 'Y'
         });
     };
 
+    // 고객센터 등록 모달을 닫는다.
     const closeAdminCsCreateModal = () => {
         if (adminCsCreateSaving) return;
         setAdminCsCreateModal(null);
         setAdminCsCreateError('');
     };
 
+    // 고객센터 등록 폼 값을 변경한다.
     const handleAdminCsCreateFormChange = (event) => {
         const { name, value } = event.target;
         setAdminCsCreateForm((form) => ({
@@ -907,6 +1032,7 @@ function AdminPage() {
         }));
     };
 
+    // 고객센터 공지사항/FAQ 등록을 처리한다.
     const handleAdminCsCreateSubmit = async (event) => {
         event.preventDefault();
 
@@ -950,6 +1076,7 @@ function AdminPage() {
         }
     };
 
+    // 고객센터 상세 모달을 닫는다.
     const closeAdminCsDetailModal = () => {
         if (adminCsEditSaving) return;
         setAdminCsDetailModal(null);
@@ -957,6 +1084,7 @@ function AdminPage() {
         setAdminCsDetailEditing(false);
     };
 
+    // 고객센터 공지사항/FAQ 상세 모달을 연다.
     const handleAdminCsDetailOpen = async (type, item) => {
         const id = type === 'notice' ? item.ntcId : item.faqId;
         const getDetail = type === 'notice' ? getNoticeDetail : getFaqDetail;
@@ -977,6 +1105,7 @@ function AdminPage() {
         }
     };
 
+    // 고객센터 상세 모달을 수정 모드로 전환한다.
     const handleAdminCsEdit = (type, item) => {
         if (type === 'notice') {
             setAdminCsEditForm({
@@ -989,9 +1118,17 @@ function AdminPage() {
             return;
         }
 
-        navigate(`/cscenter/faqs/${item.faqId}/edit`);
+        setAdminCsEditForm({
+            ttl: item?.ttl || '',
+            faqTxt: item?.faqTxt || '',
+            faqCtgCd: normalizeFaqCategoryCode(item?.faqCtgCd),
+            useYn: item?.useYn || 'Y'
+        });
+        setAdminCsDetailError('');
+        setAdminCsDetailEditing(true);
     };
 
+    // 고객센터 수정 폼 값을 변경한다.
     const handleAdminCsEditFormChange = (event) => {
         const { name, value } = event.target;
         setAdminCsEditForm((form) => ({
@@ -1000,17 +1137,20 @@ function AdminPage() {
         }));
     };
 
+    // 고객센터 수정 모드를 취소한다.
     const handleAdminCsEditCancel = () => {
         setAdminCsDetailEditing(false);
         setAdminCsDetailError('');
     };
 
+    // 고객센터 공지사항/FAQ 수정을 저장한다.
     const handleAdminCsNoticeEditSubmit = async (event) => {
         event.preventDefault();
 
-        const id = adminCsDetailModal?.item?.ntcId;
+        const isNotice = adminCsDetailModal?.type === 'notice';
+        const id = isNotice ? adminCsDetailModal?.item?.ntcId : adminCsDetailModal?.item?.faqId;
         const title = adminCsEditForm.ttl.trim();
-        const body = adminCsEditForm.ntcTxt.trim();
+        const body = isNotice ? adminCsEditForm.ntcTxt.trim() : adminCsEditForm.faqTxt.trim();
 
         if (!id || !title || !body) {
             setAdminCsDetailError('제목과 내용을 입력해 주세요.');
@@ -1021,32 +1161,48 @@ function AdminPage() {
         setAdminCsDetailError('');
 
         try {
-            const response = await updateNotice(id, {
-                ttl: title,
-                ntcTxt: body,
-                useYn: adminCsEditForm.useYn
-            });
+            const response = isNotice
+                ? await updateNotice(id, {
+                    ttl: title,
+                    ntcTxt: body,
+                    useYn: adminCsEditForm.useYn
+                })
+                : await updateAdminCsFaq(id, {
+                    faqCtgCd: normalizeFaqCategoryCode(adminCsEditForm.faqCtgCd),
+                    ttl: title,
+                    faqTxt: body,
+                    useYn: adminCsEditForm.useYn
+                });
             const nextItem = {
                 ...adminCsDetailModal.item,
                 ...(response || {}),
                 ttl: response?.ttl || title,
-                ntcTxt: response?.ntcTxt || body,
+                ...(isNotice ? { ntcTxt: response?.ntcTxt || body } : { faqTxt: response?.faqTxt || body }),
+                ...(!isNotice ? { faqCtgCd: response?.faqCtgCd || normalizeFaqCategoryCode(adminCsEditForm.faqCtgCd) } : {}),
                 useYn: response?.useYn || adminCsEditForm.useYn
             };
 
-            setAdminCsDetailModal({ type: 'notice', item: nextItem });
-            setAdminCsNotices((items) => items.map((notice) => (
-                notice.ntcId === id ? { ...notice, ...nextItem } : notice
-            )));
-            setAdminCsNoticesRefreshKey((key) => key + 1);
+            setAdminCsDetailModal({ type: adminCsDetailModal.type, item: nextItem });
+            if (isNotice) {
+                setAdminCsNotices((items) => items.map((notice) => (
+                    notice.ntcId === id ? { ...notice, ...nextItem } : notice
+                )));
+                setAdminCsNoticesRefreshKey((key) => key + 1);
+            } else {
+                setAdminCsFaqs((items) => items.map((faq) => (
+                    faq.faqId === id ? { ...faq, ...nextItem } : faq
+                )));
+                setAdminCsFaqsRefreshKey((key) => key + 1);
+            }
             setAdminCsDetailEditing(false);
         } catch {
-            setAdminCsDetailError('등록에 실패했습니다. 입력 내용을 확인하고 다시 시도해 주세요.');
+            setAdminCsDetailError(isNotice ? '등록에 실패했습니다. 입력 내용을 확인하고 다시 시도해 주세요.' : '수정에 실패했습니다. 입력 내용을 확인하고 다시 시도해 주세요.');
         } finally {
             setAdminCsEditSaving(false);
         }
     };
 
+    // 고객센터 공지사항/FAQ 삭제를 처리한다.
     const handleAdminCsDelete = async (type, item) => {
         const id = type === 'notice' ? item.ntcId : item.faqId;
         const deleteItem = type === 'notice' ? deleteNotice : deleteFaq;
@@ -1075,6 +1231,7 @@ function AdminPage() {
         }
     };
 
+    // 고객센터 하위 탭을 변경한다.
     const handleAdminCsTabChange = (tab) => {
         setAdminCsActiveTab(tab);
 
@@ -1091,6 +1248,7 @@ function AdminPage() {
         setAdminCsInquiriesPage(0);
     };
 
+    // 고객센터 목록 페이지네이션을 렌더링한다.
     const renderCsPagination = (currentPage, totalPages, onPageChange) => {
         if (totalPages <= 0) return null;
 
@@ -1103,6 +1261,7 @@ function AdminPage() {
         );
     };
 
+    // 고객센터 공지사항 목록 화면을 렌더링한다.
     const renderAdminCsNotices = () => (
         <section className="adminOpsSection">
             <div className="adminPanelHeader">
@@ -1168,6 +1327,7 @@ function AdminPage() {
         </section>
     );
 
+    // 고객센터 FAQ 목록 화면을 렌더링한다.
     const renderAdminCsFaqs = () => (
         <section className="adminOpsSection">
             <div className="adminPanelHeader">
@@ -1246,6 +1406,7 @@ function AdminPage() {
         </section>
     );
 
+    // 고객센터 1:1 문의 목록 화면을 렌더링한다.
     const renderAdminCsInquiries = () => (
         <>
             <form className="adminFilterCard adminCsInquiryFilterCard" onSubmit={handleAdminCsInquiriesSearch}>
@@ -1328,7 +1489,7 @@ function AdminPage() {
 
                 {!adminCsInquiriesError && adminCsInquiries.length > 0 && (
                     <>
-                        <AdminCsInquiriesTable inquiries={adminCsInquiries} />
+                        <AdminCsInquiriesTable inquiries={adminCsInquiries} onInquiryOpen={handleAdminCsInquiryDetailOpen} />
                         {renderCsPagination(adminCsInquiriesPage, adminCsInquiriesTotalPages, setAdminCsInquiriesPage)}
                     </>
                 )}
@@ -1336,6 +1497,7 @@ function AdminPage() {
         </>
     );
 
+    // 선택된 고객센터 하위 탭 목록을 렌더링한다.
     const renderActiveAdminCsList = () => {
         if (adminCsActiveTab === 'faqs') return renderAdminCsFaqs();
         if (adminCsActiveTab === 'inquiries') return renderAdminCsInquiries();
@@ -1343,6 +1505,7 @@ function AdminPage() {
         return renderAdminCsNotices();
     };
 
+    // 고객센터 관리 화면을 렌더링한다.
     const renderCsCenter = () => (
         <>
             <div className="adminFeatureGrid adminCsTabGrid">
@@ -1367,6 +1530,19 @@ function AdminPage() {
             </div>
 
             {renderActiveAdminCsList()}
+            {adminCsInquiryDetailModal && (
+                <AdminCsInquiryDetailModal
+                    inquiry={adminCsInquiryDetailModal}
+                    answerText={adminCsInquiryAnswerText}
+                    loading={adminCsInquiryDetailLoading}
+                    saving={adminCsInquiryDetailSaving}
+                    error={adminCsInquiryDetailError}
+                    message={adminCsInquiryDetailMessage}
+                    onAnswerChange={(event) => setAdminCsInquiryAnswerText(event.target.value)}
+                    onAnswerSave={handleAdminCsInquiryAnswerSave}
+                    onClose={closeAdminCsInquiryDetailModal}
+                />
+            )}
             {adminCsCreateModal && (
                 <AdminCsCreateModal
                     type={adminCsCreateModal}
@@ -1398,6 +1574,7 @@ function AdminPage() {
         </>
     );
 
+    // 회원 검색 조건을 적용한다.
     const handleAdminUsersSearch = (event) => {
         event.preventDefault();
         setAdminUsersQueryKeyword(adminUsersKeyword);
@@ -1407,7 +1584,7 @@ function AdminPage() {
         setAdminUsersPage(0);
     };
 
-    // Excel download
+    // 회원 엑셀 다운로드를 처리한다.
     const handleAdminExcelDownload = async () => {
 
         if (activeTab === 'users') {
@@ -1446,6 +1623,7 @@ function AdminPage() {
         alert('해당 메뉴의 엑셀 다운로드는 준비 중입니다.');
     };
 
+    // 회원 검색 시작일을 변경한다.
     const handleAdminUsersStartDateChange = (event) => {
         const nextStartDate = event.target.value;
 
@@ -1456,6 +1634,7 @@ function AdminPage() {
         event.currentTarget.parentElement?.querySelector('input[aria-label="가입 종료일"]')?.focus();
     };
 
+    // 회원 검색 종료일을 변경한다.
     const handleAdminUsersEndDateChange = (event) => {
         const nextEndDate = event.target.value;
 
@@ -1464,6 +1643,7 @@ function AdminPage() {
         );
     };
 
+    // 회원 관리 화면을 렌더링한다.
     const renderUsers = () => (
         <>
             <form className="adminFilterCard" onSubmit={handleAdminUsersSearch}>
@@ -1558,6 +1738,7 @@ function AdminPage() {
         </>
     );
 
+    // 상품 검색 조건을 적용한다.
     const handleAdminProductsSearch = (event) => {
         event.preventDefault();
         setAdminProductsQueryKeyword(adminProductsKeyword);
@@ -1566,6 +1747,7 @@ function AdminPage() {
         setAdminProductsPage(0);
     };
 
+    // 상품 관리 화면을 렌더링한다.
     const renderPrd = () => (
         <>
             <form className="adminFilterCard" onSubmit={handleAdminProductsSearch}>
@@ -1654,6 +1836,7 @@ function AdminPage() {
         </>
     );
 
+    // 주문 검색 조건을 적용한다.
     const handleAdminOrdersSearch = (event) => {
         event.preventDefault();
         setAdminOrdersQueryKeyword(adminOrdersKeyword);
@@ -1663,6 +1846,7 @@ function AdminPage() {
         setAdminOrdersPage(0);
     };
 
+    // 주문 검색 시작일을 변경한다.
     const handleAdminOrdersStartDateChange = (event) => {
         const nextStartDate = event.target.value;
 
@@ -1673,6 +1857,7 @@ function AdminPage() {
         event.currentTarget.parentElement?.querySelector('input[aria-label="주문 종료일"]')?.focus();
     };
 
+    // 주문 검색 종료일을 변경한다.
     const handleAdminOrdersEndDateChange = (event) => {
         const nextEndDate = event.target.value;
 
@@ -1681,6 +1866,7 @@ function AdminPage() {
         );
     };
 
+    // 주문 관리 화면을 렌더링한다.
     const renderOrd = () => (
         <>
             <form className="adminFilterCard adminOrderFilterCard" onSubmit={handleAdminOrdersSearch}>
@@ -1775,6 +1961,7 @@ function AdminPage() {
         </>
     );
 
+    // 리뷰 검색 조건을 적용한다.
     const handleAdminReviewsSearch = (event) => {
         event.preventDefault();
         setAdminReviewsQueryKeyword(adminReviewsKeyword);
@@ -1784,6 +1971,7 @@ function AdminPage() {
         setAdminReviewsPage(0);
     };
 
+    // 리뷰 검색 시작일을 변경한다.
     const handleAdminReviewsStartDateChange = (event) => {
         const nextStartDate = event.target.value;
 
@@ -1794,6 +1982,7 @@ function AdminPage() {
         event.currentTarget.parentElement?.querySelector('input[aria-label="등록 종료일"]')?.focus();
     };
 
+    // 리뷰 검색 종료일을 변경한다.
     const handleAdminReviewsEndDateChange = (event) => {
         const nextEndDate = event.target.value;
 
@@ -1802,6 +1991,7 @@ function AdminPage() {
         );
     };
 
+    // 리뷰 상세 모달을 닫는다.
     const closeAdminReviewDetailModal = () => {
         if (adminReviewDetailSaving) return;
         setAdminReviewDetailModal(null);
@@ -1810,6 +2000,7 @@ function AdminPage() {
         setAdminReviewReplyText('');
     };
 
+    // 리뷰 상세 모달을 연다.
     const handleAdminReviewDetailOpen = async (review) => {
         const reviewId = review?.reviewId;
 
@@ -1834,6 +2025,7 @@ function AdminPage() {
         }
     };
 
+    // 리뷰 답글 저장을 처리한다.
     const handleAdminReviewReplySave = async () => {
         const reviewId = adminReviewDetailModal?.reviewId;
 
@@ -1863,6 +2055,7 @@ function AdminPage() {
         }
     };
 
+    // 리뷰 답글 삭제를 처리한다.
     const handleAdminReviewReplyDelete = async () => {
         const reviewId = adminReviewDetailModal?.reviewId;
 
@@ -1890,6 +2083,7 @@ function AdminPage() {
         }
     };
 
+    // 리뷰 관리 화면을 렌더링한다.
     const renderRvw = () => (
         <>
             <form className="adminFilterCard adminReviewFilterCard" onSubmit={handleAdminReviewsSearch}>
@@ -1998,6 +2192,7 @@ function AdminPage() {
         </>
     );
 
+    // 현재 선택된 관리자 탭 화면을 렌더링한다.
     const renderContent = () => {
         if (activeTab === 'dashboard') {
             return renderDashboard();
@@ -2075,6 +2270,7 @@ function AdminPage() {
     );
 }
 
+// 관리자 지표 카드를 렌더링한다.
 function MetricCard({ label, value, basis }) {
     return (
         <article className="adminMetricCard">
@@ -2085,6 +2281,7 @@ function MetricCard({ label, value, basis }) {
     );
 }
 
+// 관리자 기능 카드를 렌더링한다.
 function FeatureCard({ title, text, active = false, onClick }) {
     const Component = onClick ? 'button' : 'article';
 
@@ -2102,6 +2299,7 @@ function FeatureCard({ title, text, active = false, onClick }) {
     );
 }
 
+// 대시보드 인기 상품 표를 렌더링한다.
 function TopProductsTable({ data }) {
     return (
         <div className="adminTopProductsTable">
@@ -2125,6 +2323,7 @@ function TopProductsTable({ data }) {
     );
 }
 
+// 관리자 회원 목록 표를 렌더링한다.
 function AdminUsersTable({ users }) {
     return (
         <div className="adminUsersTable">
@@ -2158,6 +2357,7 @@ function AdminUsersTable({ users }) {
     );
 }
 
+// 관리자 상품 목록 표를 렌더링한다.
 function AdminProductsTable({ products }) {
     return (
         <div className="adminProductsTable">
@@ -2206,6 +2406,7 @@ function AdminProductsTable({ products }) {
     );
 }
 
+// 관리자 주문 목록 표를 렌더링한다.
 function AdminOrdersTable({ orders }) {
     return (
         <div className="adminOrdersTable">
@@ -2237,6 +2438,7 @@ function AdminOrdersTable({ orders }) {
     );
 }
 
+// 관리자 리뷰 목록 표를 렌더링한다.
 function AdminReviewsTable({ reviews, onReviewOpen }) {
     return (
         <div className="adminReviewsTable">
@@ -2294,6 +2496,7 @@ function AdminReviewsTable({ reviews, onReviewOpen }) {
     );
 }
 
+// 고객센터 공지사항 목록 표를 렌더링한다.
 function AdminCsNoticesTable({ notices, onTitleClick }) {
     return (
         <div className="adminCsNoticesTable">
@@ -2323,6 +2526,7 @@ function AdminCsNoticesTable({ notices, onTitleClick }) {
     );
 }
 
+// 고객센터 FAQ 목록 표를 렌더링한다.
 function AdminCsFaqsTable({ faqs, onTitleClick }) {
     return (
         <div className="adminCsFaqsTable">
@@ -2354,7 +2558,8 @@ function AdminCsFaqsTable({ faqs, onTitleClick }) {
     );
 }
 
-function AdminCsInquiriesTable({ inquiries }) {
+// 고객센터 1:1 문의 목록 표를 렌더링한다.
+function AdminCsInquiriesTable({ inquiries, onInquiryOpen }) {
     return (
         <div className="adminCsInquiriesTable">
             <div className="adminCsInquiriesHead">
@@ -2371,8 +2576,20 @@ function AdminCsInquiriesTable({ inquiries }) {
             </div>
             <div className="adminCsInquiriesBody">
                 {inquiries.map((inquiry) => (
-                    <div className="adminCsInquiriesRow" key={inquiry.inquiryId ?? `${inquiry.writerId}-${inquiry.createdAt}`}>
-                        <span>{formatValue(inquiry.inquiryId)}</span>
+                    <div
+                        className="adminCsInquiriesRow"
+                        key={inquiry.inquiryId ?? inquiry.inqId ?? `${inquiry.writerId}-${inquiry.createdAt}`}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => onInquiryOpen(inquiry)}
+                        onKeyDown={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault();
+                                onInquiryOpen(inquiry);
+                            }
+                        }}
+                    >
+                        <span>{formatValue(inquiry.inquiryId ?? inquiry.inqId)}</span>
                         <span className="adminCsInquiryTitle" title={formatValue(inquiry.title)}>
                             {formatValue(inquiry.title)}
                         </span>
@@ -2391,6 +2608,98 @@ function AdminCsInquiriesTable({ inquiries }) {
     );
 }
 
+// 고객센터 문의 상세/답변 모달을 렌더링한다.
+function AdminCsInquiryDetailModal({ inquiry, answerText, loading, saving, error, message, onAnswerChange, onAnswerSave, onClose }) {
+    return (
+        <div className="adminModalOverlay" role="presentation" onClick={onClose}>
+            <section className="adminCsDetailModal adminReviewDetailModal" role="dialog" aria-modal="true" aria-labelledby="adminCsInquiryDetailTitle" onClick={(event) => event.stopPropagation()}>
+                <div className="adminCsDetailHeader">
+                    <div>
+                        <span className="adminCsDetailType">1:1 문의 관리</span>
+                        <h3 id="adminCsInquiryDetailTitle">{formatValue(inquiry?.title)}</h3>
+                    </div>
+                    <button type="button" className="adminModalCloseBtn" onClick={onClose} aria-label="닫기" disabled={saving}>
+                        ×
+                    </button>
+                </div>
+
+                {error && <div className="adminDashboardNotice">{error}</div>}
+                {loading && <div className="adminDashboardNotice">상세 정보를 불러오는 중입니다.</div>}
+                {message && <div className="adminReviewDetailMessage">{message}</div>}
+
+                <dl className="adminCsDetailMeta">
+                    <div>
+                        <dt>문의번호</dt>
+                        <dd>{formatValue(inquiry?.inquiryId ?? inquiry?.inqId)}</dd>
+                    </div>
+                    <div>
+                        <dt>회원번호</dt>
+                        <dd>{formatValue(inquiry?.userNum)}</dd>
+                    </div>
+                    <div>
+                        <dt>작성자 ID</dt>
+                        <dd>{formatValue(inquiry?.writerId)}</dd>
+                    </div>
+                    <div>
+                        <dt>작성자명</dt>
+                        <dd>{formatValue(inquiry?.writerName)}</dd>
+                    </div>
+                    <div>
+                        <dt>카테고리</dt>
+                        <dd>{formatCode(inquiry?.category, inquiryTypeOptions)}</dd>
+                    </div>
+                    <div>
+                        <dt>상태</dt>
+                        <dd>{formatCode(inquiry?.status, inquiryStatusOptions)}</dd>
+                    </div>
+                    <div>
+                        <dt>답변일</dt>
+                        <dd>{formatDateTime(inquiry?.answeredAt)}</dd>
+                    </div>
+                    <div>
+                        <dt>작성일</dt>
+                        <dd>{formatDateTime(inquiry?.createdAt)}</dd>
+                    </div>
+                    <div>
+                        <dt>수정일</dt>
+                        <dd>{formatDateTime(inquiry?.updatedAt)}</dd>
+                    </div>
+                </dl>
+
+                <div className="adminCsDetailContent adminReviewDetailContent">
+                    <strong>문의 내용</strong>
+                    {formatMultilineText(inquiry?.inquiryText)}
+                </div>
+
+                <div className="adminCsDetailContent adminReviewDetailContent adminCsInquiryAnswerContent">
+                    <strong>기존 답변</strong>
+                    {formatMultilineText(inquiry?.ansTxt)}
+                </div>
+
+                <div className="adminReviewReplyBox">
+                    <label htmlFor="adminCsInquiryAnswerText">답변</label>
+                    <textarea
+                        id="adminCsInquiryAnswerText"
+                        value={answerText}
+                        onChange={onAnswerChange}
+                        disabled={loading || saving}
+                    />
+                </div>
+
+                <div className="adminCsDetailActions">
+                    <button type="button" className="adminSecondaryBtn" onClick={onClose} disabled={saving}>
+                        닫기
+                    </button>
+                    <button type="button" className="adminPrimaryBtn" onClick={onAnswerSave} disabled={loading || saving}>
+                        답변
+                    </button>
+                </div>
+            </section>
+        </div>
+    );
+}
+
+// 관리자 리뷰 상세/답글 모달을 렌더링한다.
 function AdminReviewDetailModal({ review, replyText, loading, saving, error, message, onReplyChange, onReplySave, onReplyDelete, onClose }) {
     const hasReply = Boolean(review?.replyTxt);
 
@@ -2469,6 +2778,7 @@ function AdminReviewDetailModal({ review, replyText, loading, saving, error, mes
     );
 }
 
+// 고객센터 등록 모달을 렌더링한다.
 function AdminCsCreateModal({ type, form, saving, error, onChange, onClose, onSubmit }) {
     const isNotice = type === 'notice';
 
@@ -2546,6 +2856,7 @@ function AdminCsCreateModal({ type, form, saving, error, onChange, onClose, onSu
     );
 }
 
+// 고객센터 공지사항/FAQ 상세 모달을 렌더링한다.
 function AdminCsDetailModal({ type, item, loading, error, editing, editForm, saving, onEditFormChange, onEditCancel, onEditSubmit, onClose, onEdit, onDelete }) {
     const isNotice = type === 'notice';
     const title = formatValue(item?.ttl);
@@ -2568,8 +2879,20 @@ function AdminCsDetailModal({ type, item, loading, error, editing, editForm, sav
                 {error && <div className="adminDashboardNotice">{error}</div>}
                 {loading && <div className="adminDashboardNotice">상세 정보를 불러오는 중입니다.</div>}
 
-                {editing && isNotice ? (
+                {editing ? (
                     <form className="adminCsCreateForm" onSubmit={onEditSubmit}>
+                        {!isNotice && (
+                            <div className="adminField">
+                                <label>FAQ 분류</label>
+                                <select name="faqCtgCd" value={editForm.faqCtgCd} onChange={onEditFormChange} disabled={saving}>
+                                    {adminCsFaqCategoryOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                         <div className="adminField">
                             <label>제목</label>
                             <input
@@ -2577,17 +2900,17 @@ function AdminCsDetailModal({ type, item, loading, error, editing, editForm, sav
                                 name="ttl"
                                 value={editForm.ttl}
                                 onChange={onEditFormChange}
-                                placeholder="공지사항 제목을 입력하세요"
+                                placeholder={isNotice ? '공지사항 제목을 입력하세요' : 'FAQ 제목을 입력하세요'}
                                 disabled={saving}
                             />
                         </div>
                         <div className="adminField">
                             <label>내용</label>
                             <textarea
-                                name="ntcTxt"
-                                value={editForm.ntcTxt}
+                                name={isNotice ? 'ntcTxt' : 'faqTxt'}
+                                value={isNotice ? editForm.ntcTxt : editForm.faqTxt}
                                 onChange={onEditFormChange}
-                                placeholder="공지사항 내용을 입력하세요"
+                                placeholder={isNotice ? '공지사항 내용을 입력하세요' : 'FAQ 내용을 입력하세요'}
                                 disabled={saving}
                             />
                         </div>
@@ -2660,6 +2983,7 @@ function AdminCsDetailModal({ type, item, loading, error, editing, editForm, sav
     );
 }
 
+// 월별 회원 추이를 꺾은선 그래프로 렌더링한다.
 function MonthlyLineChart({ data = [] }) {
     const series = normalizeMonthlySeries(data);
     const maxCount = getMaxCount(series);
@@ -2675,8 +2999,12 @@ function MonthlyLineChart({ data = [] }) {
                     const y = getChartY(item.count, maxCount);
 
                     return (
-                        <g key={`${item.month}-${index}`}>
+                        <g className="adminLinePoint" key={`${item.month}-${index}`}>
                             <circle cx={x} cy={y} r="4" />
+                            <g className="adminLineTooltip" transform={`translate(${x}, ${Math.max(y - 24, 18)})`}>
+                                <rect x="-44" y="-18" width="88" height="22" rx="11" />
+                                <text x="0" y="-4">가입 회원 {item.count}명</text>
+                            </g>
                             <text x={x} y="148">{item.month}</text>
                         </g>
                     );
@@ -2686,6 +3014,7 @@ function MonthlyLineChart({ data = [] }) {
     );
 }
 
+// 월별 주문 추이를 막대 그래프로 렌더링한다.
 function MonthlyBarChart({ data = [] }) {
     const series = normalizeMonthlySeries(data);
     const maxCount = getMaxCount(series);
@@ -2696,6 +3025,7 @@ function MonthlyBarChart({ data = [] }) {
                 {series.map((item, index) => (
                     <div className="adminBarItem" key={`${item.month}-${index}`}>
                         <span style={{ height: `${getRatioPercent(item.count, maxCount)}%` }} />
+                        <em>주문 {item.count}건</em>
                         <strong>{item.month}</strong>
                     </div>
                 ))}
@@ -2704,6 +3034,7 @@ function MonthlyBarChart({ data = [] }) {
     );
 }
 
+// 월별 그래프 데이터를 안전한 숫자 배열로 변환한다.
 function normalizeMonthlySeries(data) {
     if (!Array.isArray(data)) {
         return [];
@@ -2717,10 +3048,12 @@ function normalizeMonthlySeries(data) {
         }));
 }
 
+// 월별 그래프 최대값을 구한다.
 function getMaxCount(series) {
     return Math.max(0, ...series.map((item) => item.count));
 }
 
+// 막대 그래프 높이 비율을 계산한다.
 function getRatioPercent(value, maxCount) {
     if (maxCount <= 0) {
         return 0;
@@ -2729,6 +3062,7 @@ function getRatioPercent(value, maxCount) {
     return Math.max(0, Math.min(100, (toSafeCount(value) / maxCount) * 100));
 }
 
+// 꺾은선 그래프 좌표 문자열을 만든다.
 function createLineChartPoints(series, maxCount) {
     if (!series.length) {
         return '';
@@ -2739,6 +3073,7 @@ function createLineChartPoints(series, maxCount) {
         .join(' ');
 }
 
+// 꺾은선 그래프 X 좌표를 계산한다.
 function getChartX(index, length) {
     if (length <= 1) {
         return 360;
@@ -2747,6 +3082,7 @@ function getChartX(index, length) {
     return 36 + (648 * index) / (length - 1);
 }
 
+// 꺾은선 그래프 Y 좌표를 계산한다.
 function getChartY(value, maxCount) {
     if (maxCount <= 0) {
         return 120;
@@ -2755,6 +3091,7 @@ function getChartY(value, maxCount) {
     return 120 - (88 * toSafeCount(value)) / maxCount;
 }
 
+// 관리자 빈 상태 화면을 렌더링한다.
 function EmptyState({ text }) {
     return (
         <section className="adminEmptyCard">
@@ -2765,6 +3102,7 @@ function EmptyState({ text }) {
     );
 }
 
+// 대시보드 API 응답을 화면 데이터로 변환한다.
 function createDashboardData(summary) {
     if (!summary) {
         return dashboardPlaceholderData;
@@ -2852,6 +3190,7 @@ function createDashboardData(summary) {
     };
 }
 
+// 금액 값을 화면 표시 형식으로 변환한다.
 function formatCurrency(value, fallback = '-') {
     if (value === null || value === undefined || value === '') {
         return fallback;
@@ -2865,6 +3204,7 @@ function formatCurrency(value, fallback = '-') {
     return `${numberValue.toLocaleString()}원`;
 }
 
+// 건수 값을 화면 표시 형식으로 변환한다.
 function formatCount(value, fallback = '-', unit = '건') {
     if (value === null || value === undefined || value === '') {
         return fallback;
@@ -2878,6 +3218,7 @@ function formatCount(value, fallback = '-', unit = '건') {
     return `${numberValue.toLocaleString()}${unit}`;
 }
 
+// 그래프용 숫자 값을 안전하게 변환한다.
 function toSafeCount(value) {
     const numberValue = Number(value);
 
@@ -2888,6 +3229,7 @@ function toSafeCount(value) {
     return numberValue;
 }
 
+// 비율 값을 화면 표시 형식으로 변환한다.
 function formatRate(value, fallback = '-') {
     if (value === null || value === undefined || value === '') {
         return fallback;
@@ -2901,6 +3243,7 @@ function formatRate(value, fallback = '-') {
     return `${numberValue}%`;
 }
 
+// 빈 값을 기본 표시값으로 변환한다.
 function formatValue(value, fallback = '-') {
     if (value === null || value === undefined || value === '') {
         return fallback;
@@ -2909,6 +3252,7 @@ function formatValue(value, fallback = '-') {
     return value;
 }
 
+// 여러 줄 텍스트를 화면 표시 요소로 변환한다.
 function formatMultilineText(value) {
     if (value === null || value === undefined || value === '') {
         return '-';
@@ -2921,6 +3265,7 @@ function formatMultilineText(value) {
     ));
 }
 
+// 코드 값을 옵션 라벨로 변환한다.
 function formatCode(value, options) {
     if (!value) {
         return '-';
@@ -2929,6 +3274,7 @@ function formatCode(value, options) {
     return options.find((option) => option.value === value)?.label || value;
 }
 
+// FAQ 카테고리 코드를 라벨로 변환한다.
 function formatFaqCategory(value) {
     if (!value) {
         return '-';
@@ -2945,6 +3291,20 @@ function formatFaqCategory(value) {
     return categoryLabels[value] || formatCode(value, adminCsFaqCategoryOptions);
 }
 
+// FAQ 카테고리 값을 코드로 변환한다.
+function normalizeFaqCategoryCode(value) {
+    const categoryCodes = {
+        주문: 'ORDER',
+        배송: 'DELIVERY',
+        상품: 'PRODUCT',
+        회원: 'MEMBER',
+        기타: 'ETC'
+    };
+
+    return categoryCodes[value] || value || 'ORDER';
+}
+
+// 리뷰 평점을 화면 표시 형식으로 변환한다.
 function formatRating(value) {
     if (value === null || value === undefined || value === '') {
         return '-';
@@ -2953,6 +3313,7 @@ function formatRating(value) {
     return `${value}점`;
 }
 
+// 일시 값을 화면 표시 형식으로 변환한다.
 function formatDateTime(value) {
     if (!value) {
         return '-';
@@ -2961,6 +3322,7 @@ function formatDateTime(value) {
     return String(value).replace('T', ' ').slice(0, 16);
 }
 
+// 날짜 값을 점 구분 형식으로 변환한다.
 function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -2968,6 +3330,7 @@ function formatDate(date) {
     return `${year}.${month}.${day}`;
 }
 
+// 월 값을 점 구분 형식으로 변환한다.
 function formatMonth(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
