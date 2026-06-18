@@ -8,7 +8,10 @@ import { getAdminDashboardSummary } from '../../service/admin/adminDashboardApi'
 import { getAdminOrders } from '../../service/admin/adminOrdersApi';
 import { getAdminProducts } from '../../service/admin/adminProductsApi';
 import { deleteAdminReviewReply, getAdminReviewDetail, getAdminReviews, saveAdminReviewReply } from '../../service/admin/adminReviewsApi';
-import { getAdminUsers } from '../../service/admin/adminUsersApi';
+import {
+    getAdminUsers,
+    downloadAdminUsersExcel
+} from '../../service/admin/adminUsersApi';
 import './Admin.css';
 
 const today = new Date();
@@ -1404,6 +1407,45 @@ function AdminPage() {
         setAdminUsersPage(0);
     };
 
+    // Excel download
+    const handleAdminExcelDownload = async () => {
+
+        if (activeTab === 'users') {
+
+            try {
+
+                const blob = await downloadAdminUsersExcel({
+                    keyword: adminUsersQueryKeyword.trim() || undefined,
+                    statusCd: adminUsersQueryStatusCd || undefined,
+                    startDate: adminUsersQueryStartDate || undefined,
+                    endDate: adminUsersQueryEndDate || undefined
+                });
+
+                const url = window.URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+
+                link.href = url;
+                link.download = '회원목록.xlsx';
+
+                document.body.appendChild(link);
+                link.click();
+
+                link.remove();
+                window.URL.revokeObjectURL(url);
+
+            } catch (error) {
+
+                console.error('회원 엑셀 다운로드 실패:', error);
+                alert('회원 엑셀 다운로드에 실패했습니다.');
+            }
+
+            return;
+        }
+
+        alert('해당 메뉴의 엑셀 다운로드는 준비 중입니다.');
+    };
+
     const handleAdminUsersStartDateChange = (event) => {
         const nextStartDate = event.target.value;
 
@@ -2017,7 +2059,13 @@ function AdminPage() {
                         <p>{currentInfo.description}</p>
                     </div>
                     <div className="adminHeaderActions">
-                        <button type="button" disabled>데이터 다운로드</button>
+                        <button
+                            type="button"
+                            onClick={handleAdminExcelDownload}
+                            disabled={activeTab === 'dashboard'}
+                        >
+                            데이터 다운로드
+                        </button>
                     </div>
                 </header>
 
@@ -2561,50 +2609,50 @@ function AdminCsDetailModal({ type, item, loading, error, editing, editForm, sav
                     </form>
                 ) : (
                     <>
-                    <dl className="adminCsDetailMeta">
-                        <div>
-                            <dt>번호</dt>
-                            <dd>{formatValue(id)}</dd>
-                        </div>
-                        {!isNotice && (
+                        <dl className="adminCsDetailMeta">
                             <div>
-                                <dt>카테고리</dt>
-                                <dd>{formatFaqCategory(item?.faqCtgCd)}</dd>
+                                <dt>번호</dt>
+                                <dd>{formatValue(id)}</dd>
                             </div>
-                        )}
-                        <div>
-                            <dt>사용여부</dt>
-                            <dd>{formatValue(item?.useYn)}</dd>
-                        </div>
-                        <div>
-                            <dt>조회수</dt>
-                            <dd>{formatCount(item?.viewCnt, '-', '')}</dd>
-                        </div>
-                        <div>
-                            <dt>등록일</dt>
-                            <dd>{formatDateTime(item?.crtAt)}</dd>
-                        </div>
-                        <div>
-                            <dt>수정일</dt>
-                            <dd>{formatDateTime(item?.updAt)}</dd>
-                        </div>
-                    </dl>
+                            {!isNotice && (
+                                <div>
+                                    <dt>카테고리</dt>
+                                    <dd>{formatFaqCategory(item?.faqCtgCd)}</dd>
+                                </div>
+                            )}
+                            <div>
+                                <dt>사용여부</dt>
+                                <dd>{formatValue(item?.useYn)}</dd>
+                            </div>
+                            <div>
+                                <dt>조회수</dt>
+                                <dd>{formatCount(item?.viewCnt, '-', '')}</dd>
+                            </div>
+                            <div>
+                                <dt>등록일</dt>
+                                <dd>{formatDateTime(item?.crtAt)}</dd>
+                            </div>
+                            <div>
+                                <dt>수정일</dt>
+                                <dd>{formatDateTime(item?.updAt)}</dd>
+                            </div>
+                        </dl>
 
-                    <div className="adminCsDetailContent">
-                        {formatMultilineText(body)}
-                    </div>
+                        <div className="adminCsDetailContent">
+                            {formatMultilineText(body)}
+                        </div>
 
-                    <div className="adminCsDetailActions">
-                        <button type="button" className="adminSecondaryBtn" onClick={onClose}>
-                            닫기
-                        </button>
-                        <button type="button" className="adminSecondaryBtn" onClick={onEdit} disabled={loading}>
-                            수정
-                        </button>
-                        <button type="button" className="adminDangerBtn" onClick={onDelete} disabled={loading}>
-                            삭제
-                        </button>
-                    </div>
+                        <div className="adminCsDetailActions">
+                            <button type="button" className="adminSecondaryBtn" onClick={onClose}>
+                                닫기
+                            </button>
+                            <button type="button" className="adminSecondaryBtn" onClick={onEdit} disabled={loading}>
+                                수정
+                            </button>
+                            <button type="button" className="adminDangerBtn" onClick={onDelete} disabled={loading}>
+                                삭제
+                            </button>
+                        </div>
                     </>
                 )}
             </section>
