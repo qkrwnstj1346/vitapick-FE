@@ -5,7 +5,7 @@ const hostname = window && window.location && window.location.hostname;
 if (hostname === "localhost") {
     backendHost = "http://localhost:8080";
 } else {
-    backendHost = "http://배포서버주소:8080";
+    backendHost = "";
 }
 
 export const API_BASE_URL = `${backendHost}`;

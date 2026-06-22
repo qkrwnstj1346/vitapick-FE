@@ -25,7 +25,7 @@ function MyWithdraw(){
             return;
         }
         try{
-            await apiCall.post("v1/withdraw", {pwd: data.pwd});
+            await apiCall.post("/v1/withdraw", {pwd: data.pwd});
             sessionStorage.clear();
             localStorage.clear();
             alert("탈퇴되었습니다.");

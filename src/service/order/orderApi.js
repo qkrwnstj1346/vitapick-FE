@@ -1,4 +1,5 @@
 import { apiCall } from '../apiService';
+import axios from 'axios';
 
 /* 주문 목록 조회 */
 export function getOrderList() {
