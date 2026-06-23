@@ -3,7 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import {
     getFaqDetail,
-    deleteFaq
+    deleteFaq,
+    checkCscenterAdmin
 } from '../../../service/cscenter/csCenterApi';
 
 import './FaqDetail.css';
@@ -19,11 +20,20 @@ function FaqDetail() {
     /* FAQ 상세 */
     const [detail, setDetail] = useState(null);
 
-    /* 로그인 정보 */
-    const roleCd = sessionStorage.getItem('roleCd');
-
     /* 관리자 여부 */
-    const isAdmin = roleCd === 'ADMIN';
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    /* 관리자 여부 확인 */
+    useEffect(() => {
+        checkCscenterAdmin()
+            .then((data) => {
+                setIsAdmin(data === true);
+            })
+            .catch((err) => {
+                console.log(err);
+                setIsAdmin(false);
+            });
+    }, []);
 
     /* FAQ 상세 조회 */
     useEffect(() => {

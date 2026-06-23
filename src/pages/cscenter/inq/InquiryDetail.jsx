@@ -5,7 +5,8 @@ import {
     getInqDetail,
     getMyInqDetail,
     deleteInq,
-    answerInq
+    answerInq,
+    checkCscenterAdmin
 } from '../../../service/cscenter/csCenterApi';
 
 import './InquiryDetail.css';
@@ -24,14 +25,11 @@ function InquiryDetail() {
     /* 답변 내용 */
     const [answerText, setAnswerText] = useState('');
 
-    /* 로그인 사용자 */
-    const loginUser = {
-        userNum: sessionStorage.getItem('userNum'),
-        roleCd: sessionStorage.getItem('roleCd')
-    };
-
     /* 관리자 여부 */
-    const isAdmin = loginUser.roleCd === 'ADMIN';
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    /* 로그인 정보 */
+    const userNum = sessionStorage.getItem('userNum');
 
     /* 문의 상세 조회 */
     useEffect(() => {
@@ -45,7 +43,11 @@ function InquiryDetail() {
 
         try {
 
-            const response = isAdmin
+            const adminCheck = await checkCscenterAdmin();
+
+            setIsAdmin(adminCheck === true);
+
+            const response = adminCheck === true
                 ? await getInqDetail(inqId)
                 : await getMyInqDetail(inqId);
 
@@ -237,13 +239,12 @@ function InquiryDetail() {
 
             )}
 
-
             {/* 하단 버튼 */}
             <div className="inq-detail-bottom">
 
                 {/* 일반 회원 본인 글 */}
                 {!isAdmin &&
-                    Number(loginUser.userNum) === Number(inquiry.userNum) && (
+                    Number(userNum) === Number(inquiry.userNum) && (
 
                         <>
 

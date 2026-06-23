@@ -3,7 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
     getNoticeDetail,
     createNotice,
-    updateNotice
+    updateNotice,
+    checkCscenterAdmin
 } from '../../../service/cscenter/csCenterApi';
 import './NoticeForm.css';
 
@@ -18,15 +19,8 @@ function NoticeForm() {
     /* 수정 여부 */
     const isEdit = ntcId !== undefined;
 
-    /* 로그인 정보 */
-    const userNum = sessionStorage.getItem('userNum');
-    const roleCd = sessionStorage.getItem('roleCd');
-
-    /* 로그인 여부 */
-    const isLogin = !!userNum;
-
-    /* 관리자 여부 */
-    const isAdmin = roleCd === 'ADMIN';
+    /* 권한 확인 */
+    const [checkedAdmin, setCheckedAdmin] = useState(false);
 
     /* 폼 데이터 */
     const [formData, setFormData] = useState({
@@ -38,33 +32,48 @@ function NoticeForm() {
     /* 공지사항 상세 조회 */
     useEffect(() => {
 
-        /* 관리자 체크 */
-        if (!isLogin || !isAdmin) {
-            alert('관리자만 접근 가능합니다.');
-            navigate('/cscenter/notices');
-            return;
-        }
+        checkCscenterAdmin()
+            .then((data) => {
 
-        /* 수정 모드 */
-        if (isEdit) {
+                if (data !== true) {
+                    alert('관리자만 접근 가능합니다.');
+                    navigate('/cscenter/notices');
+                    return;
+                }
 
-            getNoticeDetail(ntcId)
-                .then((data) => {
+                setCheckedAdmin(true);
 
-                    setFormData({
-                        ttl: data.ttl || '',
-                        ntcTxt: data.ntcTxt || '',
-                        useYn: data.useYn || 'Y'
-                    });
+                /* 수정 모드 */
+                if (isEdit) {
 
-                })
-                .catch((err) => {
-                    console.log(err);
-                    alert('공지사항 조회 실패');
-                });
-        }
+                    getNoticeDetail(ntcId)
+                        .then((data) => {
 
-    }, [isEdit, ntcId, isLogin, isAdmin, navigate]);
+                            setFormData({
+                                ttl: data.ttl || '',
+                                ntcTxt: data.ntcTxt || '',
+                                useYn: data.useYn || 'Y'
+                            });
+
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            alert('공지사항 조회 실패');
+                            navigate('/cscenter/notices');
+                        });
+                }
+
+            })
+            .catch((err) => {
+
+                console.log(err);
+
+                alert('관리자만 접근 가능합니다.');
+                navigate('/cscenter/notices');
+
+            });
+
+    }, [isEdit, ntcId, navigate]);
 
     /* 입력값 변경 */
     const changeHandler = (e) => {
@@ -125,6 +134,11 @@ function NoticeForm() {
     const cancelHandler = () => {
         navigate('/cscenter/notices');
     };
+
+    /* 권한 확인 전 */
+    if (!checkedAdmin) {
+        return null;
+    }
 
     return (
 

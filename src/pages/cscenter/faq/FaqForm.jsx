@@ -4,7 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
     getFaqDetail,
     createFaq,
-    updateFaq
+    updateFaq,
+    checkCscenterAdmin
 } from '../../../service/cscenter/csCenterApi';
 
 import './FaqForm.css';
@@ -20,15 +21,8 @@ function FaqForm() {
     /* 수정 여부 */
     const isEdit = faqId !== undefined;
 
-    /* 로그인 정보 */
-    const userNum = sessionStorage.getItem('userNum');
-    const roleCd = sessionStorage.getItem('roleCd');
-
-    /* 로그인 여부 */
-    const isLogin = !!userNum;
-
-    /* 관리자 여부 */
-    const isAdmin = roleCd === 'ADMIN';
+    /* 권한 확인 */
+    const [checkedAdmin, setCheckedAdmin] = useState(false);
 
     /* 폼 데이터 */
     const [formData, setFormData] = useState({
@@ -41,43 +35,54 @@ function FaqForm() {
     /* FAQ 상세 조회 */
     useEffect(() => {
 
-        /* 관리자 체크 */
-        if (!isLogin || !isAdmin) {
+        checkCscenterAdmin()
+            .then((data) => {
 
-            alert('관리자만 접근할 수 있습니다.');
-
-            navigate('/cscenter/faqs');
-
-            return;
-        }
-
-        /* 수정 모드 */
-        if (isEdit) {
-
-            getFaqDetail(faqId)
-                .then((data) => {
-
-                    setFormData({
-                        faqCtgCd: data.faqCtgCd || 'ORDER',
-                        ttl: data.ttl || '',
-                        faqTxt: data.faqTxt || '',
-                        useYn: data.useYn || 'Y'
-                    });
-
-                })
-                .catch((err) => {
-
-                    console.log(err);
-
-                    alert('FAQ 정보를 불러오지 못했습니다.');
-
+                if (data !== true) {
+                    alert('관리자만 접근할 수 있습니다.');
                     navigate('/cscenter/faqs');
+                    return;
+                }
 
-                });
+                setCheckedAdmin(true);
 
-        }
+                /* 수정 모드 */
+                if (isEdit) {
 
-    }, [faqId, isEdit, isLogin, isAdmin, navigate]);
+                    getFaqDetail(faqId)
+                        .then((data) => {
+
+                            setFormData({
+                                faqCtgCd: data.faqCtgCd || 'ORDER',
+                                ttl: data.ttl || '',
+                                faqTxt: data.faqTxt || '',
+                                useYn: data.useYn || 'Y'
+                            });
+
+                        })
+                        .catch((err) => {
+
+                            console.log(err);
+
+                            alert('FAQ 정보를 불러오지 못했습니다.');
+
+                            navigate('/cscenter/faqs');
+
+                        });
+
+                }
+
+            })
+            .catch((err) => {
+
+                console.log(err);
+
+                alert('관리자만 접근할 수 있습니다.');
+                navigate('/cscenter/faqs');
+
+            });
+
+    }, [faqId, isEdit, navigate]);
 
     /* 입력값 변경 */
     const handleChange = (e) => {
@@ -149,6 +154,11 @@ function FaqForm() {
         navigate('/cscenter/faqs');
 
     };
+
+    /* 권한 확인 전 */
+    if (!checkedAdmin) {
+        return null;
+    }
 
     return (
 

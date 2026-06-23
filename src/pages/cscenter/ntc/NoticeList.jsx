@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getNoticeList } from '../../../service/cscenter/csCenterApi';
+import {
+    getNoticeList,
+    checkCscenterAdmin
+} from '../../../service/cscenter/csCenterApi';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Pagination from '../../../components/layout/Pagination';
@@ -17,18 +20,17 @@ function NoticeList() {
     /* 현재 페이지 */
     const [currentPage, setCurrentPage] = useState(1);
 
-    /* 페이지당 개수 */
-    const itemPerPage = 10;
-
     /* 로그인 정보 */
     const userNum = sessionStorage.getItem('userNum');
-    const roleCd = sessionStorage.getItem('roleCd');
 
     /* 로그인 여부 */
     const isLogin = !!userNum;
 
     /* 관리자 여부 */
-    const isAdmin = roleCd === 'ADMIN';
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    /* 페이지당 개수 */
+    const itemPerPage = 10;
 
     /* 전체 페이지 */
     const totalPage = Math.ceil(noticeList.length / itemPerPage);
@@ -41,6 +43,20 @@ function NoticeList() {
         startIndex,
         startIndex + itemPerPage
     );
+
+    /* 관리자 여부 확인 */
+    useEffect(() => {
+
+        checkCscenterAdmin()
+            .then((data) => {
+                setIsAdmin(data === true);
+            })
+            .catch((err) => {
+                console.log(err);
+                setIsAdmin(false);
+            });
+
+    }, []);
 
     /* 공지사항 목록 조회 */
     useEffect(() => {

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     getNoticeDetail,
-    deleteNotice
+    deleteNotice,
+    checkCscenterAdmin
 } from '../../../service/cscenter/csCenterApi';
 import './NoticeDetail.css';
 
@@ -17,11 +18,22 @@ function NoticeDetail() {
     /* 공지사항 상세 */
     const [detail, setDetail] = useState(null);
 
-    /* 로그인 정보 */
-    const roleCd = sessionStorage.getItem('roleCd');
-
     /* 관리자 여부 */
-    const isAdmin = roleCd === 'ADMIN';
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    /* 관리자 여부 확인 */
+    useEffect(() => {
+
+        checkCscenterAdmin()
+            .then((data) => {
+                setIsAdmin(data === true);
+            })
+            .catch((err) => {
+                console.log(err);
+                setIsAdmin(false);
+            });
+
+    }, []);
 
     /* 공지사항 상세 조회 */
     useEffect(() => {

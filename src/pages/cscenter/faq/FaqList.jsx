@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import {
-    getFaqList
+    getFaqList,
+    checkCscenterAdmin
 } from '../../../service/cscenter/csCenterApi';
 
 import Pagination from '../../../components/layout/Pagination';
@@ -25,13 +26,12 @@ function FaqList() {
 
     /* 로그인 정보 */
     const userNum = sessionStorage.getItem('userNum');
-    const roleCd = sessionStorage.getItem('roleCd');
 
     /* 로그인 여부 */
     const isLogin = !!userNum;
 
     /* 관리자 여부 */
-    const isAdmin = roleCd === 'ADMIN';
+    const [isAdmin, setIsAdmin] = useState(false);
 
     /* 전체 페이지 */
     const totalPage = Math.ceil(faqList.length / itemPerPage);
@@ -44,6 +44,18 @@ function FaqList() {
         startIndex,
         startIndex + itemPerPage
     );
+
+    /* 관리자 여부 확인 */
+    useEffect(() => {
+        checkCscenterAdmin()
+            .then((data) => {
+                setIsAdmin(data === true);
+            })
+            .catch((err) => {
+                console.log(err);
+                setIsAdmin(false);
+            });
+    }, []);
 
     /* FAQ 목록 조회 */
     useEffect(() => {

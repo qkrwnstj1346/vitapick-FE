@@ -4,7 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
     getInqDetail,
     createInq,
-    updateInq
+    updateInq,
+    checkCscenterAdmin
 } from '../../../service/cscenter/csCenterApi';
 
 import './InquiryForm.css';
@@ -20,11 +21,14 @@ function InquiryForm() {
     /* 수정 여부 */
     const isEdit = inqId !== undefined;
 
-    /* 로그인 사용자 */
-    const loginUser = {
-        userNum: sessionStorage.getItem('userNum'),
-        roleCd: sessionStorage.getItem('roleCd')
-    };
+    /* 로그인 정보 */
+    const userNum = sessionStorage.getItem('userNum');
+
+    /* 관리자 여부 */
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    /* 권한 확인 */
+    const [checkedAuth, setCheckedAuth] = useState(false);
 
     /* 폼 데이터 */
     const [formData, setFormData] = useState({
@@ -37,7 +41,7 @@ function InquiryForm() {
     useEffect(() => {
 
         /* 로그인 체크 */
-        if (!loginUser.userNum) {
+        if (!userNum) {
 
             alert('로그인 후 이용 가능합니다.');
 
@@ -46,21 +50,47 @@ function InquiryForm() {
             return;
         }
 
-        /* 관리자 체크 */
-        if (loginUser.roleCd === 'ADMIN') {
+        checkCscenterAdmin()
+            .then((data) => {
 
-            alert('관리자는 1:1 문의를 등록하거나 수정할 수 없습니다.');
+                const adminCheck = data === true;
 
-            navigate('/cscenter/inquiries');
+                setIsAdmin(adminCheck);
 
-            return;
-        }
+                /* 관리자 체크 */
+                if (adminCheck) {
 
-        /* 수정 모드 */
-        if (isEdit) {
+                    alert('관리자는 1:1 문의를 등록하거나 수정할 수 없습니다.');
 
-            fetchInqDetail();
-        }
+                    navigate('/cscenter/inquiries');
+
+                    return;
+                }
+
+                setCheckedAuth(true);
+
+                /* 수정 모드 */
+                if (isEdit) {
+
+                    fetchInqDetail();
+                }
+
+            })
+            .catch((err) => {
+
+                console.log(err);
+
+                setIsAdmin(false);
+
+                setCheckedAuth(true);
+
+                /* 수정 모드 */
+                if (isEdit) {
+
+                    fetchInqDetail();
+                }
+
+            });
 
     }, []);
 
@@ -74,7 +104,7 @@ function InquiryForm() {
             console.log('문의 수정 데이터 = ', result);
 
             /* 본인 글 체크 */
-            if (Number(loginUser.userNum) !== Number(result.userNum)) {
+            if (Number(userNum) !== Number(result.userNum)) {
 
                 alert('본인이 작성한 문의글만 수정할 수 있습니다.');
 
@@ -116,7 +146,7 @@ function InquiryForm() {
         e.preventDefault();
 
         /* 로그인 체크 */
-        if (!loginUser.userNum) {
+        if (!userNum) {
 
             alert('로그인 후 이용 가능합니다.');
 
@@ -126,7 +156,7 @@ function InquiryForm() {
         }
 
         /* 관리자 체크 */
-        if (loginUser.roleCd === 'ADMIN') {
+        if (isAdmin) {
 
             alert('관리자는 1:1 문의를 등록하거나 수정할 수 없습니다.');
 
@@ -156,7 +186,7 @@ function InquiryForm() {
             /* 요청 데이터 */
             const requestData = {
                 ...formData,
-                userNum: loginUser.userNum
+                userNum: userNum
             };
 
             /* 수정 */
@@ -196,6 +226,11 @@ function InquiryForm() {
 
         navigate('/cscenter/inquiries');
     };
+
+    /* 권한 확인 전 */
+    if (!checkedAuth) {
+        return null;
+    }
 
     return (
 

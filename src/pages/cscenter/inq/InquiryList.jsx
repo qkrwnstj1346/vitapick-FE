@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllInq } from '../../../service/cscenter/csCenterApi';
+import {
+    getAllInq,
+    checkCscenterAdmin
+} from '../../../service/cscenter/csCenterApi';
 
 import Pagination from '../../../components/layout/Pagination';
 
@@ -18,13 +21,15 @@ function InquiryList() {
     /* 현재 페이지 */
     const [currentPage, setCurrentPage] = useState(1);
 
+    /* 관리자 여부 */
+    const [isAdmin, setIsAdmin] = useState(false);
+
     /* 페이지당 개수 */
     const itemPerPage = 10;
 
     /* 로그인 사용자 */
     const loginUser = {
-        userNum: sessionStorage.getItem('userNum'),
-        roleCd: sessionStorage.getItem('roleCd')
+        userNum: sessionStorage.getItem('userNum')
     };
 
     /* 전체 페이지 */
@@ -38,6 +43,25 @@ function InquiryList() {
         startIndex,
         startIndex + itemPerPage
     );
+
+    /* 관리자 여부 확인 */
+    useEffect(() => {
+
+        checkCscenterAdmin()
+            .then((data) => {
+
+                setIsAdmin(data === true);
+
+            })
+            .catch((err) => {
+
+                console.log(err);
+
+                setIsAdmin(false);
+
+            });
+
+    }, []);
 
     /* 문의 목록 조회 */
     useEffect(() => {
@@ -83,7 +107,7 @@ function InquiryList() {
             return;
         }
 
-        if (loginUser.roleCd === 'ADMIN') {
+        if (isAdmin) {
 
             navigate(`/cscenter/inquiries/${item.inqId}`);
 
@@ -112,7 +136,7 @@ function InquiryList() {
             return;
         }
 
-        if (loginUser.roleCd === 'ADMIN') {
+        if (isAdmin) {
 
             alert('관리자는 1:1 문의를 등록할 수 없습니다.');
 
