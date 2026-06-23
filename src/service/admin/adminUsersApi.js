@@ -9,10 +9,3 @@ export function getAdminUsers(params) {
 export function getAdminUserDetail(userNum) {
     return apiCall.get(`/api/admin/users/${userNum}`);
 }
-
-export function downloadAdminUsersExcel(params) {
-    return apiCall.get('/api/admin/users/excel', {
-        params,
-        responseType: 'blob'
-    });
-}
