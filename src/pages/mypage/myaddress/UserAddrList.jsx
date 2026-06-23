@@ -83,6 +83,11 @@ function UserAddrList() {
             return;
         }
 
+        if (addrList.length >= 10) {
+            alert('배송지는 최대 10개까지 등록 가능합니다.');
+            return;
+        }
+
         setFormMode('create');
         setSelectedAddr(null);
         setIsFormOpen(true);
