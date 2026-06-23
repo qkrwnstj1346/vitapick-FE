@@ -39,7 +39,7 @@ function MyorderList() {
             try {
 
                 /* 주문 목록 조회 */
-                const data = await apiCall.get(`/order?userNum=${userNum}`);
+                const data = await apiCall.get(`/api/order?userNum=${userNum}`);
 
                 /* 주문 목록 저장 */
                 setOrderList(data || []);

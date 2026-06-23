@@ -5,19 +5,19 @@ import { apiCall } from '../apiService';
 /* 장바구니 목록 조회 */
 /* 로그인한 본인 장바구니만 */
 export function getCartList() {
-    return apiCall.get('/cart');
+    return apiCall.get('/api/cart');
 }
 
 /* 장바구니 담기 */
 /* 로그인한 본인 장바구니에 담기 */
 export function addCart(data) {
-    return apiCall.post('/cart', data);
+    return apiCall.post('/api/cart', data);
 }
 
 /* 장바구니 수량 변경 */
 export function updateCartQty(cartId, data) {
     return apiCall.patch(
-        `/cart/${cartId}/qty`,
+        `/api/cart/${cartId}/qty`,
         data
     );
 }
@@ -26,7 +26,7 @@ export function updateCartQty(cartId, data) {
 /* 체크박스 선택/해제 */
 export function updateCartSelectedYn(cartId, data) {
     return apiCall.patch(
-        `/cart/${cartId}/selected`,
+        `/api/cart/${cartId}/selected`,
         data
     );
 }
@@ -34,12 +34,12 @@ export function updateCartSelectedYn(cartId, data) {
 /* 전체 선택 / 전체 해제 */
 export function updateAllCartSelectedYn(data) {
     return apiCall.patch(
-        '/cart/selected/all',
+        '/api/cart/selected/all',
         data
     );
 }
 
 /* 선택 상품 삭제 */
 export function deleteSelectedCart() {
-    return apiCall.delete('/cart/selected');
+    return apiCall.delete('/api/cart/selected');
 }

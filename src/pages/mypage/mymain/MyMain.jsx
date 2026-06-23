@@ -34,9 +34,9 @@ function MyMain() {
             try {
 
                 const [orderList, wishList, inqList] = await Promise.all([
-                    apiCall.get('/order'),
+                    apiCall.get('/api/order'),
                     apiCall.get('/api/v1/wish'),
-                    apiCall.get('/cscenter/mypage/inquiries')
+                    apiCall.get('/api/cscenter/mypage/inquiries')
                 ]);
 
                 setSummary({

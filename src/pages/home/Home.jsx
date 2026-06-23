@@ -71,7 +71,7 @@ function Home({ isLoggedIn }) {
 
             try {
 
-                const data = await apiCall.get('/order/top-products');
+                const data = await apiCall.get('/api/order/top-products');
 
                 console.log('인기상품 TOP5:', data);
 

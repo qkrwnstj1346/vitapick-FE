@@ -14,7 +14,7 @@ function ChatCartBtn({ item, userNum }) {
 
         setStatus("loading"); // 로딩 상태로 변경
 
-        apiCall.post("/cart", { // 장바구니 API 호출
+        apiCall.post("/api/cart", { // 장바구니 API 호출
             userNum: userNum, // 사용자 번호
             prdId: item.prdId, // 상품 ID
             itQty: 1 // 수량 1로 고정
@@ -199,7 +199,7 @@ function MyChatbotDetail() { // 챗봇 상담 상세 페이지 컴포넌트
 
         try {
             for (const item of allProducts) {
-                await apiCall.post("/cart", {
+                await apiCall.post("/api/cart", {
                     userNum: userNum,
                     prdId: item.prdId,
                     itQty: 1

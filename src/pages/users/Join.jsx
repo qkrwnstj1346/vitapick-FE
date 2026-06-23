@@ -70,7 +70,7 @@ export default function JoinForm() {
       return;
     }
     try {
-      const data = await apiCall.get(`/v1/checkid/${value}`,);
+      const data = await apiCall.get(`/api/v1/checkid/${value}`,);
       console.log(data);
       if (data.idUse === "T") {
         setIdCheckMsg(data.message);
@@ -112,7 +112,7 @@ export default function JoinForm() {
       return;
     }
     try {
-      const data = await apiCall.get(`/v1/checkemail/${value}`,);
+      const data = await apiCall.get(`/api/v1/checkemail/${value}`,);
       console.log(data);
       if (data.emailUse === "T") {
         setEmailCheckMsg(data.message);
@@ -150,7 +150,7 @@ export default function JoinForm() {
 
     try {
       const result = await apiCall.post(
-        "/v1/auth/join",
+        "/api/v1/auth/join",
         requestData
       );
       alert(result);

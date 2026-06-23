@@ -159,7 +159,7 @@ const ProductDetail = () => {
                                     if (!checkLogin()) return;
 
                                     try {
-                                        await apiCall.post('/cart', {
+                                        await apiCall.post('/api/cart', {
                                         userNum: sessionStorage.getItem('userNum'),
                                         prdId: Number(prdId),
                                         itQty: quantity,

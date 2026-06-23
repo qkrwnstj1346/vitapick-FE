@@ -85,7 +85,7 @@ export default function MyWishList() {
 
         e.stopPropagation();
 
-        apiCall.post('/cart', {
+        apiCall.post('/api/cart', {
             userNum: sessionStorage.getItem('userNum'),
             prdId: prdId,
             itQty: 1,
@@ -114,7 +114,7 @@ export default function MyWishList() {
 
         Promise.all(
             selectedPrdIds.map(prdId =>
-                apiCall.post('/cart', {
+                apiCall.post('/api/cart', {
                     userNum: sessionStorage.getItem('userNum'),
                     prdId: prdId,
                     itQty: 1,

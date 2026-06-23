@@ -26,7 +26,7 @@ function MyCustomList(){
                 navigate('/v1/auth/login');
             }
             try{
-                const result = await apiCall.get('/v1/cus/list/');
+                const result = await apiCall.get('/api/v1/cus/list/');
                 console.log(result);
                 setCusList(result);
             }catch(err){
@@ -40,9 +40,9 @@ function MyCustomList(){
     async function handleDelete(cusId) {
         if(!window.confirm("삭제하시겠습니까?"))return;
         try{
-            await apiCall.delete(`/v1/cus/delete/${cusId}`);
+            await apiCall.delete(`/api/v1/cus/delete/${cusId}`);
             //삭제 후 다시 리스트 셋업
-            const result = await apiCall.get(`v1/cus/list/`);
+            const result = await apiCall.get(`/api/v1/cus/list/`);
             setCusList(result);
         }catch(err){
             console.error('삭제오류', err);

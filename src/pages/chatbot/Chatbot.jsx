@@ -90,6 +90,12 @@ const Chatbot = ({ onClose, userInfo }) => {
                 products: matchedPrds
             }]);
 
+            // 스크롤 맨 아래로 내리기
+            setTimeout(() => {
+                const box = document.querySelector('.chatPopup_messages');
+                box.scrollTop = box.scrollHeight;
+            }, 100);
+
         } catch (err) {
             console.error('챗봇 요청 실패:', err);
             console.error('상태코드:', err.response?.status);

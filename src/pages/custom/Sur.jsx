@@ -398,11 +398,11 @@ export default function Sur() {
       setLoading(true);
 
       // 1단계: 설문 저장
-      const surResult = await apiCall.post("/v1/sur/save", surDTO);
+      const surResult = await apiCall.post("/api/v1/sur/save", surDTO);
       console.log(surResult)
       // 2단계: AI 추천 실행
       const cusResult = await apiCall.post(
-        "/v1/cus/recommend", {surId: surResult.surId});
+        "/api/v1/cus/recommend", {surId: surResult.surId});
 
       // 3단계: 추천 결과 페이지로 이동
       navigate(`/v1/cus/result/${cusResult.cusId}`);

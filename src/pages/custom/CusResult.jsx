@@ -23,7 +23,7 @@ function CartBtn({ item, cusId, userNum}) {
       itQty: 1,
     };
 
-    apiCall.post("/cart", cartDTO)
+    apiCall.post("/api/cart", cartDTO)
       .then(() => {
         setStatus("done");
       })
@@ -73,7 +73,7 @@ export default function CusResult() {
       return;
     }
 
-    apiCall.get(`/v1/cus/detail/${cusId}`)
+    apiCall.get(`/api/v1/cus/detail/${cusId}`)
       .then((data) => setCusData(data))
       .catch((err) => {
         console.error("추천 결과 조회 실패", err);
@@ -92,7 +92,7 @@ export default function CusResult() {
     try {
       // 순차적으로 담기 (동시 요청 시 totalCheckQty 충돌 방지)
       for (const item of cusData.items) {
-        await apiCall.post("/cart", {
+        await apiCall.post("/api/cart", {
           userNum: userNum,
           prdId: item.prdId,
           cusId: Number(cusId),
