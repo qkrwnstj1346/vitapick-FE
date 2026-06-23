@@ -4,3 +4,13 @@ import { apiCall } from '../apiService';
 export function getAdminDashboardSummary() {
     return apiCall.get('/api/admin/dashboard/summary');
 }
+
+export function checkAdminAuth() {
+    return apiCall.get('/api/admin/check');
+}
+
+export function downloadAdminDashboardExcel() {
+    return apiCall.get('/api/admin/dashboard/excel', {
+        responseType: 'blob'
+    });
+}

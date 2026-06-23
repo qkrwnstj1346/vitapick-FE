@@ -783,6 +783,13 @@
 .adminUsersRow {
     color: #53665d;
     font-size: 14px;
+    cursor: pointer;
+}
+
+.adminUsersRow:hover,
+.adminUsersRow:focus-visible {
+    background-color: #f8fcf9;
+    outline: none;
 }
 
 .adminUsersBody .adminUsersRow:last-child span {
@@ -824,6 +831,13 @@
 .adminProductsRow {
     color: #53665d;
     font-size: 14px;
+    cursor: pointer;
+}
+
+.adminProductsRow:hover,
+.adminProductsRow:focus-visible {
+    background-color: #f8fcf9;
+    outline: none;
 }
 
 .adminProductsBody .adminProductsRow:last-child span {
@@ -1272,6 +1286,133 @@
     color: #3f5148;
     line-height: 1.7;
     white-space: pre-wrap;
+}
+
+.adminUserDetailModal {
+    width: min(920px, 100%);
+}
+
+.adminUserPurchaseSummary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 18px 26px;
+    border-bottom: 1px solid #e5efe9;
+}
+
+.adminUserPurchaseSummary div {
+    padding: 16px;
+    border: 1px solid #e0ece5;
+    border-radius: 12px;
+    background-color: #f8fcf9;
+}
+
+.adminUserPurchaseSummary span {
+    display: block;
+    color: #718179;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminUserPurchaseSummary strong {
+    display: block;
+    margin-top: 8px;
+    color: #2f8350;
+    font-size: 20px;
+}
+
+.adminUserRecentOrders {
+    padding: 20px 26px;
+    border-bottom: 1px solid #e5efe9;
+}
+
+.adminUserRecentOrders h4 {
+    margin: 0 0 12px;
+    color: #25332d;
+    font-size: 16px;
+}
+
+.adminUserRecentOrdersTable {
+    overflow-x: auto;
+    border: 1px solid #e0ece5;
+    border-radius: 12px;
+}
+
+.adminUserRecentOrdersHead,
+.adminUserRecentOrdersRow {
+    display: grid;
+    grid-template-columns: minmax(140px, 1fr) minmax(150px, 1fr) minmax(100px, 0.8fr) minmax(100px, 0.8fr) minmax(120px, 0.9fr);
+    min-width: 680px;
+}
+
+.adminUserRecentOrdersHead {
+    background-color: #f3faf5;
+    color: #4f665b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.adminUserRecentOrdersHead span,
+.adminUserRecentOrdersRow span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e5efe9;
+    text-align: center;
+}
+
+.adminUserRecentOrdersRow {
+    color: #53665d;
+    font-size: 14px;
+}
+
+.adminUserRecentOrdersBody .adminUserRecentOrdersRow:last-child span {
+    border-bottom: 0;
+}
+
+.adminProductDetailModal {
+    width: min(920px, 100%);
+}
+
+.adminProductDetailForm {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding: 20px 26px;
+    border-bottom: 1px solid #e5efe9;
+}
+
+.adminProductDetailForm .adminField {
+    min-width: 0;
+}
+
+.adminProductDetailForm .adminField input,
+.adminProductDetailForm .adminField select,
+.adminProductDetailForm .adminField textarea {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #d8e7de;
+    border-radius: 10px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    color: #35443d;
+    font: inherit;
+}
+
+.adminProductDetailForm .adminField textarea {
+    min-height: 96px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.adminProductDetailForm .adminField textarea[readonly] {
+    background-color: #f8fcf9;
+}
+
+.adminProductDetailWideField {
+    grid-column: 1 / -1;
 }
 
 .adminCsCreateForm {
