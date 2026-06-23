@@ -9,8 +9,7 @@ import { getAdminProductDetail, getAdminProducts, updateAdminProduct } from '../
 import { deleteAdminReviewReply, getAdminReviewDetail, getAdminReviews, saveAdminReviewReply } from '../../service/admin/adminReviewsApi';
 import {
     getAdminUsers,
-    getAdminUserDetail,
-    downloadAdminUsersExcel
+    getAdminUserDetail
 } from '../../service/admin/adminUsersApi';
 import './Admin.css';
 
@@ -1629,67 +1628,27 @@ function AdminPage() {
     // 회원 엑셀 다운로드를 처리한다.
     const handleAdminExcelDownload = async () => {
 
-        if (activeTab === 'dashboard') {
+        try {
 
-            try {
+            const blob = await downloadAdminDashboardExcel();
 
-                const blob = await downloadAdminDashboardExcel();
+            const url = window.URL.createObjectURL(blob);
 
-                const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
 
-                const link = document.createElement('a');
+            link.href = url;
+            link.download = 'admin_report.xlsx';
 
-                link.href = url;
-                link.download = 'admin_report.xlsx';
+            document.body.appendChild(link);
+            link.click();
 
-                document.body.appendChild(link);
-                link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
 
-                link.remove();
-                window.URL.revokeObjectURL(url);
+        } catch (error) {
 
-            } catch (error) {
-
-                console.error('dashboard excel download failed:', error);
-            }
-
-            return;
+            console.error('dashboard excel download failed:', error);
         }
-
-        if (activeTab === 'users') {
-
-            try {
-
-                const blob = await downloadAdminUsersExcel({
-                    keyword: adminUsersQueryKeyword.trim() || undefined,
-                    statusCd: adminUsersQueryStatusCd || undefined,
-                    startDate: adminUsersQueryStartDate || undefined,
-                    endDate: adminUsersQueryEndDate || undefined
-                });
-
-                const url = window.URL.createObjectURL(blob);
-
-                const link = document.createElement('a');
-
-                link.href = url;
-                link.download = '회원목록.xlsx';
-
-                document.body.appendChild(link);
-                link.click();
-
-                link.remove();
-                window.URL.revokeObjectURL(url);
-
-            } catch (error) {
-
-                console.error('회원 엑셀 다운로드 실패:', error);
-                alert('회원 엑셀 다운로드에 실패했습니다.');
-            }
-
-            return;
-        }
-
-        alert('해당 메뉴의 엑셀 다운로드는 준비 중입니다.');
     };
 
     // 회원 검색 시작일을 변경한다.
@@ -2435,14 +2394,16 @@ function AdminPage() {
                         <h1>{currentInfo.title}</h1>
                         <p>{currentInfo.description}</p>
                     </div>
-                    <div className="adminHeaderActions">
-                        <button
-                            type="button"
-                            onClick={handleAdminExcelDownload}
-                        >
-                            데이터 다운로드
-                        </button>
-                    </div>
+                    {activeTab === 'dashboard' && (
+                        <div className="adminHeaderActions">
+                            <button
+                                type="button"
+                                onClick={handleAdminExcelDownload}
+                            >
+                                데이터 다운로드
+                            </button>
+                        </div>
+                    )}
                 </header>
 
                 {renderContent()}
