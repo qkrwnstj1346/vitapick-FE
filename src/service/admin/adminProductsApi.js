@@ -4,3 +4,11 @@ import { apiCall } from '../apiService';
 export function getAdminProducts(params) {
     return apiCall.get('/api/admin/products', { params });
 }
+
+export function getAdminProductDetail(prdId) {
+    return apiCall.get(`/api/admin/products/${prdId}`);
+}
+
+export function updateAdminProduct(prdId, payload) {
+    return apiCall.patch(`/api/admin/products/${prdId}`, payload);
+}

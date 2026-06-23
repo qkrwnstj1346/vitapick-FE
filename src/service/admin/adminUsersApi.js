@@ -6,6 +6,10 @@ export function getAdminUsers(params) {
 }
 
 // 관리자 회원 엑셀 다운로드 API
+export function getAdminUserDetail(userNum) {
+    return apiCall.get(`/api/admin/users/${userNum}`);
+}
+
 export function downloadAdminUsersExcel(params) {
     return apiCall.get('/api/admin/users/excel', {
         params,

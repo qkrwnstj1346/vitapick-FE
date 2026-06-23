@@ -2,14 +2,14 @@
 import { useLocation } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import Pagination from '../../components/layout/Pagination';
-import { createAdminCsFaq, getAdminCsFaqs, getAdminCsInquiries, getAdminCsInquiryDetail, getAdminCsNotices, saveAdminCsInquiryAnswer, updateAdminCsFaq } from '../../service/admin/adminCsCenterApi';
-import { createNotice, deleteFaq, deleteNotice, getFaqDetail, getNoticeDetail, updateNotice } from '../../service/cscenter/csCenterApi';
-import { getAdminDashboardSummary } from '../../service/admin/adminDashboardApi';
+import { createAdminCsFaq, createAdminCsNotice, deleteAdminCsFaq, deleteAdminCsNotice, getAdminCsFaqDetail, getAdminCsFaqs, getAdminCsInquiries, getAdminCsInquiryDetail, getAdminCsNoticeDetail, getAdminCsNotices, saveAdminCsInquiryAnswer, updateAdminCsFaq, updateAdminCsNotice } from '../../service/admin/adminCsCenterApi';
+import { checkAdminAuth, downloadAdminDashboardExcel, getAdminDashboardSummary } from '../../service/admin/adminDashboardApi';
 import { getAdminOrders } from '../../service/admin/adminOrdersApi';
-import { getAdminProducts } from '../../service/admin/adminProductsApi';
+import { getAdminProductDetail, getAdminProducts, updateAdminProduct } from '../../service/admin/adminProductsApi';
 import { deleteAdminReviewReply, getAdminReviewDetail, getAdminReviews, saveAdminReviewReply } from '../../service/admin/adminReviewsApi';
 import {
     getAdminUsers,
+    getAdminUserDetail,
     downloadAdminUsersExcel
 } from '../../service/admin/adminUsersApi';
 import './Admin.css';
@@ -182,7 +182,7 @@ const dashboardPlaceholderData = {
         metrics: [
             { label: '미답변 문의', value: '-' },
             { label: '답변 완료 문의', value: '-' },
-            { label: '오늘 신규 문의', value: '-' },
+            { label: '오늘 신규 문의', value: '-', basis: `기준일: ${new Date().toLocaleDateString('sv-SE')}` },
             { label: '문의 처리율', value: '-' }
         ]
     },
@@ -222,6 +222,9 @@ function AdminPage() {
     const [adminUsersPage, setAdminUsersPage] = useState(0);
     const [adminUsersTotalPages, setAdminUsersTotalPages] = useState(0);
     const [adminUsersTotalElements, setAdminUsersTotalElements] = useState(0);
+    const [adminUserDetailModal, setAdminUserDetailModal] = useState(null);
+    const [adminUserDetailLoading, setAdminUserDetailLoading] = useState(false);
+    const [adminUserDetailError, setAdminUserDetailError] = useState('');
     // 관리자 상품 목록과 검색 조건 상태를 관리한다.
     const [adminProducts, setAdminProducts] = useState([]);
     const [adminProductsLoading, setAdminProductsLoading] = useState(false);
@@ -235,6 +238,11 @@ function AdminPage() {
     const [adminProductsPage, setAdminProductsPage] = useState(0);
     const [adminProductsTotalPages, setAdminProductsTotalPages] = useState(0);
     const [adminProductsTotalElements, setAdminProductsTotalElements] = useState(0);
+    const [adminProductDetailModal, setAdminProductDetailModal] = useState(null);
+    const [adminProductDetailForm, setAdminProductDetailForm] = useState(null);
+    const [adminProductDetailLoading, setAdminProductDetailLoading] = useState(false);
+    const [adminProductDetailSaving, setAdminProductDetailSaving] = useState(false);
+    const [adminProductDetailError, setAdminProductDetailError] = useState('');
     // 관리자 주문 목록과 검색 조건 상태를 관리한다.
     const [adminOrders, setAdminOrders] = useState([]);
     const [adminOrdersLoading, setAdminOrdersLoading] = useState(false);
@@ -340,7 +348,38 @@ function AdminPage() {
     });
     const [adminCsCreateSaving, setAdminCsCreateSaving] = useState(false);
     const [adminCsCreateError, setAdminCsCreateError] = useState('');
-    const isAdmin = sessionStorage.getItem('roleCd') === 'ADMIN'
+    const [adminAuthChecked, setAdminAuthChecked] = useState(false);
+    const [adminAuthAllowed, setAdminAuthAllowed] = useState(false);
+    const isAdmin = adminAuthAllowed;
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const checkAdmin = async () => {
+            setAdminAuthChecked(false);
+
+            try {
+                await checkAdminAuth();
+                if (!isMounted) return;
+                setAdminAuthAllowed(true);
+            } catch (error) {
+                console.error('관리자 권한 확인 실패:', error);
+                if (!isMounted) return;
+                setAdminAuthAllowed(false);
+                window.location.replace('/');
+            } finally {
+                if (isMounted) {
+                    setAdminAuthChecked(true);
+                }
+            }
+        };
+
+        checkAdmin();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     // 리뷰 모달 성공 메시지를 자동으로 닫는다.
     useEffect(() => {
@@ -775,6 +814,10 @@ function AdminPage() {
         isAdmin
     ]);
 
+    if (!adminAuthChecked) {
+        return null;
+    }
+
     if (!isAdmin) {
         return (
             <div className="adminAccessDenied">
@@ -801,7 +844,6 @@ function AdminPage() {
                     <div>
                         <span className="adminHeroBadge">VitaPick Admin</span>
                         <h2>운영 현황을 한눈에 확인하는 관리자 대시보드입니다.</h2>
-                        <p>현재는 화면 구조 준비 단계이며, 실제 통계는 API 연결 후 표시됩니다.</p>
                     </div>
                     <div className="adminHeroBubble">VP</div>
                 </section>
@@ -1050,7 +1092,7 @@ function AdminPage() {
 
         try {
             if (adminCsCreateModal === 'notice') {
-                await createNotice({
+                await createAdminCsNotice({
                     ttl: title,
                     ntcTxt: body,
                     useYn: adminCsCreateForm.useYn
@@ -1087,7 +1129,7 @@ function AdminPage() {
     // 고객센터 공지사항/FAQ 상세 모달을 연다.
     const handleAdminCsDetailOpen = async (type, item) => {
         const id = type === 'notice' ? item.ntcId : item.faqId;
-        const getDetail = type === 'notice' ? getNoticeDetail : getFaqDetail;
+        const getDetail = type === 'notice' ? getAdminCsNoticeDetail : getAdminCsFaqDetail;
 
         setAdminCsDetailModal({ type, item });
         setAdminCsDetailLoading(true);
@@ -1162,7 +1204,7 @@ function AdminPage() {
 
         try {
             const response = isNotice
-                ? await updateNotice(id, {
+                ? await updateAdminCsNotice(id, {
                     ttl: title,
                     ntcTxt: body,
                     useYn: adminCsEditForm.useYn
@@ -1205,7 +1247,7 @@ function AdminPage() {
     // 고객센터 공지사항/FAQ 삭제를 처리한다.
     const handleAdminCsDelete = async (type, item) => {
         const id = type === 'notice' ? item.ntcId : item.faqId;
-        const deleteItem = type === 'notice' ? deleteNotice : deleteFaq;
+        const deleteItem = type === 'notice' ? deleteAdminCsNotice : deleteAdminCsFaq;
         const resetPage = type === 'notice' ? setAdminCsNoticesPage : setAdminCsFaqsPage;
 
         if (!window.confirm('선택한 항목을 삭제하시겠습니까?')) return;
@@ -1587,6 +1629,33 @@ function AdminPage() {
     // 회원 엑셀 다운로드를 처리한다.
     const handleAdminExcelDownload = async () => {
 
+        if (activeTab === 'dashboard') {
+
+            try {
+
+                const blob = await downloadAdminDashboardExcel();
+
+                const url = window.URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+
+                link.href = url;
+                link.download = 'admin_report.xlsx';
+
+                document.body.appendChild(link);
+                link.click();
+
+                link.remove();
+                window.URL.revokeObjectURL(url);
+
+            } catch (error) {
+
+                console.error('dashboard excel download failed:', error);
+            }
+
+            return;
+        }
+
         if (activeTab === 'users') {
 
             try {
@@ -1641,6 +1710,32 @@ function AdminPage() {
         setAdminUsersEndDate(
             adminUsersStartDate && nextEndDate && nextEndDate < adminUsersStartDate ? '' : nextEndDate
         );
+    };
+
+    const handleAdminUserDetailOpen = async (user) => {
+        const userNum = user?.userNum;
+
+        if (!userNum) return;
+
+        setAdminUserDetailModal(user);
+        setAdminUserDetailLoading(true);
+        setAdminUserDetailError('');
+
+        try {
+            const response = await getAdminUserDetail(userNum);
+            setAdminUserDetailModal(response);
+        } catch (error) {
+            console.error('관리자 회원 상세 조회 실패:', error);
+            setAdminUserDetailError('회원 상세 정보를 불러오지 못했습니다.');
+        } finally {
+            setAdminUserDetailLoading(false);
+        }
+    };
+
+    const closeAdminUserDetailModal = () => {
+        setAdminUserDetailModal(null);
+        setAdminUserDetailLoading(false);
+        setAdminUserDetailError('');
     };
 
     // 회원 관리 화면을 렌더링한다.
@@ -1714,7 +1809,7 @@ function AdminPage() {
 
                 {!adminUsersError && adminUsers.length > 0 && (
                     <>
-                        <AdminUsersTable users={adminUsers} />
+                        <AdminUsersTable users={adminUsers} onUserOpen={handleAdminUserDetailOpen} />
                         <div className="adminPagination">
                             <button
                                 type="button"
@@ -1735,6 +1830,14 @@ function AdminPage() {
                     </>
                 )}
             </section>
+            {adminUserDetailModal && (
+                <AdminUserDetailModal
+                    user={adminUserDetailModal}
+                    loading={adminUserDetailLoading}
+                    error={adminUserDetailError}
+                    onClose={closeAdminUserDetailModal}
+                />
+            )}
         </>
     );
 
@@ -1745,6 +1848,73 @@ function AdminPage() {
         setAdminProductsQueryStatus(adminProductsStatus);
         setAdminProductsQueryCategoryId(adminProductsCategoryId);
         setAdminProductsPage(0);
+    };
+
+    const handleAdminProductDetailOpen = async (product) => {
+        const prdId = product?.prdId;
+
+        if (!prdId) return;
+
+        setAdminProductDetailModal(product);
+        setAdminProductDetailForm(createAdminProductDetailForm(product));
+        setAdminProductDetailLoading(true);
+        setAdminProductDetailError('');
+
+        try {
+            const response = await getAdminProductDetail(prdId);
+            setAdminProductDetailModal(response);
+            setAdminProductDetailForm(createAdminProductDetailForm(response));
+        } catch (error) {
+            console.error('관리자 상품 상세 조회 실패:', error);
+            setAdminProductDetailError('상품 상세 정보를 불러오지 못했습니다.');
+        } finally {
+            setAdminProductDetailLoading(false);
+        }
+    };
+
+    const handleAdminProductDetailFormChange = (event) => {
+        const { name, value } = event.target;
+
+        setAdminProductDetailForm((form) => ({
+            ...form,
+            [name]: value
+        }));
+    };
+
+    const handleAdminProductDetailSave = async () => {
+        const payload = createAdminProductUpdatePayload(adminProductDetailForm);
+        const validationMessage = validateAdminProductUpdatePayload(payload);
+        const prdId = adminProductDetailModal?.prdId;
+
+        if (!prdId || validationMessage) {
+            setAdminProductDetailError(validationMessage || '상품 상세 정보를 불러오지 못했습니다.');
+            return;
+        }
+
+        setAdminProductDetailSaving(true);
+        setAdminProductDetailError('');
+
+        try {
+            const response = await updateAdminProduct(prdId, payload);
+            setAdminProductDetailModal(response);
+            setAdminProductDetailForm(createAdminProductDetailForm(response));
+            setAdminProducts((products) => products.map((product) => (
+                product.prdId === response?.prdId ? { ...product, ...response } : product
+            )));
+        } catch (error) {
+            console.error('관리자 상품 수정 실패:', error);
+            setAdminProductDetailError('상품 정보를 수정하지 못했습니다.');
+        } finally {
+            setAdminProductDetailSaving(false);
+        }
+    };
+
+    const closeAdminProductDetailModal = () => {
+        setAdminProductDetailModal(null);
+        setAdminProductDetailForm(null);
+        setAdminProductDetailLoading(false);
+        setAdminProductDetailSaving(false);
+        setAdminProductDetailError('');
     };
 
     // 상품 관리 화면을 렌더링한다.
@@ -1812,7 +1982,7 @@ function AdminPage() {
 
                 {!adminProductsError && adminProducts.length > 0 && (
                     <>
-                        <AdminProductsTable products={adminProducts} />
+                        <AdminProductsTable products={adminProducts} onProductOpen={handleAdminProductDetailOpen} />
                         <div className="adminPagination">
                             <button
                                 type="button"
@@ -1833,6 +2003,18 @@ function AdminPage() {
                     </>
                 )}
             </section>
+            {adminProductDetailModal && (
+                <AdminProductDetailModal
+                    product={adminProductDetailModal}
+                    form={adminProductDetailForm}
+                    loading={adminProductDetailLoading}
+                    saving={adminProductDetailSaving}
+                    error={adminProductDetailError}
+                    onChange={handleAdminProductDetailFormChange}
+                    onSave={handleAdminProductDetailSave}
+                    onClose={closeAdminProductDetailModal}
+                />
+            )}
         </>
     );
 
@@ -2257,7 +2439,6 @@ function AdminPage() {
                         <button
                             type="button"
                             onClick={handleAdminExcelDownload}
-                            disabled={activeTab === 'dashboard'}
                         >
                             데이터 다운로드
                         </button>
@@ -2324,7 +2505,7 @@ function TopProductsTable({ data }) {
 }
 
 // 관리자 회원 목록 표를 렌더링한다.
-function AdminUsersTable({ users }) {
+function AdminUsersTable({ users, onUserOpen }) {
     return (
         <div className="adminUsersTable">
             <div className="adminUsersHead">
@@ -2340,7 +2521,12 @@ function AdminUsersTable({ users }) {
             </div>
             <div className="adminUsersBody">
                 {users.map((user) => (
-                    <div className="adminUsersRow" key={user.userNum ?? user.loginId}>
+                    <div className="adminUsersRow" key={user.userNum ?? user.loginId} role="button" tabIndex={0} onClick={() => onUserOpen(user)} onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            onUserOpen(user);
+                        }
+                    }}>
                         <span>{formatValue(user.userNum)}</span>
                         <span>{formatValue(user.loginId)}</span>
                         <span>{formatValue(user.userNm)}</span>
@@ -2357,8 +2543,116 @@ function AdminUsersTable({ users }) {
     );
 }
 
+function AdminUserDetailModal({ user, loading, error, onClose }) {
+    const purchaseSummary = user?.purchaseSummary || {};
+    const recentOrders = Array.isArray(user?.recentOrders) ? user.recentOrders : [];
+
+    return (
+        <div className="adminModalOverlay" role="presentation" onClick={onClose}>
+            <section className="adminCsDetailModal adminUserDetailModal" role="dialog" aria-modal="true" aria-labelledby="adminUserDetailTitle" onClick={(event) => event.stopPropagation()}>
+                <div className="adminCsDetailHeader">
+                    <div>
+                        <span className="adminCsDetailType">회원 관리</span>
+                        <h3 id="adminUserDetailTitle">{formatValue(user?.loginId)}</h3>
+                    </div>
+                    <button type="button" className="adminModalCloseBtn" onClick={onClose} aria-label="닫기">
+                        ×
+                    </button>
+                </div>
+
+                {error && <div className="adminDashboardNotice">{error}</div>}
+                {loading && <div className="adminDashboardNotice">상세 정보를 불러오는 중입니다.</div>}
+
+                <dl className="adminCsDetailMeta">
+                    <div>
+                        <dt>아이디</dt>
+                        <dd>{formatValue(user?.loginId)}</dd>
+                    </div>
+                    <div>
+                        <dt>닉네임</dt>
+                        <dd>{formatValue(user?.userNm)}</dd>
+                    </div>
+                    <div>
+                        <dt>성별</dt>
+                        <dd>{formatValue(user?.genderCd)}</dd>
+                    </div>
+                    <div>
+                        <dt>이메일</dt>
+                        <dd>{formatValue(user?.email)}</dd>
+                    </div>
+                    <div>
+                        <dt>생년월일</dt>
+                        <dd>{formatValue(user?.birthYmd)}</dd>
+                    </div>
+                    <div>
+                        <dt>가입일</dt>
+                        <dd>{formatDateTime(user?.crtAt)}</dd>
+                    </div>
+                    <div>
+                        <dt>권한</dt>
+                        <dd>{formatCode(user?.roleCd, roleCdOptions)}</dd>
+                    </div>
+                    <div>
+                        <dt>상태</dt>
+                        <dd>{formatCode(user?.statusCd, statusCdOptions)}</dd>
+                    </div>
+                    <div>
+                        <dt>전화번호</dt>
+                        <dd>{formatValue(user?.tel)}</dd>
+                    </div>
+                </dl>
+
+                <div className="adminUserPurchaseSummary">
+                    <div>
+                        <span>결제완료 주문 횟수</span>
+                        <strong>{formatCount(purchaseSummary.paidOrderCount, '0건')}</strong>
+                    </div>
+                    <div>
+                        <span>총 결제 금액</span>
+                        <strong>{formatCurrency(purchaseSummary.totalPaidAmount, '0원')}</strong>
+                    </div>
+                </div>
+
+                <div className="adminUserRecentOrders">
+                    <h4>최근 주문 내역</h4>
+                    {recentOrders.length === 0 ? (
+                        <div className="adminUsersEmpty">구매 내역이 없습니다.</div>
+                    ) : (
+                        <div className="adminUserRecentOrdersTable">
+                            <div className="adminUserRecentOrdersHead">
+                                <span>주문일</span>
+                                <span>주문번호</span>
+                                <span>결제수단</span>
+                                <span>주문상태</span>
+                                <span>결제금액</span>
+                            </div>
+                            <div className="adminUserRecentOrdersBody">
+                                {recentOrders.map((order) => (
+                                    <div className="adminUserRecentOrdersRow" key={order.orderId ?? order.orderNo}>
+                                        <span>{formatDateTime(order.orderDate)}</span>
+                                        <span>{formatValue(order.orderNo ?? order.orderId)}</span>
+                                        <span>{formatCode(order.payMthdCd, orderPaymentMethodOptions)}</span>
+                                        <span>{formatCode(order.orderStatus, orderStatusOptions)}</span>
+                                        <span>{formatCurrency(order.totalAmount)}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div className="adminCsDetailActions">
+                    <button type="button" className="adminSecondaryBtn" onClick={onClose}>
+                        닫기
+                    </button>
+                </div>
+            </section>
+        </div>
+    );
+}
+
 // 관리자 상품 목록 표를 렌더링한다.
-function AdminProductsTable({ products }) {
+function AdminProductsTable({ products, onProductOpen }) {
     return (
         <div className="adminProductsTable">
             <div className="adminProductsHead">
@@ -2375,7 +2669,12 @@ function AdminProductsTable({ products }) {
             </div>
             <div className="adminProductsBody">
                 {products.map((product) => (
-                    <div className="adminProductsRow" key={product.prdId ?? product.prdNm}>
+                    <div className="adminProductsRow" key={product.prdId ?? product.prdNm} role="button" tabIndex={0} onClick={() => onProductOpen(product)} onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            onProductOpen(product);
+                        }
+                    }}>
                         <span>
                             {product.thumbImgUrl ? (
                                 <img
@@ -2402,6 +2701,102 @@ function AdminProductsTable({ products }) {
                     </div>
                 ))}
             </div>
+        </div>
+    );
+}
+
+function AdminProductDetailModal({ product, form, loading, saving, error, onChange, onSave, onClose }) {
+    return (
+        <div className="adminModalOverlay" role="presentation" onClick={saving ? undefined : onClose}>
+            <section className="adminCsDetailModal adminProductDetailModal" role="dialog" aria-modal="true" aria-labelledby="adminProductDetailTitle" onClick={(event) => event.stopPropagation()}>
+                <div className="adminCsDetailHeader">
+                    <div>
+                        <span className="adminCsDetailType">상품 관리</span>
+                        <h3 id="adminProductDetailTitle">{formatValue(product?.prdNm)}</h3>
+                    </div>
+                    <button type="button" className="adminModalCloseBtn" onClick={onClose} aria-label="닫기" disabled={saving}>
+                        ×
+                    </button>
+                </div>
+
+                {error && <div className="adminDashboardNotice">{error}</div>}
+                {loading && <div className="adminDashboardNotice">상세 정보를 불러오는 중입니다.</div>}
+
+                <dl className="adminCsDetailMeta">
+                    <div>
+                        <dt>상품번호</dt>
+                        <dd>{formatValue(product?.prdId)}</dd>
+                    </div>
+                    <div>
+                        <dt>등록일</dt>
+                        <dd>{formatDateTime(product?.crtAt)}</dd>
+                    </div>
+                    <div>
+                        <dt>수정일</dt>
+                        <dd>{formatDateTime(product?.updAt)}</dd>
+                    </div>
+                </dl>
+
+                <div className="adminProductDetailForm">
+                    <div className="adminField">
+                        <label>상품명</label>
+                        <input name="prdNm" type="text" value={form?.prdNm || ''} onChange={onChange} disabled={loading || saving} />
+                    </div>
+                    <div className="adminField">
+                        <label>브랜드</label>
+                        <input name="brand" type="text" value={form?.brand || ''} onChange={onChange} disabled={loading || saving} />
+                    </div>
+                    <div className="adminField">
+                        <label>카테고리</label>
+                        <select name="catCd" value={form?.catCd || ''} onChange={onChange} disabled={loading || saving}>
+                            {productCategoryOptions.filter((option) => option.value).map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="adminField">
+                        <label>상품가격</label>
+                        <input name="price" type="number" min="0" value={form?.price ?? ''} onChange={onChange} disabled={loading || saving} />
+                    </div>
+                    <div className="adminField">
+                        <label>상태</label>
+                        <select name="useYn" value={form?.useYn || ''} onChange={onChange} disabled={loading || saving}>
+                            {productStatusOptions.filter((option) => option.value).map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="adminField adminProductDetailWideField">
+                        <label>상품 설명</label>
+                        <textarea name="descTxt" value={form?.descTxt || ''} onChange={onChange} disabled={loading || saving} />
+                    </div>
+                    <div className="adminField adminProductDetailWideField">
+                        <label>복용 방법</label>
+                        <textarea name="dosTxt" value={form?.dosTxt || ''} onChange={onChange} disabled={loading || saving} />
+                    </div>
+                    <div className="adminField adminProductDetailWideField">
+                        <label>주의 사항</label>
+                        <textarea name="warnTxt" value={form?.warnTxt || ''} onChange={onChange} disabled={loading || saving} />
+                    </div>
+                    <div className="adminField adminProductDetailWideField">
+                        <label>성분</label>
+                        <textarea value={product?.ingr || ''} readOnly />
+                    </div>
+                </div>
+
+                <div className="adminCsDetailActions">
+                    <button type="button" className="adminSecondaryBtn" onClick={onClose} disabled={saving}>
+                        닫기
+                    </button>
+                    <button type="button" className="adminPrimaryBtn" onClick={onSave} disabled={loading || saving}>
+                        수정
+                    </button>
+                </div>
+            </section>
         </div>
     );
 }
@@ -3112,7 +3507,7 @@ function createDashboardData(summary) {
         ...dashboardPlaceholderData,
         sales: {
             ...dashboardPlaceholderData.sales,
-            status: 'summary API 반영',
+            status: '',
             metrics: [
                 {
                     ...dashboardPlaceholderData.sales.metrics[0],
@@ -3168,10 +3563,11 @@ function createDashboardData(summary) {
                 {
                     ...dashboardPlaceholderData.inquiries.metrics[2],
                     value: formatCount(summary.inquiryStats?.todayNewCount, dashboardPlaceholderData.inquiries.metrics[2].value),
+                    basis: `기준일: ${new Date().toLocaleDateString('sv-SE')}`,
                 },
                 {
                     ...dashboardPlaceholderData.inquiries.metrics[3],
-                    value: formatRate(summary.inquiryStats?.answerRate, dashboardPlaceholderData.inquiries.metrics[3].value),
+                    value: formatRate(Math.floor(Number(summary.inquiryStats?.answerRate || 0)), dashboardPlaceholderData.inquiries.metrics[3].value),
                 }
             ]
         },
@@ -3188,6 +3584,50 @@ function createDashboardData(summary) {
                 : dashboardPlaceholderData.productSalesTop5.rows
         }
     };
+}
+
+function createAdminProductDetailForm(product) {
+    return {
+        prdNm: product?.prdNm || '',
+        brand: product?.brand || '',
+        catCd: product?.catCd === null || product?.catCd === undefined ? '' : String(product.catCd),
+        price: product?.price === null || product?.price === undefined ? '' : String(product.price),
+        descTxt: product?.descTxt || '',
+        dosTxt: product?.dosTxt || '',
+        warnTxt: product?.warnTxt || '',
+        useYn: product?.useYn || 'Y'
+    };
+}
+
+function createAdminProductUpdatePayload(form) {
+    return {
+        prdNm: form?.prdNm || '',
+        brand: form?.brand || '',
+        catCd: form?.catCd === '' || form?.catCd === undefined ? null : Number(form.catCd),
+        price: form?.price === '' || form?.price === undefined ? null : Number(form.price),
+        descTxt: form?.descTxt || '',
+        dosTxt: form?.dosTxt || '',
+        warnTxt: form?.warnTxt || '',
+        useYn: form?.useYn || ''
+    };
+}
+
+function validateAdminProductUpdatePayload(payload) {
+    if (!payload.prdNm.trim()
+            || !payload.brand.trim()
+            || payload.catCd === null
+            || payload.price === null
+            || Number.isNaN(payload.catCd)
+            || Number.isNaN(payload.price)
+            || payload.price < 0
+            || !payload.descTxt.trim()
+            || !payload.dosTxt.trim()
+            || !payload.warnTxt.trim()
+            || !['Y', 'N'].includes(payload.useYn)) {
+        return '필수값을 확인해주세요.';
+    }
+
+    return '';
 }
 
 // 금액 값을 화면 표시 형식으로 변환한다.
