@@ -1769,23 +1769,11 @@ function AdminPage() {
                 {!adminUsersError && adminUsers.length > 0 && (
                     <>
                         <AdminUsersTable users={adminUsers} onUserOpen={handleAdminUserDetailOpen} />
-                        <div className="adminPagination">
-                            <button
-                                type="button"
-                                disabled={adminUsersPage <= 0 || adminUsersLoading}
-                                onClick={() => setAdminUsersPage((page) => Math.max(page - 1, 0))}
-                            >
-                                이전
-                            </button>
-                            <span>{adminUsersPage + 1} / {Math.max(adminUsersTotalPages, 1)}</span>
-                            <button
-                                type="button"
-                                disabled={adminUsersPage + 1 >= adminUsersTotalPages || adminUsersLoading}
-                                onClick={() => setAdminUsersPage((page) => page + 1)}
-                            >
-                                다음
-                            </button>
-                        </div>
+                        <Pagination
+                            currentPage={adminUsersPage + 1}
+                            totalPage={adminUsersTotalPages}
+                            onPageChange={(page) => setAdminUsersPage(page - 1)}
+                        />
                     </>
                 )}
             </section>
@@ -1942,23 +1930,11 @@ function AdminPage() {
                 {!adminProductsError && adminProducts.length > 0 && (
                     <>
                         <AdminProductsTable products={adminProducts} onProductOpen={handleAdminProductDetailOpen} />
-                        <div className="adminPagination">
-                            <button
-                                type="button"
-                                disabled={adminProductsPage <= 0 || adminProductsLoading}
-                                onClick={() => setAdminProductsPage((page) => Math.max(page - 1, 0))}
-                            >
-                                이전
-                            </button>
-                            <span>{adminProductsPage + 1} / {Math.max(adminProductsTotalPages, 1)}</span>
-                            <button
-                                type="button"
-                                disabled={adminProductsPage + 1 >= adminProductsTotalPages || adminProductsLoading}
-                                onClick={() => setAdminProductsPage((page) => page + 1)}
-                            >
-                                다음
-                            </button>
-                        </div>
+                        <Pagination
+                            currentPage={adminProductsPage + 1}
+                            totalPage={adminProductsTotalPages}
+                            onPageChange={(page) => setAdminProductsPage(page - 1)}
+                        />
                     </>
                 )}
             </section>
@@ -2079,23 +2055,11 @@ function AdminPage() {
                 {!adminOrdersError && adminOrders.length > 0 && (
                     <>
                         <AdminOrdersTable orders={adminOrders} />
-                        <div className="adminPagination">
-                            <button
-                                type="button"
-                                disabled={adminOrdersPage <= 0 || adminOrdersLoading}
-                                onClick={() => setAdminOrdersPage((page) => Math.max(page - 1, 0))}
-                            >
-                                이전
-                            </button>
-                            <span>{adminOrdersPage + 1} / {Math.max(adminOrdersTotalPages, 1)}</span>
-                            <button
-                                type="button"
-                                disabled={adminOrdersPage + 1 >= adminOrdersTotalPages || adminOrdersLoading}
-                                onClick={() => setAdminOrdersPage((page) => page + 1)}
-                            >
-                                다음
-                            </button>
-                        </div>
+                        <Pagination
+                            currentPage={adminOrdersPage + 1}
+                            totalPage={adminOrdersTotalPages}
+                            onPageChange={(page) => setAdminOrdersPage(page - 1)}
+                        />
                     </>
                 )}
             </section>
@@ -2296,23 +2260,11 @@ function AdminPage() {
                 {!adminReviewsError && adminReviews.length > 0 && (
                     <>
                         <AdminReviewsTable reviews={adminReviews} onReviewOpen={handleAdminReviewDetailOpen} />
-                        <div className="adminPagination">
-                            <button
-                                type="button"
-                                disabled={adminReviewsPage <= 0 || adminReviewsLoading}
-                                onClick={() => setAdminReviewsPage((page) => Math.max(page - 1, 0))}
-                            >
-                                이전
-                            </button>
-                            <span>{adminReviewsPage + 1} / {Math.max(adminReviewsTotalPages, 1)}</span>
-                            <button
-                                type="button"
-                                disabled={adminReviewsPage + 1 >= adminReviewsTotalPages || adminReviewsLoading}
-                                onClick={() => setAdminReviewsPage((page) => page + 1)}
-                            >
-                                다음
-                            </button>
-                        </div>
+                        <Pagination
+                            currentPage={adminReviewsPage + 1}
+                            totalPage={adminReviewsTotalPages}
+                            onPageChange={(page) => setAdminReviewsPage(page - 1)}
+                        />
                     </>
                 )}
             </section>
