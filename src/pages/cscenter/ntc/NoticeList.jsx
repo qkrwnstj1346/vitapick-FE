@@ -20,12 +20,6 @@ function NoticeList() {
     /* 현재 페이지 */
     const [currentPage, setCurrentPage] = useState(1);
 
-    /* 로그인 정보 */
-    const userNum = sessionStorage.getItem('userNum');
-
-    /* 로그인 여부 */
-    const isLogin = !!userNum;
-
     /* 관리자 여부 */
     const [isAdmin, setIsAdmin] = useState(false);
 
@@ -47,14 +41,22 @@ function NoticeList() {
     /* 관리자 여부 확인 */
     useEffect(() => {
 
-        checkCscenterAdmin()
-            .then((data) => {
-                setIsAdmin(data === true);
-            })
-            .catch((err) => {
-                console.log(err);
+        const loadAdminCheck = async () => {
+
+            try {
+                const data = await checkCscenterAdmin();
+
+                console.log('관리자 여부:', data);
+
+                setIsAdmin(admin);
+
+            } catch (err) {
+                console.error('관리자 체크 실패:', err);
                 setIsAdmin(false);
-            });
+            }
+        };
+
+        loadAdminCheck();
 
     }, []);
 
@@ -64,7 +66,11 @@ function NoticeList() {
         getNoticeList()
             .then((data) => {
                 console.log('공지사항 데이터:', data);
-                setNoticeList(Array.isArray(data) ? data : []);
+
+                setNoticeList(
+                    Array.isArray(data) ? data : []
+                );
+
                 setCurrentPage(1);
             })
             .catch((err) => {
@@ -86,7 +92,7 @@ function NoticeList() {
                 </h2>
 
                 {/* 관리자 등록 버튼 */}
-                {isLogin && isAdmin && (
+                {isAdmin && (
 
                     <button
                         className="cs-notice-write-btn"

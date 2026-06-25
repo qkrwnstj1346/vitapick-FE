@@ -137,9 +137,8 @@ export function answerInq(inqId, ansTxt) {
         { ansTxt }
     );
 }
-
 /* 고객센터 관리자 여부 확인 */
 export async function checkCscenterAdmin() {
-    const response = await apiCall.get('api/cscenter/check-admin');
-    return response.data;
+    const data = await apiCall.get('/api/cscenter/check-admin');
+    return data === true;
 }
