@@ -4,6 +4,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 24px 20px 120px;
+    overflow: visible;
 }
 
 /* 상단 */
@@ -112,9 +113,10 @@
 /* 장바구니 본문 */
 .cartLayout {
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: minmax(0, 1fr) 300px;
     gap: 26px;
-
+    align-items: flex-start;
+    overflow: visible;
     padding: 8px 24px 34px;
     border: 1px solid #dfeee2;
     border-top: none;
@@ -125,15 +127,19 @@
 /* 상품 영역 */
 .cartListArea {
     width: 100%;
+    min-width: 0;
+    overflow: visible;
 }
 
 /* 결제 고정 영역 */
 .cartPayArea {
     position: sticky;
-    top: 100px;
+    top: 120px;
+    align-self: flex-start;
+    width: 300px;
     z-index: 3;
     margin-top: 26px;
-    height: fit-content;
+    height: max-content;
 }
 
 /* 섹션 */
@@ -414,6 +420,7 @@
 
     .cartPayArea {
         position: static;
+        width: 100%;
         margin-top: 0;
     }
 

@@ -282,7 +282,7 @@ function Cart() {
                                             {/* 묶음 정보 */}
                                             <div className="customGroupInfo">
                                                 <h4 className="customGroupTitle">
-                                                    커스텀 비타민 묶음 {index + 1}
+                                                    커스텀 비타민  {index + 1}
                                                 </h4>
 
                                                 <p className="customGroupSub">

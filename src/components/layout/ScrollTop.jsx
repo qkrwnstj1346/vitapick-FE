@@ -11,7 +11,11 @@ function ScrollTop() {
     /* 경로 변경 시 최상단 이동 */
     useEffect(() => {
 
-        window.scrollTo(0, 0);
+        requestAnimationFrame(() => {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        });
 
     }, [pathname]);
 

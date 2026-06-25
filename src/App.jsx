@@ -30,7 +30,7 @@ function App() {
     const hideChatbotPaths = [
         '/cart',
         '/order',
-        '/address'
+        '/mypage/myaddress'
     ];
 
     const isHideChatbot = hideChatbotPaths.some(path =>

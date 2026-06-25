@@ -32,6 +32,17 @@ function UserAddrList() {
     /* 선택된 배송지 */
     const [selectedAddr, setSelectedAddr] = useState(null);
 
+    /* 스크롤 최상단 이동 */
+    const moveScrollTop = () => {
+
+        requestAnimationFrame(() => {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        });
+
+    };
+
     /* 로그인 확인 */
     const checkLogin = () => {
 
@@ -91,6 +102,7 @@ function UserAddrList() {
         setFormMode('create');
         setSelectedAddr(null);
         setIsFormOpen(true);
+        moveScrollTop();
     };
 
     /* 배송지 수정 폼 열기 */
@@ -103,6 +115,7 @@ function UserAddrList() {
         setFormMode('edit');
         setSelectedAddr(addr);
         setIsFormOpen(true);
+        moveScrollTop();
     };
 
     /* 배송지 폼 닫기 */
@@ -110,6 +123,7 @@ function UserAddrList() {
 
         setIsFormOpen(false);
         setSelectedAddr(null);
+        moveScrollTop();
     };
 
     /* 배송지 저장 성공 */
@@ -118,6 +132,7 @@ function UserAddrList() {
         setIsFormOpen(false);
         setSelectedAddr(null);
         fetchAddrList();
+        moveScrollTop();
     };
 
     /* 배송지 삭제 */
@@ -135,6 +150,7 @@ function UserAddrList() {
             .then(() => {
                 alert('배송지가 삭제되었습니다.');
                 fetchAddrList();
+                moveScrollTop();
             })
             .catch(err => {
                 console.log(err);
@@ -159,6 +175,7 @@ function UserAddrList() {
             .then(() => {
                 alert('기본 배송지로 설정되었습니다.');
                 fetchAddrList();
+                moveScrollTop();
             })
             .catch(err => {
                 console.log(err);
