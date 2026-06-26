@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiCall, getToken } from '../../service/apiService';
 import ProductReview from './ProductReview';
-import ProductWish from './ProductWish';
+import ProductWish from './productWish';
 import './ProductDetail.css';
 
 const ProductDetail = () => {

@@ -7,7 +7,7 @@ import {
     getOrderPay
 } from '../../../service/order/orderApi';
 
-import './MyorderDetail.css';
+import './MyOrderDetail.css';
 
 function MyorderDetail() {
 

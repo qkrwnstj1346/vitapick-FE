@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiCall, getSessionData } from "../../service/apiService";
-import "./cusResult.css";
+import "./CusResult.css";
 import {
     Pill, ShoppingCart, Info, Lightbulb, Sparkles, TriangleAlert, ClipboardList, Newspaper
 } from 'lucide-react';
