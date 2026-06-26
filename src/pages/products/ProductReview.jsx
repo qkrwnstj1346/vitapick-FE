@@ -1,4 +1,4 @@
-import './ProductReview.css';
+import './productReview.css';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiCall, getToken } from '../../service/apiService';
