@@ -1,16 +1,132 @@
-# React + Vite
+# VitaPick Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+건강기능식품 쇼핑몰 및 관리자 페이지를 구현한 팀 프로젝트입니다.  
+본 저장소는 VitaPick의 Frontend 저장소이며, React 기반 화면 구현과 Backend API 연동을 담당합니다.
 
-Currently, two official plugins are available:
+<br />
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 1. 프로젝트 개요
 
-## React Compiler
+| 항목 | 내용 |
+|---|---|
+| 프로젝트명 | VitaPick |
+| 개발 기간 | 2026.04 - 2026.07 |
+| 참여 인원 | 4명 |
+| 담당 역할 | 관리자 페이지 풀스택 개발 |
+| Frontend 담당 범위 | 관리자 페이지 화면 구현 및 API 연동 |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+<br />
 
-## Expanding the ESLint configuration
+## 2. 관련 링크
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| 구분 | URL |
+|---|---|
+| 배포 주소 | http://15.134.141.44/ |
+| Backend Repository | https://github.com/qkrwnstj1346/vitapick-BE |
+
+> 배포 주소는 EC2 서버 상태에 따라 접속이 제한될 수 있습니다.
+
+<br />
+
+## 3. 기술 스택
+
+| 분류 | 기술 |
+|---|---|
+| Frontend | React, JavaScript, Axios |
+| Runtime | Node.js, npm |
+| Deployment | AWS EC2, Docker, Nginx, GitHub Actions |
+| Version Control | Git |
+
+<br />
+
+## 4. 주요 담당 기능
+
+### 관리자 페이지 화면 구현
+
+- 관리자 대시보드 화면 구현
+- 회원 관리 화면 구현
+- 상품 관리 화면 구현
+- 주문 관리 화면 구현
+- 리뷰 관리 화면 구현
+- 고객센터 관리 화면 구현
+
+### Backend API 연동
+
+- Axios 기반 관리자 API 연동
+- 대시보드 운영 데이터 조회
+- 회원, 상품, 주문, 리뷰, 고객센터 데이터 조회
+- 엑셀 리포트 다운로드 API 연동
+- 관리자 권한 확인 API 연동
+
+### 관리자 접근 제어
+
+- 관리자 페이지 접근 시 Backend 권한 확인 API 호출
+- Frontend의 role 값만으로 관리자 여부를 판단하지 않도록 보완
+- 일반 사용자가 관리자 URL에 접근할 경우 메인 화면으로 이동 처리
+
+<br />
+
+## 5. 관리자 페이지 구성
+
+| 경로 | 설명 |
+|---|---|
+| `/admin` | 관리자 대시보드 |
+| `/admin/users` | 회원 관리 |
+| `/admin/products` | 상품 관리 |
+| `/admin/orders` | 주문 관리 |
+| `/admin/reviews` | 리뷰 관리 |
+| `/admin/cscenter` | 고객센터 관리 |
+
+<br />
+
+## 6. 주요 화면 설명
+
+### 관리자 대시보드
+
+- 오늘 매출, 오늘 주문 수, 이번 달 매출 조회
+- 월별 회원 수 및 주문 수 추이 확인
+- 상품별 매출 TOP5 확인
+- 문의 대기 건수, 처리율, 오늘 신규 문의 확인
+
+### 회원 관리
+
+- 회원 목록 조회
+- 회원 상세 정보 확인
+- 회원별 주문 내역 확인
+
+### 상품 관리
+
+- 상품 목록 조회
+- 상품 상세 정보 확인
+- 상품 정보 수정
+
+### 주문 관리
+
+- 결제완료 주문 목록 조회
+- 주문자, 결제수단, 결제금액, 주문일 확인
+
+### 리뷰 관리
+
+- 리뷰 목록 조회
+- 리뷰 상세 확인
+- 관리자 답글 등록 및 삭제
+
+### 고객센터 관리
+
+- 공지글 등록, 수정, 삭제
+- FAQ 항목 등록, 수정, 삭제
+- 1:1 문의 확인 및 답변 처리
+
+<br />
+
+## 7. 프로젝트 구조
+
+```bash
+src/
+├── api/                 # API 요청 함수
+├── components/          # 공통 컴포넌트
+├── pages/               # 페이지 컴포넌트
+│   └── admin/           # 관리자 페이지
+├── routes/              # 라우팅 설정
+├── styles/              # 스타일 파일
+└── App.jsx              # 애플리케이션 진입 컴포넌트
