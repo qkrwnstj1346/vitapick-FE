@@ -35,7 +35,7 @@
 | Frontend | React, JavaScript, Axios |
 | Runtime | Node.js, npm |
 | Deployment | AWS EC2, Docker, Nginx, GitHub Actions |
-| Version Control | Git |
+| Version Control | Git, GitHub Desktop |
 
 <br />
 
