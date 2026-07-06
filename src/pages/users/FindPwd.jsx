@@ -9,6 +9,7 @@ function FindPwd() {
     const [step, setStep] = useState(1);
     const [loginId, setLoginId] = useState("");
     const [serverError, setServerError] = useState("");
+    const [samePasswordError, setSamePasswordError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const {
@@ -52,6 +53,7 @@ function FindPwd() {
     //2단계: 인증번호확인, 비밀번호 변경
     const onResetPwdSubmit = async (data) => {
         setServerError("");
+        setSamePasswordError("");
         try{
             setIsLoading(true);
             const response = await UsersApi.resetPwd(
@@ -66,7 +68,12 @@ function FindPwd() {
             console.log("비밀번호 찾기 에러:", err);
             console.log("status:", err.response?.status);
             console.log("data:", err.response?.data);
-            setServerError(err.message);
+            const errorMessage = err.response?.data;
+            if (err.response?.status === 400 && errorMessage === "기존 비밀번호와 똑같은 비밀번호로 변경이 불가합니다") {
+                setSamePasswordError(errorMessage);
+            } else {
+                setServerError(errorMessage || err.message);
+            }
         }finally{
             setIsLoading(false);
         }
@@ -189,6 +196,7 @@ function FindPwd() {
                     autoComplete='off'
                     size={20}
                     {...resetRegister("pwd", {
+                        onChange: () => setSamePasswordError(""),
                         required: "새 비밀번호를 입력해주세요.",
                         pattern: {
                             value: /^(?=.*[a-zA-Z])(?=.*\d).{8,20}$/,
@@ -199,6 +207,11 @@ function FindPwd() {
                 {resetErrors.pwd && (
                     <p style={{ color: "red", fontSize: "13px" }}>
                         {resetErrors.pwd.message}
+                    </p>
+                )}
+                {!resetErrors.pwd && samePasswordError && (
+                    <p style={{ color: "red", fontSize: "13px" }}>
+                        {samePasswordError}
                     </p>
                 )}
                 <br />
@@ -238,6 +251,7 @@ function FindPwd() {
                     onClick={() => {
                         setStep(1);
                         setServerError("");
+                        setSamePasswordError("");
                     }}
                 >
                     다시 인증번호 받기

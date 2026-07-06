@@ -251,10 +251,10 @@ export default function MyWishList() {
                         {/* 상품 이미지 */}
                         <div className='wish-img-box'>
                             <img
-                                src={wish.thumbImgUrl || '/images/no-image.png'}
+                                src={wish.thumbImgUrl || '/images/VitaPick.png'}
                                 alt={wish.prdNm}
                                 onError={(e) => {
-                                    e.target.src = '/images/no-image.png';
+                                    e.target.src = '/images/VitaPick.png';
                                 }}
                             />
                         </div>

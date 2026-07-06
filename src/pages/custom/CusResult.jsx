@@ -204,10 +204,10 @@ export default function CusResult() {
                   title="상품 상세 보기"
                 >
                   <img
-                    src={item.prdImg || "/images/no-image.png"}
+                    src={item.prdImg || "/images/VitaPick.png"}
                     alt={item.prdName}
                     className="cus-item__img"
-                    onError={(e) => { e.target.src = "/images/no-image.png"; }}
+                    onError={(e) => { e.target.src = "/images/VitaPick.png"; }}
                   />
                 </div>
 

@@ -53,10 +53,10 @@ const ProductLatest = () => {
                             onClick={() => navigate(`/products/detail/${prd.prdId}`)}
                         >
                             <img
-                                src={prd.thumbImgUrl || '/images/no-image.png'}
+                                src={prd.thumbImgUrl || '/images/VitaPick.png'}
                                 alt={prd.prdNm}
                                 onError={(e) => {
-                                    e.target.src = '/images/no-image.png';
+                                    e.target.src = '/images/VitaPick.png';
                                 }}
                             />
 

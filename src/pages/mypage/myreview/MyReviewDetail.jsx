@@ -138,10 +138,10 @@ export default function MyReviewDetail() {
                 <div className='rvw-detail-product'>
                     <img
                         className='rvw-detail-img'
-                        src={rvw.thumbImgUrl || '/images/no-image.png'}
+                        src={rvw.thumbImgUrl || '/images/VitaPick.png'}
                         alt={rvw.prdNm}
                         onError={(e) => {
-                            e.target.src = '/images/no-image.png';
+                            e.target.src = '/images/VitaPick.png';
                         }}
                     />
 

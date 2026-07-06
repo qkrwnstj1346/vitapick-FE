@@ -113,10 +113,10 @@ export default function MyReviewList() {
                             >
                                 <img
                                     className='rvw-item__img'
-                                    src={rvw.thumbImgUrl || '/images/no-image.png'}
+                                    src={rvw.thumbImgUrl || '/images/VitaPick.png'}
                                     alt={rvw.prdNm}
                                     onError={(e) => {
-                                        e.target.src = '/images/no-image.png';
+                                        e.target.src = '/images/VitaPick.png';
                                     }}
                                 />
                             </div>
