@@ -1067,6 +1067,13 @@
 .adminCsFaqsRow {
     color: #53665d;
     font-size: 14px;
+    cursor: pointer;
+}
+
+.adminCsNoticesRow:focus-visible,
+.adminCsFaqsRow:focus-visible {
+    outline: 2px solid #6eaf80;
+    outline-offset: -2px;
 }
 
 .adminCsNoticesRow:hover,

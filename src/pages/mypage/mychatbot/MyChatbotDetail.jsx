@@ -295,11 +295,11 @@ function MyChatbotDetail() { // 챗봇 상담 상세 페이지 컴포넌트
                                                         onClick={() => goProductDetail(item.prdId)}
                                                     >
                                                         <img
-                                                            src={item.thumbImgUrl || "/images/no-image.png"}
+                                                            src={item.thumbImgUrl || "/images/VitaPick.png"}
                                                             alt={item.prdNm}
                                                             className="chat-prd-item__img"
                                                             onError={(e) => {
-                                                                e.target.src = "/images/no-image.png";
+                                                                e.target.src = "/images/VitaPick.png";
                                                             }}
                                                         />
                                                     </div>

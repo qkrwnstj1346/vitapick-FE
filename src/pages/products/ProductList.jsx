@@ -84,7 +84,7 @@ const ProductList = () => {
                                 className='prd_card'
                                 onClick={() => window.location.href = `/products/detail/${prd.prdId}`}
                             >
-                                <img src={prd.thumbImgUrl || '/images/no-image.png'} alt={prd.prdNm} />
+                                <img src={prd.thumbImgUrl || '/images/VitaPick.png'} alt={prd.prdNm} />
                                 <div className='prd_info'>
                                     <p className='prd_brand'>{prd.brand}</p>
                                     <h3 className='prd_nm'>{prd.prdNm}</h3>

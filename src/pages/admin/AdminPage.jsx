@@ -2,7 +2,7 @@
 import { useLocation } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import Pagination from '../../components/layout/Pagination';
-import { createAdminCsFaq, createAdminCsNotice, deleteAdminCsFaq, deleteAdminCsNotice, getAdminCsFaqDetail, getAdminCsFaqs, getAdminCsInquiries, getAdminCsInquiryDetail, getAdminCsNoticeDetail, getAdminCsNotices, saveAdminCsInquiryAnswer, updateAdminCsFaq, updateAdminCsNotice } from '../../service/admin/adminCsCenterApi';
+import { createAdminCsFaq, createAdminCsNotice, deleteAdminCsFaq, deleteAdminCsInquiryAnswer, deleteAdminCsNotice, getAdminCsFaqDetail, getAdminCsFaqs, getAdminCsInquiries, getAdminCsInquiryDetail, getAdminCsNoticeDetail, getAdminCsNotices, saveAdminCsInquiryAnswer, updateAdminCsFaq, updateAdminCsNotice } from '../../service/admin/adminCsCenterApi';
 import { checkAdminAuth, downloadAdminDashboardExcel, getAdminDashboardSummary } from '../../service/admin/adminDashboardApi';
 import { getAdminOrders } from '../../service/admin/adminOrdersApi';
 import { getAdminProductDetail, getAdminProducts, updateAdminProduct } from '../../service/admin/adminProductsApi';
@@ -328,6 +328,7 @@ function AdminPage() {
     const [adminCsDetailModal, setAdminCsDetailModal] = useState(null);
     const [adminCsDetailLoading, setAdminCsDetailLoading] = useState(false);
     const [adminCsDetailError, setAdminCsDetailError] = useState('');
+    const [adminCsDetailMessage, setAdminCsDetailMessage] = useState('');
     const [adminCsDetailEditing, setAdminCsDetailEditing] = useState(false);
     const [adminCsEditForm, setAdminCsEditForm] = useState({
         ttl: '',
@@ -390,6 +391,20 @@ function AdminPage() {
 
         return () => window.clearTimeout(timerId);
     }, [adminReviewDetailMessage]);
+
+    // 고객센터 상세 모달 성공 메시지를 자동으로 닫는다.
+    useEffect(() => {
+        if (!adminCsDetailMessage) return undefined;
+
+        const timerId = window.setTimeout(() => {
+            setAdminCsDetailMessage('');
+            if (adminCsDetailMessage === '삭제되었습니다') {
+                setAdminCsDetailModal(null);
+            }
+        }, 1800);
+
+        return () => window.clearTimeout(timerId);
+    }, [adminCsDetailMessage]);
 
     // 문의 모달 성공 메시지를 자동으로 닫는다.
     useEffect(() => {
@@ -1038,6 +1053,38 @@ function AdminPage() {
         }
     };
 
+    // 고객센터 문의 답변 삭제를 처리한다.
+    const handleAdminCsInquiryAnswerDelete = async () => {
+        const inquiryId = adminCsInquiryDetailModal?.inquiryId ?? adminCsInquiryDetailModal?.inqId;
+
+        if (!inquiryId || !adminCsInquiryDetailModal?.ansTxt) return;
+        if (!window.confirm('등록된 답변을 삭제하시겠습니까?')) return;
+
+        setAdminCsInquiryDetailSaving(true);
+        setAdminCsInquiryDetailError('');
+        setAdminCsInquiryDetailMessage('');
+
+        try {
+            const detail = await deleteAdminCsInquiryAnswer(inquiryId);
+            const nextDetail = {
+                ...adminCsInquiryDetailModal,
+                ...(detail || {}),
+                ansTxt: detail?.ansTxt ?? '',
+                answeredAt: detail?.answeredAt ?? null,
+                status: detail?.status ?? 'WAITING'
+            };
+
+            setAdminCsInquiryDetailModal(nextDetail);
+            setAdminCsInquiryAnswerText('');
+            setAdminCsInquiriesRefreshKey((key) => key + 1);
+            setAdminCsInquiryDetailMessage('답글이 삭제되었습니다');
+        } catch {
+            setAdminCsInquiryDetailError('답변 삭제에 실패했습니다.');
+        } finally {
+            setAdminCsInquiryDetailSaving(false);
+        }
+    };
+
     // 고객센터 목록 필터 변경 시 첫 페이지로 이동한다.
     const handleAdminCsFilterChange = (setter, resetPage) => (event) => {
         setter(event.target.value);
@@ -1122,6 +1169,7 @@ function AdminPage() {
         if (adminCsEditSaving) return;
         setAdminCsDetailModal(null);
         setAdminCsDetailError('');
+        setAdminCsDetailMessage('');
         setAdminCsDetailEditing(false);
     };
 
@@ -1133,6 +1181,7 @@ function AdminPage() {
         setAdminCsDetailModal({ type, item });
         setAdminCsDetailLoading(true);
         setAdminCsDetailError('');
+        setAdminCsDetailMessage('');
         setAdminCsDetailEditing(false);
 
         try {
@@ -1148,6 +1197,8 @@ function AdminPage() {
 
     // 고객센터 상세 모달을 수정 모드로 전환한다.
     const handleAdminCsEdit = (type, item) => {
+        setAdminCsDetailMessage('');
+
         if (type === 'notice') {
             setAdminCsEditForm({
                 ttl: item?.ttl || '',
@@ -1200,6 +1251,7 @@ function AdminPage() {
 
         setAdminCsEditSaving(true);
         setAdminCsDetailError('');
+        setAdminCsDetailMessage('');
 
         try {
             const response = isNotice
@@ -1236,8 +1288,9 @@ function AdminPage() {
                 setAdminCsFaqsRefreshKey((key) => key + 1);
             }
             setAdminCsDetailEditing(false);
+            setAdminCsDetailMessage('수정되었습니다');
         } catch {
-            setAdminCsDetailError(isNotice ? '등록에 실패했습니다. 입력 내용을 확인하고 다시 시도해 주세요.' : '수정에 실패했습니다. 입력 내용을 확인하고 다시 시도해 주세요.');
+            setAdminCsDetailError('수정에 실패했습니다. 입력 내용을 확인하고 다시 시도해 주세요.');
         } finally {
             setAdminCsEditSaving(false);
         }
@@ -1253,18 +1306,21 @@ function AdminPage() {
 
         setAdminCsDetailLoading(true);
         setAdminCsDetailError('');
+        setAdminCsDetailMessage('');
 
         try {
             await deleteItem(id);
-            closeAdminCsDetailModal();
             if (type === 'notice') {
                 setAdminCsNotices((items) => items.filter((notice) => notice.ntcId !== id));
                 setAdminCsNoticesTotalElements((count) => Math.max(count - 1, 0));
+                setAdminCsNoticesRefreshKey((key) => key + 1);
             } else {
                 setAdminCsFaqs((items) => items.filter((faq) => faq.faqId !== id));
                 setAdminCsFaqsTotalElements((count) => Math.max(count - 1, 0));
+                setAdminCsFaqsRefreshKey((key) => key + 1);
             }
             resetPage(0);
+            setAdminCsDetailMessage('삭제되었습니다');
         } catch {
             setAdminCsDetailError('삭제 처리에 실패했습니다. 잠시 후 다시 시도해 주세요.');
         } finally {
@@ -1581,6 +1637,7 @@ function AdminPage() {
                     message={adminCsInquiryDetailMessage}
                     onAnswerChange={(event) => setAdminCsInquiryAnswerText(event.target.value)}
                     onAnswerSave={handleAdminCsInquiryAnswerSave}
+                    onAnswerDelete={handleAdminCsInquiryAnswerDelete}
                     onClose={closeAdminCsInquiryDetailModal}
                 />
             )}
@@ -1601,6 +1658,7 @@ function AdminPage() {
                     item={adminCsDetailModal.item}
                     loading={adminCsDetailLoading}
                     error={adminCsDetailError}
+                    message={adminCsDetailMessage}
                     editing={adminCsDetailEditing}
                     editForm={adminCsEditForm}
                     saving={adminCsEditSaving}
@@ -2817,12 +2875,22 @@ function AdminCsNoticesTable({ notices, onTitleClick }) {
             </div>
             <div className="adminCsNoticesBody">
                 {notices.map((notice) => (
-                    <div className="adminCsNoticesRow" key={notice.ntcId ?? notice.ttl}>
+                    <div
+                        className="adminCsNoticesRow"
+                        key={notice.ntcId ?? notice.ttl}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => onTitleClick(notice)}
+                        onKeyDown={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault();
+                                onTitleClick(notice);
+                            }
+                        }}
+                    >
                         <span>{formatValue(notice.ntcId)}</span>
                         <span className="adminCsListTitle" title={formatValue(notice.ttl)}>
-                            <button type="button" onClick={() => onTitleClick(notice)}>
-                                {formatValue(notice.ttl)}
-                            </button>
+                            {formatValue(notice.ttl)}
                         </span>
                         <span>{formatValue(notice.useYn)}</span>
                         <span>{formatCount(notice.viewCnt, '-', '')}</span>
@@ -2848,13 +2916,23 @@ function AdminCsFaqsTable({ faqs, onTitleClick }) {
             </div>
             <div className="adminCsFaqsBody">
                 {faqs.map((faq) => (
-                    <div className="adminCsFaqsRow" key={faq.faqId ?? faq.ttl}>
+                    <div
+                        className="adminCsFaqsRow"
+                        key={faq.faqId ?? faq.ttl}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => onTitleClick(faq)}
+                        onKeyDown={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault();
+                                onTitleClick(faq);
+                            }
+                        }}
+                    >
                         <span>{formatValue(faq.faqId)}</span>
                         <span>{formatFaqCategory(faq.faqCtgCd)}</span>
                         <span className="adminCsListTitle" title={formatValue(faq.ttl)}>
-                            <button type="button" onClick={() => onTitleClick(faq)}>
-                                {formatValue(faq.ttl)}
-                            </button>
+                            {formatValue(faq.ttl)}
                         </span>
                         <span>{formatValue(faq.useYn)}</span>
                         <span>{formatCount(faq.viewCnt, '-', '')}</span>
@@ -2917,7 +2995,9 @@ function AdminCsInquiriesTable({ inquiries, onInquiryOpen }) {
 }
 
 // 고객센터 문의 상세/답변 모달을 렌더링한다.
-function AdminCsInquiryDetailModal({ inquiry, answerText, loading, saving, error, message, onAnswerChange, onAnswerSave, onClose }) {
+function AdminCsInquiryDetailModal({ inquiry, answerText, loading, saving, error, message, onAnswerChange, onAnswerSave, onAnswerDelete, onClose }) {
+    const hasAnswer = Boolean(inquiry?.ansTxt);
+
     return (
         <div className="adminModalOverlay" role="presentation" onClick={onClose}>
             <section className="adminCsDetailModal adminReviewDetailModal" role="dialog" aria-modal="true" aria-labelledby="adminCsInquiryDetailTitle" onClick={(event) => event.stopPropagation()}>
@@ -2998,6 +3078,11 @@ function AdminCsInquiryDetailModal({ inquiry, answerText, loading, saving, error
                     <button type="button" className="adminSecondaryBtn" onClick={onClose} disabled={saving}>
                         닫기
                     </button>
+                    {hasAnswer && (
+                        <button type="button" className="adminDangerBtn" onClick={onAnswerDelete} disabled={loading || saving}>
+                            답변 삭제
+                        </button>
+                    )}
                     <button type="button" className="adminPrimaryBtn" onClick={onAnswerSave} disabled={loading || saving}>
                         답변
                     </button>
@@ -3165,7 +3250,7 @@ function AdminCsCreateModal({ type, form, saving, error, onChange, onClose, onSu
 }
 
 // 고객센터 공지사항/FAQ 상세 모달을 렌더링한다.
-function AdminCsDetailModal({ type, item, loading, error, editing, editForm, saving, onEditFormChange, onEditCancel, onEditSubmit, onClose, onEdit, onDelete }) {
+function AdminCsDetailModal({ type, item, loading, error, message, editing, editForm, saving, onEditFormChange, onEditCancel, onEditSubmit, onClose, onEdit, onDelete }) {
     const isNotice = type === 'notice';
     const title = formatValue(item?.ttl);
     const body = isNotice ? item?.ntcTxt : item?.faqTxt;
@@ -3186,6 +3271,7 @@ function AdminCsDetailModal({ type, item, loading, error, editing, editForm, sav
 
                 {error && <div className="adminDashboardNotice">{error}</div>}
                 {loading && <div className="adminDashboardNotice">상세 정보를 불러오는 중입니다.</div>}
+                {message && <div className="adminReviewDetailMessage">{message}</div>}
 
                 {editing ? (
                     <form className="adminCsCreateForm" onSubmit={onEditSubmit}>

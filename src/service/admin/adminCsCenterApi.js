@@ -64,3 +64,8 @@ export function getAdminCsInquiryDetail(inqId) {
 export function saveAdminCsInquiryAnswer(inqId, data) {
     return apiCall.patch(`/api/admin/cscenter/inquiries/${inqId}/answer`, data);
 }
+
+// 관리자 1:1 문의 답변 삭제 API
+export function deleteAdminCsInquiryAnswer(inqId) {
+    return apiCall.delete(`/api/admin/cscenter/inquiries/${inqId}/answer`);
+}
